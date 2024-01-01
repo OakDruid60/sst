@@ -8,8 +8,6 @@ use crate::enums::SectorType;
 use crate::gamedata::GameWideData;
 use crate::location::Location;
 use crate::sector::SectorInfo;
-//use crate::ship::ShipInfo;
-//use crate::statistics::SummaryStats;
 
 use colored::*;
 
