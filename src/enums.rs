@@ -3,7 +3,7 @@
 /// #SectorType
 ///  The type of object inhabiting the sector at the supplied UniversalCoordinate.  Only one type at a time.
 ///
-/// **NOTE** Sectors that are Empty should be marked accordingly.
+/// **NOTE** Sectors that are Empty should be marked accordingly.  jap66
 ///
 use serde::{Deserialize, Serialize};
 
