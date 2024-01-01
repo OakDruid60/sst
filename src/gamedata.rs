@@ -2,8 +2,7 @@
 //! # gamedata.rs
 //!
 //! This is stuff related to the entire game.
-//!
-//!
+
 use crate::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::enums::SectorType;
 use crate::location::Location;
