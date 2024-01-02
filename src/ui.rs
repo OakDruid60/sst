@@ -9,8 +9,6 @@ use std::io::{stdin, stdout, Write};
 
 use crate::enums::{CmdType, SectorType};
 use crate::gamedata::GameWideData;
-//use crate::location::Location;
-//use crate::sector::SectorInfo;
 use crate::ship::ShipInfo;
 
 // ==========================================================================

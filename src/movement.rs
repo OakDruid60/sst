@@ -6,13 +6,12 @@ use crate::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::enums::SectorType;
 use crate::gamedata::GameWideData;
 use crate::location::Location;
-//use crate::sector::SectorInfo;
 use crate::ship::ShipInfo;
 
 // =================================================================
 /// # jump_enterprise
 ///
-/// jump the enterprise to a new quadrant  It is possible to jum to the starbase.
+/// jump the enterprise to a new quadrant  It is possible to jump to the starbase.
 pub fn jump_enterprise(
     g_info: &GameWideData,
     cmd_vector: &Vec<String>,

@@ -12,7 +12,6 @@ mod enums;
 mod gamedata;
 mod helpers;
 mod location;
-//mod lib;
 mod movement;
 mod sector;
 mod ship;

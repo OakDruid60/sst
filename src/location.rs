@@ -5,7 +5,6 @@
 //! wrapper to a tuple (i8, i8, i8, i8).
 //!
 use crate::constants::MAX_SECTOR_SIZE_I8;
-//use crate::sector::SectorInfo;
 
 use rand::Rng;
 use serde::{Deserialize, Serialize};

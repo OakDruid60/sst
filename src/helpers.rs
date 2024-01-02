@@ -5,9 +5,7 @@
 //!
 use crate::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::enums::{AlertStatus, SectorType};
-//use crate::location::Location;
 use crate::sector::SectorInfo;
-//use crate::ship::ShipInfo;
 
 use colored::*;
 
