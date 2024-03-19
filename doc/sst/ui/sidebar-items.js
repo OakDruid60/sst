@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["abbrev","command_processor","determine_cmd_type","disp_title","red_error","red_syntax_error"],"mod":["logo","misc","sensor"]};
