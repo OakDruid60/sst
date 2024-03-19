@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["jump_enterprise","move_enterprise"]};

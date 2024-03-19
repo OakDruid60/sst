@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["calc_distance_to_enemy","create_qi_enemy_vec","fire_phaser","fire_torpedoe"]};

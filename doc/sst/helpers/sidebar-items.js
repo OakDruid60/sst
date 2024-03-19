@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["alert_status_of_quadrant","calc_alert_status","compact_summary_string","validate_x_y_input"]};

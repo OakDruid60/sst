@@ -1,0 +1,15 @@
+[package]
+name = "sst"
+version = "0.3.0-240317-1736"
+edition = "2021"
+description = "A Star Trek game in rust." 
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8.5"
+# serde = "1.0.189"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clearscreen = "1.0.7"
+colored = "2"
