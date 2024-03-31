@@ -6,13 +6,13 @@ use crate::enterprise::ShipInfo;
 use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::SectorType;
-use crate::manifest::GameData;
+use crate::manifest::Manifest;
 
 // =================================================================
 /// # jump_enterprise
 ///
 /// jump the enterprise to a new quadrant  It is possible to jump to the starbase.
-pub fn jump_enterprise(g_info: &GameData, cmd_vector: &Vec<String>) -> Result<ShipInfo, String> {
+pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<ShipInfo, String> {
     if cmd_vector.len() == 2 {
         if cmd_vector[1].starts_with("sb") {
             let g_tmp = g_info.clone();
@@ -84,7 +84,7 @@ pub fn jump_enterprise(g_info: &GameData, cmd_vector: &Vec<String>) -> Result<Sh
 /// # move_enterprise
 ///
 /// Move the enterprise to a new sector in the current quadrant
-pub fn move_enterprise(g_info: &GameData, cmd_vector: &Vec<String>) -> Result<ShipInfo, String> {
+pub fn move_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<ShipInfo, String> {
     if cmd_vector.len() == 3 {
         let res = crate::helpers::validate_x_y_input(&cmd_vector, MAX_SECTOR_SIZE_I8);
 

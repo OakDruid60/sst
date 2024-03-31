@@ -3,12 +3,12 @@
 //!
 //! This is stuff related to displaying information, the sensor scans, the logo, etc.
 //!┏━ ━ ┓┃
-use crate::manifest::GameData;
+use crate::manifest::Manifest;
 
 // ==========================================================================
 /// # game_stat_disp
 ///
-pub fn game_stat_disp(g_info: &GameData) {
+pub fn game_stat_disp(g_info: &Manifest) {
     let human_output: Vec<String> = g_info.clone().game_stat_create_disp_vec(true);
 
     crate::ui::disp_title("Game Stats", g_info);
@@ -25,7 +25,7 @@ pub fn game_stat_disp(g_info: &GameData) {
 ///
 /// **Note** needs more details.
 ///
-pub fn help_screen(g_info: &GameData) {
+pub fn help_screen(g_info: &Manifest) {
     crate::ui::disp_title("Command Help", g_info);
 
     println!("  ┃ {:<60}  ┃", "qui - quit");
@@ -40,6 +40,10 @@ pub fn help_screen(g_info: &GameData) {
         "mov - move to new sector in current quadrant"
     );
     println!("  ┃ {:<60}  ┃", " ");
+    println!("  ┃ {:<60}  ┃", "save - save");
+    println!("  ┃ {:<60}  ┃", "rest - restore");
+    println!("  ┃ {:<60}  ┃", " ");
+    println!("  ┃ {:<60}  ┃", "sta - stats");
     println!("  ┃ {:<60}  ┃", "hel - help");
     println!("  ┗{:━^63}┛", "━");
 }

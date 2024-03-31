@@ -22,6 +22,7 @@ pub struct SummaryStats {
     pub num_planets: isize,
     pub num_star_bases: isize,
     pub num_enterprise: isize,
+    pub cur_score: isize,
 }
 
 // ============================================================================
@@ -40,14 +41,15 @@ pub fn calculate(qi_vec: &Vec<Entity>) -> SummaryStats {
         num_alive_romulans: 0,
         num_star_bases: 0,
         num_stars: 0,
+        cur_score: 0,
     };
     for si in qi_vec.iter() {
         let n_info = *si;
         match n_info.get_sector_type() {
             SectorType::Klingon => stats.num_alive_klingons += 1,
-            SectorType::KilledKlingon => stats.num_killed_klingons += 1,
+            SectorType::KilledKlingon => { stats.num_killed_klingons += 1; stats.cur_score += 100;},
             SectorType::Romulan => stats.num_alive_romulans += 1,
-            SectorType::KilledRomulan => stats.num_killed_romulans += 1,
+            SectorType::KilledRomulan => {stats.num_killed_romulans += 1; stats.cur_score += 20;},
             SectorType::Star => stats.num_stars += 1,
             SectorType::Planet => stats.num_planets += 1,
             SectorType::Starbase => stats.num_star_bases += 1,

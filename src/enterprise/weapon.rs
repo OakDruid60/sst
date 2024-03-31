@@ -7,14 +7,14 @@ use crate::enterprise::ShipInfo;
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::SectorType;
-use crate::manifest::GameData;
+use crate::manifest::Manifest;
 
 // =================================================================
 /// # fire_torpedoe
 ///
 ///
 pub fn fire_torpedoe(
-    g_info: &GameData,
+    g_info: &Manifest,
     cmd_vector: &Vec<String>,
 ) -> Result<(ShipInfo, Entity), String> {
     if g_info.enterprise.get_torpedoes() <= 0 {
@@ -89,7 +89,7 @@ pub fn fire_torpedoe(
 ///
 ///
 pub fn fire_phaser(
-    g_info: &GameData,
+    g_info: &Manifest,
     cmd_vector: &Vec<String>,
 ) -> Result<(ShipInfo, Entity), String> {
     if g_info.enterprise.get_energy() <= 0 {
@@ -169,7 +169,7 @@ pub fn fire_phaser(
 /// # create_qi_enemy_vec
 ///
 ///
-fn create_qi_enemy_vec(g_info: &GameData) -> Result<(Vec<Entity>, Vec<Entity>), String> {
+fn create_qi_enemy_vec(g_info: &Manifest) -> Result<(Vec<Entity>, Vec<Entity>), String> {
     let qi_vec = g_info.create_quadrant_vec(g_info.enterprise.get_entity());
     let potential_bad_guys =
         crate::manifest::create_bad_guy_qi_vec(&qi_vec, g_info.enterprise.get_entity(), false);
@@ -189,7 +189,7 @@ fn create_qi_enemy_vec(g_info: &GameData) -> Result<(Vec<Entity>, Vec<Entity>), 
 ///
 ///
 fn calc_distance_to_enemy(
-    g_info: &GameData,
+    g_info: &Manifest,
     potential_bad_guys: Vec<Entity>,
     enemy_type: SectorType,
 ) -> (bool, f64, Entity) {

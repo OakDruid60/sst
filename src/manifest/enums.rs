@@ -2,7 +2,8 @@
 //! # enums.rs
 // =====================================================================
 /// #SectorType
-///  The type of object inhabiting the sector at the supplied Location.  Only one type at a time.
+///  The type of object inhabiting the sector at the supplied Location.
+///  Only one type at a time.
 ///
 /// **NOTE** Sectors that are Empty should be marked accordingly.
 ///

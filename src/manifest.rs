@@ -24,11 +24,11 @@ use std::io::{Read, Write};
 
 // ======================================================================
 // ======================================================================
-// GameData
+/// Manifest
 // ======================================================================
 // ======================================================================
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct GameData {
+pub struct Manifest {
     pub cur_star_date: i32,
     pub end_star_date: i32,
     pub charted: [[bool; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
@@ -38,7 +38,7 @@ pub struct GameData {
     pub password: String,
 }
 
-impl GameData {
+impl Manifest {
     pub fn new() -> Self {
         Self {
             cur_star_date: 0,
@@ -54,7 +54,7 @@ impl GameData {
     // =========================================================================
     /// # create_quadrant_vec
     ///
-    /// create a quadrant information vector for location of interest
+    /// create a quadrant information vector for the location of interest
     /// of interest.
     pub fn create_quadrant_vec(&self, interest_loc: Entity) -> Vec<Entity> {
         let mut n_vec: Vec<Entity> = Vec::new();
@@ -100,6 +100,10 @@ impl GameData {
             summary.num_killed_romulans + summary.num_alive_romulans,
             summary.num_killed_romulans,
             summary.num_alive_romulans
+        ));
+        human_out.push(format!(
+            "       Score ┃            :{:<6}       ┃",
+             summary.cur_score
         ));
 
         human_out
@@ -375,14 +379,14 @@ pub fn create_bad_guy_qi_vec(
     n_vec
 }
 
-pub fn thaw() -> Option<GameData> {
-    //! Thaw a game.
-    //!
-    //! The .sst file type is as follows:
-    //!
-    //! (password)0x1e(json data for Universe object)
-    let mut save_file: File = File::open(DEBUG_FILE_NAME).expect("Reason");
-    let uni: GameData;
+/// Thaw a game.
+///
+/// The .sst file type is as follows:
+///
+/// (password)0x1e(json data for Universe object)
+ pub fn thaw() -> Option<Manifest> {
+   let mut save_file: File = File::open(DEBUG_FILE_NAME).expect("Reason");
+    let uni: Manifest;
 
     let temp = File::open(DEBUG_FILE_NAME);
     match temp {
@@ -410,7 +414,11 @@ pub fn thaw() -> Option<GameData> {
         .collect();
 
     uni = match from_str(raw_parts[1].as_str()) {
-        Ok(data) => data,
+        Ok(data) => {
+            //println!("Restored");
+            println!("Game back-up restored from {}", DEBUG_FILE_NAME);
+            data
+        },
         Err(_) => {
             println!("\nERROR: The save file is corrupted.");
             return None;
@@ -424,7 +432,7 @@ pub fn thaw() -> Option<GameData> {
 ///
 ///
 //pub fn freeze (filename: Option<String>, uni: &GameWideData) {
-pub fn freeze(uni: &GameData) {
+pub fn freeze(uni: &Manifest) {
     /* let filename = match filename {
         Some(v) => v,
         None => input("Filename: ")

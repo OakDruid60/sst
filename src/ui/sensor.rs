@@ -6,14 +6,14 @@
 use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::SectorType;
-use crate::manifest::GameData;
+use crate::manifest::Manifest;
 
 use colored::*;
 
 // ==========================================================================
 /// # short_range_sensor_disp
 ///
-pub fn short_range_sensor_disp(g_info: &GameData) {
+pub fn short_range_sensor_disp(g_info: &Manifest) {
     let loc_tmp = g_info.enterprise.get_entity().clone();
     let qi_vec = g_info.create_quadrant_vec(loc_tmp);
     crate::ui::disp_title("Short Range Scan", g_info);
@@ -88,7 +88,7 @@ pub fn short_range_sensor_disp(g_info: &GameData) {
 /// charted even if they have not been.   Also the starbase quadrant is
 /// also marked as charted.
 ///
-pub fn long_range_sensor_disp(g_info: &GameData) {
+pub fn long_range_sensor_disp(g_info: &Manifest) {
     //
     crate::ui::disp_title("Long Range Scan", g_info);
 

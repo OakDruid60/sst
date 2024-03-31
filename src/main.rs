@@ -1,3 +1,4 @@
+#![warn(missing_docs)]
 //! # sst
 //!
 //! A project for learning rust. This is a Star Trek game converted to rust.

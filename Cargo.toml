@@ -1,6 +1,6 @@
 [package]
 name = "sst"
-version = "0.3.0-240317-1736"
+version = "0.3.0-240330-1044"
 edition = "2021"
 description = "A Star Trek game in rust." 
 

@@ -15,7 +15,7 @@ pub mod sensor;
 use crate::enterprise::ShipInfo;
 use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
 use crate::manifest::enums::{CmdType, SectorType};
-use crate::manifest::GameData;
+use crate::manifest::Manifest;
 
 // ==========================================================================
 /// # command_processor
@@ -33,7 +33,7 @@ pub fn command_processor() {
     let mut test_cmds_vec: Vec<String> = Vec::new();
     let mut cmd_part2_vec: Vec<String> = Vec::new();
 
-    let mut g_info: GameData = GameData::new();
+    let mut g_info: Manifest = Manifest::new();
     g_info.end_star_date = g_info.cur_star_date + 131;
     g_info.gal_vec = crate::manifest::construct_galaxy();
 
@@ -258,6 +258,10 @@ pub fn command_processor() {
                     //println!("{:?}", test_cmds_vec);
                     g_info.test_cmds_vec = Vec::new();
                 }
+                        if cmd_part2_vec.len() == 0 {
+                            cmd_part2_vec.push("stat".to_string());
+                        }
+
             }
             CmdType::Save => {
                 crate::manifest::freeze(&g_info);
@@ -291,7 +295,7 @@ pub fn command_processor() {
 /// # disp_title
 ///
 /// New attempt at a command title bar
-pub fn disp_title(title: &str, g_info: &GameData) {
+pub fn disp_title(title: &str, g_info: &Manifest) {
     //let tmp_title = format!("{}", title.underline())
     println!("");
     println!("  ┏{:━^63}┓", "━");
