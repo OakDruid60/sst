@@ -54,8 +54,8 @@ impl Manifest {
     // =========================================================================
     /// # create_quadrant_vec
     ///
-    /// create a quadrant information vector for the location of interest
-    /// of interest.
+    /// create a quadrant information vector for the location of interest.
+    /// 
     pub fn create_quadrant_vec(&self, interest_loc: Entity) -> Vec<Entity> {
         let mut n_vec: Vec<Entity> = Vec::new();
         for si in self.gal_vec.iter() {
@@ -102,7 +102,7 @@ impl Manifest {
             summary.num_alive_romulans
         ));
         human_out.push(format!(
-            "       Score ┃            :{:<6}       ┃",
+            "       Score ┃             {:<6}       ┃",
              summary.cur_score
         ));
 

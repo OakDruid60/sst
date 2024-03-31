@@ -47,9 +47,15 @@ pub fn calculate(qi_vec: &Vec<Entity>) -> SummaryStats {
         let n_info = *si;
         match n_info.get_sector_type() {
             SectorType::Klingon => stats.num_alive_klingons += 1,
-            SectorType::KilledKlingon => { stats.num_killed_klingons += 1; stats.cur_score += 100;},
+            SectorType::KilledKlingon => {
+                stats.num_killed_klingons += 1;
+                stats.cur_score += 100;
+            }
             SectorType::Romulan => stats.num_alive_romulans += 1,
-            SectorType::KilledRomulan => {stats.num_killed_romulans += 1; stats.cur_score += 20;},
+            SectorType::KilledRomulan => {
+                stats.num_killed_romulans += 1;
+                stats.cur_score += 20;
+            }
             SectorType::Star => stats.num_stars += 1,
             SectorType::Planet => stats.num_planets += 1,
             SectorType::Starbase => stats.num_star_bases += 1,

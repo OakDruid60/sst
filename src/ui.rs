@@ -258,10 +258,9 @@ pub fn command_processor() {
                     //println!("{:?}", test_cmds_vec);
                     g_info.test_cmds_vec = Vec::new();
                 }
-                        if cmd_part2_vec.len() == 0 {
-                            cmd_part2_vec.push("stat".to_string());
-                        }
-
+                if cmd_part2_vec.len() == 0 {
+                    cmd_part2_vec.push("stat".to_string());
+                }
             }
             CmdType::Save => {
                 crate::manifest::freeze(&g_info);
