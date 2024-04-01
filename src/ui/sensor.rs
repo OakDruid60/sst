@@ -31,6 +31,7 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
             match cur_sector_type {
                 SectorType::Empty => row_string.push_str(format!(" {}", ".").as_str()),
                 SectorType::Enterprise => {
+                print!("E");
                     row_string.push_str(format!(" {}", "E".bold().green()).as_str())
                 }
                 SectorType::Klingon => {
@@ -43,7 +44,10 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
                 SectorType::Planet => row_string.push_str(format!(" {}", "p".on_blue()).as_str()),
                 SectorType::Starbase => row_string.push_str(format!(" {}", "B".cyan()).as_str()),
                 SectorType::KilledKlingon => row_string.push_str(format!(" {}", "k").as_str()),
-                SectorType::KilledRomulan => row_string.push_str(format!(" {}", "r").as_str()),
+                SectorType::KilledRomulan => {
+                print!("r");
+                row_string.push_str(format!(" {}", "r").as_str())
+                }
             }
         }
         row_string.push_str(" ┃ ");
@@ -53,7 +57,7 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
                 row_string.push_str(format!("{:>12} ┃ ", "Alert").as_str());
                 row_string.push_str(
                     format!(
-                        "{:<24} ┃ ",
+                        " {:<23} ┃  ",
                         crate::helpers::alert_status_of_quadrant(&qi_vec)
                     )
                     .as_str(),

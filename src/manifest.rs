@@ -331,6 +331,8 @@ pub fn is_straight_line_path_clear(
         //println!("{} {} {:?}", x7, y7, sector_info.obj_type);
         if sector_info.get_sector_type() != SectorType::Enterprise
             && sector_info.get_sector_type() != SectorType::Empty
+            && sector_info.get_sector_type() != SectorType::KilledKlingon
+            && sector_info.get_sector_type() != SectorType::KilledRomulan
         {
             if x7 == tgt_tuple.0 as i32 && y7 == tgt_tuple.1 as i32 {
             } else {
