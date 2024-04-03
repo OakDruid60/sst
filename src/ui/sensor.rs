@@ -31,7 +31,7 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
             match cur_sector_type {
                 SectorType::Empty => row_string.push_str(format!(" {}", ".").as_str()),
                 SectorType::Enterprise => {
-                print!("E");
+                    // print!("E");
                     row_string.push_str(format!(" {}", "E".bold().green()).as_str())
                 }
                 SectorType::Klingon => {
@@ -45,8 +45,8 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
                 SectorType::Starbase => row_string.push_str(format!(" {}", "B".cyan()).as_str()),
                 SectorType::KilledKlingon => row_string.push_str(format!(" {}", "k").as_str()),
                 SectorType::KilledRomulan => {
-                print!("r");
-                row_string.push_str(format!(" {}", "r").as_str())
+                    //print!("r");
+                    row_string.push_str(format!(" {}", "r").as_str())
                 }
             }
         }

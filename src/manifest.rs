@@ -55,7 +55,7 @@ impl Manifest {
     /// # create_quadrant_vec
     ///
     /// create a quadrant information vector for the location of interest.
-    /// 
+    ///
     pub fn create_quadrant_vec(&self, interest_loc: Entity) -> Vec<Entity> {
         let mut n_vec: Vec<Entity> = Vec::new();
         for si in self.gal_vec.iter() {
@@ -103,7 +103,7 @@ impl Manifest {
         ));
         human_out.push(format!(
             "       Score ┃             {:<6}       ┃",
-             summary.cur_score
+            summary.cur_score
         ));
 
         human_out
@@ -351,7 +351,8 @@ pub fn is_straight_line_path_clear(
 // ==========================================================================
 /// # create_bad_guy_qi_vec
 ///
-/// create a quadrant informationm vector from the supplied quadrant vector and enterprise.
+/// create a quadrant informationm vector from the supplied quadrant vector
+/// and location of interest (probably the enterprise).
 pub fn create_bad_guy_qi_vec(
     qi_vec: &Vec<Entity>,
     interest_loc: Entity,
@@ -386,11 +387,15 @@ pub fn create_bad_guy_qi_vec(
 /// The .sst file type is as follows:
 ///
 /// (password)0x1e(json data for Universe object)
- pub fn thaw() -> Option<Manifest> {
-   let mut save_file: File = File::open(DEBUG_FILE_NAME).expect("Reason");
+pub fn thaw(cmd_vector: &Vec<String>) -> Option<Manifest> {
+    let mut save_file_name: &str = DEBUG_FILE_NAME;
+    if cmd_vector.len() == 2 {
+        save_file_name = cmd_vector[1].as_str();
+    }
+    let mut save_file: File = File::open(save_file_name).expect("Reason");
     let uni: Manifest;
 
-    let temp = File::open(DEBUG_FILE_NAME);
+    let temp = File::open(save_file_name);
     match temp {
         Ok(p) => save_file = p,
         Err(_) => {
@@ -418,9 +423,9 @@ pub fn create_bad_guy_qi_vec(
     uni = match from_str(raw_parts[1].as_str()) {
         Ok(data) => {
             //println!("Restored");
-            println!("Game back-up restored from {}", DEBUG_FILE_NAME);
+            println!("Game back-up restored from {}", save_file_name);
             data
-        },
+        }
         Err(_) => {
             println!("\nERROR: The save file is corrupted.");
             return None;
@@ -434,14 +439,17 @@ pub fn create_bad_guy_qi_vec(
 ///
 ///
 //pub fn freeze (filename: Option<String>, uni: &GameWideData) {
-pub fn freeze(uni: &Manifest) {
+pub fn freeze(uni: &Manifest, cmd_vector: &Vec<String>) {
     /* let filename = match filename {
         Some(v) => v,
         None => input("Filename: ")
     };
     */
-    let filename = DEBUG_FILE_NAME; //"tjap.sst"; //.to_string();
-    let mut file = match File::create(&filename) {
+    let mut save_file_name = DEBUG_FILE_NAME;
+    if cmd_vector.len() == 2 {
+        save_file_name = cmd_vector[1].as_str();
+    }
+    let mut file = match File::create(&save_file_name) {
         Ok(f) => f,
         Err(e) => {
             if DEBUG {
@@ -460,5 +468,5 @@ pub fn freeze(uni: &Manifest) {
         Err(_) => println!("I'm sorry, but that file cannot be written to."),
     }
 
-    println!("Game back-up created in {}", filename);
+    println!("Game back-up created in {}", save_file_name);
 }

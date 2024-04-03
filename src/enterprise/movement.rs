@@ -19,10 +19,8 @@ pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Sh
             let star_base_vec =
                 crate::manifest::create_vec_of_type(&g_tmp.gal_vec, SectorType::Starbase);
 
-            //println!("locating {:?}", star_base_vec[0]);
             let mut updated_enterprise = g_info.enterprise;
             let sector_bounds = star_base_vec[0].calc_nearby_sector_bounds();
-            // println!("{:?}",sector_bounds);
 
             let dock_quad = star_base_vec[0].create_quad_tuple();
             let dock_sect = sector_bounds.0;
@@ -55,18 +53,14 @@ pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Sh
 
                 let new_enterprise_loc =
                     Entity::create_new_random_enterprise_in_this_quad(tgt_quad);
-                //println!("new e_loc {:?}",new_enterprise_loc);
                 let distance = g_info
                     .enterprise
                     .get_entity()
                     .calc_quad_distance(new_enterprise_loc) as isize;
 
                 let mut updated_enterprise = g_info.enterprise.clone();
-                //println!("u1) {:?}", updated_enterprise);
                 updated_enterprise.set_entity(new_enterprise_loc);
-                //println!("u2) {:?}", updated_enterprise);
                 updated_enterprise.use_energy(distance * 1000);
-                //println!("u3) {:?}",updated_enterprise);
 
                 Ok(updated_enterprise)
             }
@@ -92,6 +86,12 @@ pub fn move_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Sh
             Ok(_) => {
                 let new_sect = res.unwrap();
                 let loc_tmp = g_info.enterprise.get_entity().clone();
+                if loc_tmp.is_same_sect_tuple(new_sect) {
+                    return Err(format!(
+                        "Target destination {:?} is where Enterprise currently is.",
+                        new_sect
+                    ));
+                }
                 let new_quad = loc_tmp.create_quad_tuple();
                 let new_enterprise_loc = Entity::create((
                     new_quad.0,

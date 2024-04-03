@@ -48,7 +48,7 @@ shift
 cm=$1
 shift
 
-# intialize various othe variables
+# intialize various other variables
 src=~/storage/downloads/rustsrc
 dateID=$(date +%y%m%d)
 dateTimeID=$(date +%y%m%d_%H%M)
@@ -108,9 +108,10 @@ elif [[ $cm == 'ls' ]]; then
     ls -al
     cd ~
 
-elif [[ $cm == 'gendoc' ]]; then
+elif [[ $cm == 'gendoc'  ||  $cm == 'doc' ]]; then
     clr_cd 
     echo -e "\033[36m Gendoc \033[0m "  $prj "\n"
+    cargo fmt
     gen_doc
     cd ~
     echo -e "\033[36m Done \033[0m\n"
@@ -128,7 +129,6 @@ elif [[ $cm == 'publish' ]]; then
     cargo fmt
 
     gen_doc
-
 
     #
     echo -e "\n\033[36m Generating publish directory\033[0m" $src/$prj/publish

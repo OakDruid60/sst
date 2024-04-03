@@ -252,7 +252,7 @@ pub fn command_processor() {
                 //test_cmds_vec.push("quit".to_string());
             }
             CmdType::Restore => {
-                g_info = crate::manifest::thaw().expect("REASON");
+                g_info = crate::manifest::thaw(&cmd_vector).expect("REASON");
                 if g_info.test_cmds_vec.len() > 0 {
                     test_cmds_vec = g_info.test_cmds_vec.clone();
                     //println!("{:?}", test_cmds_vec);
@@ -263,7 +263,7 @@ pub fn command_processor() {
                 }
             }
             CmdType::Save => {
-                crate::manifest::freeze(&g_info);
+                crate::manifest::freeze(&g_info, &cmd_vector);
             }
             CmdType::Help => {
                 crate::ui::misc::help_screen(&g_info);
