@@ -120,14 +120,14 @@ impl Entity {
     }
 
     // =============================
-    /// # gen_quad_tuple
+    /// #  create_quad_tuple
     ///
     pub fn create_quad_tuple(self) -> (i8, i8) {
         (self.id.0, self.id.1)
     }
 
     // =============================
-    /// # get_sect_tuple
+    /// # create_sect_tuple
     ///
     pub fn create_sect_tuple(self) -> (i8, i8) {
         (self.id.2, self.id.3)
