@@ -4,8 +4,10 @@
 #mc -b
 #return 0
 
-cm=$(awk  '/cm/ {print}' < jap.txt | awk -F = '{print $2}')
-prj=$(awk '/prj/ {print}' < jap.txt | awk -F = '{print $2}')
+#iniFileName=$HOME/.config/devrust/ini
+
+#cm=$(awk '/cm/ {print}' <$iniFileName | awk -F = '{print $2}')
+#prj=$(awk '/prj/ {print}' <$iniFileName | awk -F = '{print $2}')
 
 # ===============================================================
 # help
@@ -37,35 +39,82 @@ gen_doc() {
 	cargo doc -q -r --no-deps --target-dir "$HOME/rustbuild/${PWD##*/}"
 	cp -r ~/rustbuild/$prj/doc $src/$prj/doc
 	rm -r ~/rustbuild/$prj/doc
-
 }
 
-# ===============================================================
+# ================ M A I N L I N E ================================
 # devrust.sh
+# =≈===≈==≈================================≈=======================
+
+iniFileName=$HOME/.config/devrust/ini.sh
+
+cd
+if [ -d .config/devrust ]; then
+	:
+else
+	cd .config
+	mkdir devrust
+	prj="Fred"
+	cm="g"
+	typeset -p prj cm >$iniFileName
+	#echo -e "# devrust config file\nprj=FRED\ncm=g" >$iniFileName
+fi
+source $iniFileName
+
+#cm=$(awk '/cm/ {print}' <$iniFileName | awk -F = '{print $2}')
+#prj=$(awk '/prj/ {print}' <$iniFileName | awk -F = '{print $2}')
+
+while getopts "hp:c:" opt; do
+
+	case ${opt} in
+	p)
+		#		echo "argument -p called with parameter $OPTARG"
+		prj=${OPTARG}
+		;;
+	c)
+		#		echo "argument -c called with parameter $OPTARG"
+		cm=${OPTARG}
+		;;
+	h)
+		help
+		unset OPTIND
+		return 1
+		;;
+	*)
+		echo "invalid command: no parameter included with argument $OPTARG"
+		unset OPTIND
+		return 255
+		;;
+	esac
+done
+
+shift $((OPTIND - 1))
+unset OPTIND
+
+#echo "prj=$prj cm=$cm"
 
 #if [ $# -lt 2 ]; then
 #    help
 #    return 1
 #fi
-
+#
 # get the project and command which are required
 #prj=$1
 #shift
 #cm=$1
 #shift
 
-# intialize various other variables
-# MYVAR=$(dialog --inputbox "THIS OUTPUT GOES TO FD 1" 5 25  --output-fd 1)
-#exec 3>&1;
-#result=$(dialog --inputbox test 0 0 2>&1 1>&3);
-#exitcode=$?;
-#exec 3>&-;
-#echo $result $exitcode;
+# ============== Handle dialogs ===================================
 
-# ==================================================================
+me=$(basename $BASH_SOURCE)
+#m1="$me"
+m2="$me--rust development"
+#echo $m2
+#return 1
 exec 3>&1
-prj=$(dialog --no-cancel --no-tags --erase-on-exit --default-item $prj --no-hot-list --title "devrust.sh" \
-	--menu "Select repository" 0 0 8 "sst" "sst development" "tui" "tui playground" 2>&1 1>&3)
+prj=$(dialog --no-cancel --no-tags --erase-on-exit --no-hot-list --title "$m2" \
+	--default-item $prj --menu "Select repository" 0 0 8 \
+	"sst" "sst development" "tui" "tui playground" "tw" "tw" \
+	2>&1 1>&3)
 exitcode=$?
 if [ $exitcode == 255 ]; then
 	exec 3>&-
@@ -73,15 +122,18 @@ if [ $exitcode == 255 ]; then
 fi
 
 #
-cm=$(dialog --no-cancel --no-tags --erase-on-exit --default-item $cm --no-hot-list --title "devrust.sh" --menu "Pick operation for $prj" 0 0 10 \
-	"cd" "change dir" "run" "run" "check" "check" "fmt" "format source" "gendoc" "generate doc" "publish" "publish and zip source" 2>&1 1>&3)
+cm=$(dialog --no-cancel --no-tags --erase-on-exit --no-hot-list --title "$m2" \
+	--default-item $cm --menu "Pick operation for $prj" 0 0 10 \
+	"cd" "change dir" "run" "run" "check" "check" "fmt" "format source" "gendoc" "generate doc" "publish" "publish and zip source" \
+	2>&1 1>&3)
 exitcode=$?
 exec 3>&-
 if [ $exitcode == 255 ]; then
 	return $exitcode
 fi
 
-echo  -e "prj="$prj"\ncm="$cm > ~/jap.txt
+# save project and command
+typeset -p prj cm >$iniFileName
 
 # dialog --clear
 
