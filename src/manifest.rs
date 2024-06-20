@@ -81,28 +81,28 @@ impl Manifest {
 
         let mut human_out: Vec<String> = Vec::new();
         human_out.push(format!(
-            "  Enterprise ┃  energy:{:<6}  torp:{:<4}┃",
+            "  Enterprise ┃ energy:{:<6} torp:{:<3}",
             self.enterprise.get_energy(),
             self.enterprise.get_torpedoes()
         ));
         human_out.push(format!(
-            " Astro Count ┃  stars:{:<3}   planets:{:<4}┃",
+            " Astro Count ┃ stars:{:<3}  planets:{:<3}",
             summary.num_stars, summary.num_planets
         ));
         human_out.push(format!(
-            "     Klingon ┃  t:{:<4}   k:{:<4}   a:{:<4}┃",
+            "     Klingon ┃ t:{:<4}  k:{:<4}  a:{:<4}",
             summary.num_killed_klingons + summary.num_alive_klingons,
             summary.num_killed_klingons,
             summary.num_alive_klingons
         ));
         human_out.push(format!(
-            "     Romulan ┃  t:{:<4}   k:{:<4}   a:{:<4}┃",
+            "     Romulan ┃ t:{:<4}  k:{:<4}  a:{:<4}",
             summary.num_killed_romulans + summary.num_alive_romulans,
             summary.num_killed_romulans,
             summary.num_alive_romulans
         ));
         human_out.push(format!(
-            "       Score ┃             {:<6}       ┃",
+            "       Score ┃       {:<6}          ",
             summary.cur_score
         ));
 

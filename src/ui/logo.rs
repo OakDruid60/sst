@@ -3,10 +3,6 @@
 //!
 //! This is stuff related to displaying the logo.
 
-//use crate::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
-//use crate::enums::SectorType;
-//use crate::gamedata::{Entity, GameWideData};
-
 use colored::*;
 
 // ==========================================================================

@@ -6,6 +6,7 @@
 use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::{AlertStatus, SectorType};
+use crate::ui::{BORDER_COLOR_CYAN, BORDER_COLOR_GREEN, BORDER_COLOR_RED, BORDER_COLOR_YELLOW};
 
 use colored::*;
 
@@ -73,6 +74,24 @@ pub fn alert_status_of_quadrant(qi_vec: &Vec<Entity>) -> String {
             break 'outer;
         } else if n_info.get_sector_type() == SectorType::Romulan {
             stat_string = "YELLOW".to_string();
+        }
+    }
+    return stat_string;
+}
+pub fn alert_status_of_quadrant2(qi_vec: &Vec<Entity>) -> &str {
+    let cur_alert = calc_alert_status(qi_vec);
+    let mut stat_string = BORDER_COLOR_GREEN;
+    if cur_alert == AlertStatus::Docked {
+        stat_string = BORDER_COLOR_CYAN;
+        return stat_string;
+    }
+    'outer: for si in qi_vec.iter() {
+        let n_info = *si;
+        if n_info.get_sector_type() == SectorType::Klingon {
+            stat_string = BORDER_COLOR_RED;
+            break 'outer;
+        } else if n_info.get_sector_type() == SectorType::Romulan {
+            stat_string = BORDER_COLOR_YELLOW;
         }
     }
     return stat_string;

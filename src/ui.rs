@@ -7,17 +7,34 @@
 use colored::Colorize;
 use std::io::{stdin, stdout, Write};
 
-//pub mod disp;
+pub mod help;
 pub mod logo;
+pub mod lrs;
 pub mod misc;
-pub mod sensor;
+pub mod srs;
 
 use crate::enterprise::ShipInfo;
 use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
 use crate::manifest::enums::{CmdType, SectorType};
 use crate::manifest::Manifest;
 
-// ==========================================================================
+pub const BORDER_COLOR_RED: &str = "\x1b[91m";
+pub const BORDER_COLOR_YELLOW: &str = "\x1b[93m";
+pub const BORDER_COLOR_GREEN: &str = "\x1b[92m";
+pub const BORDER_COLOR_CYAN: &str = "\x1b[96m";
+//pub const BORDER_COLOR: &str = "\x1b[91m";
+pub const BORDER_HORZ_60: &str = "════════════════════════════════════════════════════════════";
+pub const BORDER_VERT: &str = "║";
+pub const BORDER_UR: &str = "╗";
+pub const BORDER_UL: &str = "╔";
+pub const BORDER_LR: &str = "╝";
+pub const BORDER_LL: &str = "╚";
+pub const BORDER_MR: &str = "╣";
+pub const BORDER_ML: &str = "╠";
+
+pub const COLOR_RESET: &str = "\x1b[0m";
+
+// =========================================================
 /// # command_processor
 ///
 /// Process the user input command_processor
@@ -215,7 +232,7 @@ pub fn command_processor() {
                         g_info.charted[x as usize][y as usize] = true;
                     }
                 }
-                crate::ui::sensor::long_range_sensor_disp(&g_info);
+                crate::ui::lrs::long_range_sensor_disp(&g_info);
             }
             CmdType::SRS => {
                 let cur_loc = g_info.enterprise.get_entity().create_quad_tuple();
@@ -239,7 +256,7 @@ pub fn command_processor() {
                         g_info.charted[x as usize][y as usize] = true;
                     }
                 }
-                crate::ui::sensor::short_range_sensor_disp(&g_info);
+                crate::ui::srs::short_range_sensor_disp(&g_info);
             }
             CmdType::Status => {
                 crate::ui::misc::game_stat_disp(&g_info);
@@ -266,7 +283,7 @@ pub fn command_processor() {
                 crate::manifest::freeze(&g_info, &cmd_vector);
             }
             CmdType::Help => {
-                crate::ui::misc::help_screen(&g_info);
+                crate::ui::help::help_screen(&g_info);
             }
             CmdType::Quit => {
                 break 'proccess_loop;
@@ -290,23 +307,24 @@ pub fn command_processor() {
     }
 }
 
-// ==========================================================================
+// ==========================================================
 /// # disp_title
 ///
 /// New attempt at a command title bar
-pub fn disp_title(title: &str, g_info: &Manifest) {
+pub fn disp_title(title: &str, g_info: &Manifest, bc: &str) {
     //let tmp_title = format!("{}", title.underline())
     println!("");
-    println!("  ┏{:━^63}┓", "━");
+    //let BORDER_COL: &str  = BORDER_COLOR_GREEN;
+    println!("  {bc}{BORDER_UL}{BORDER_HORZ_60}{BORDER_UR}{COLOR_RESET}");
     println!(
-        "  ┃ {: <32}{: >29} ┃",
+        "  {bc}{BORDER_VERT}{COLOR_RESET} {: <30}{: >28} {bc}{BORDER_VERT}{COLOR_RESET}",
         title,
         g_info.enterprise.get_entity().to_compact_string()
     );
-    println!("  ┣{:━^63}┫", "━");
+    println!("  {bc}{BORDER_ML}{BORDER_HORZ_60}{BORDER_MR}{COLOR_RESET}");
 }
 
-// ==========================================================================
+// ==========================================================
 /// # red_error
 /// put the
 
@@ -314,14 +332,14 @@ pub fn red_error() -> String {
     "Error:".underline().bright_red().to_string()
 }
 
-// ==========================================================================
+// ==========================================================
 /// # red_syntax_error
 ///
 pub fn red_syntax_error() -> String {
     "Syntax Error:".underline().bright_red().to_string()
 }
 
-// ==========================================================================
+// ==========================================================
 /// # determine_cmd_type
 ///
 pub fn determine_cmd_type(cmd_string: String) -> CmdType {
@@ -345,7 +363,7 @@ pub fn determine_cmd_type(cmd_string: String) -> CmdType {
         return CmdType::Restore;
     } else if abbrev(&cmd_string, "test", "test") {
         return CmdType::Test;
-    } else if cmd_string.starts_with("qui") || cmd_string.starts_with("exit") {
+    } else if cmd_string.starts_with("q") || cmd_string.starts_with("exit") {
         return CmdType::Quit;
     } else if cmd_string.starts_with("?") || cmd_string.starts_with("hel") {
         return CmdType::Help;
