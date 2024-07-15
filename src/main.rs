@@ -9,7 +9,7 @@
 
 //mod command;
 //mod constants;
-//mod disp;
+// mod disp;
 //mod enums;
 //mod gamedata;
 mod helpers;
@@ -21,7 +21,7 @@ mod helpers;
 mod enterprise;
 mod manifest;
 mod ui;
-//mod weapon;
+//mod weapon; 
 
 fn main() {
     ui::logo::game_logo();
