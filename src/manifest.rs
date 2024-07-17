@@ -8,6 +8,7 @@
 pub mod constants; // various constants like the size of the galaxy
 pub mod entity;
 pub mod enums;
+pub mod spaceorg;
 pub mod statistics;
 
 use crate::enterprise::ShipInfo;
