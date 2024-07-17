@@ -59,3 +59,12 @@ pub enum AlertStatus {
     Red,
     Yellow,
 }
+
+
+pub enum Affiliation {
+Empty, Neutral, Enemy, Friend,
+}
+
+pub enum DamageType {
+Ll, Kk
+}
