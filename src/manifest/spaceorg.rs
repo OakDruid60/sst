@@ -15,39 +15,36 @@ use std::fmt;
 //use std::fs::File;
 //use std::io::{Read, Write};
 
-// ======================================================================
+// ======================================================
 #[derive(Clone, Copy)]
-pub struct SpaceLocation {
-    loc: (i8, i8),
+pub struct SpaceLabel{
+    label: (i8, i8),
 }
-impl SpaceLocation {
+impl SpaceLabel {
 pub fn new(a: i8, b: i8) -> Self {
-        Self { loc: (a, b) }
+        Self { label: (a, b) }
     }
 pub fn new_random(max: i8) -> Self {
         new(rand::thread_rng().gen_range(0..max),rand::thread_rng().gen_range(0..max))
     }
 // =============================
-    /// # is_same_loc
+    /// # is_same_label
     ///
-    pub fn is_same_loc(self, comp: &SpaceLocation) -> bool {
-        if self.loc.a == comp.loc.a && self.loc.b == comp.loc.b {
+    pub fn is_same_label(self, comp: &SpaceLocation) -> bool {
+        if self.label.a == comp.label.a && self.label.b == comp.label.b {
             return true;
         }
         false
     }
 }
 
-// ======================================================================
+// =======================================================
 #[derive(Clone, Copy)]
 pub struct SpaceDesignator {
-    desig: (LocGal,LocQuad,LocSect),
-(i8,i8),(i8,i8),(i8,i8)),
-g: Gal,
-    q: Quad,
-    s: Sect,
+    designator: (GalaxyLabel, QuadrantLabel, SectorLabel),
 }
-// ======================================================================
+
+// =======================================================
 #[derive(Copy, Clone, Serialize, Deserialize)]
 pub struct Quad {
     loc: (i8, i8),
