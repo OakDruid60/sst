@@ -315,11 +315,11 @@ sector_vec: Vec<Sector>,
 
 pub struct Sector {
 designator: SectorLabel,
-entity_vec: Vec<Entity>,
+entity: Entity,
 }
 
 pub struct Entity {
-designator: EntityLabel,
+designator: SpaceDesignator,
 type: EntityType,
 damage_vec: Vec<Damage>,
 }
@@ -329,8 +329,6 @@ type: DamageType,
 amount: i32,
 }
 
-
-pub struct Damgevv
 
  
 
