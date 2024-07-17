@@ -301,3 +301,36 @@ impl fmt::Display for Entity {
         write!(f, "{}", self.to_compact_string())
     }
 }
+galaxy_vec: Vec<Galaxy>;
+
+pub struct Galaxy {
+designator: GalaxyLabel,
+quadrant_vec: Vec<Quadrant>,
+}
+
+pub struct Quadrant {
+designator: QuadrantLabel,
+sector_vec: Vec<Sector>,
+}
+
+pub struct Sector {
+designator: SectorLabel,
+entity_vec: Vec<Entity>,
+}
+
+pub struct Entity {
+designator: EntityLabel,
+type: EntityType,
+damage_vec: Vec<Damage>,
+}
+
+pub struct Damage {
+type: DamageType,
+amount: i32,
+}
+
+
+pub struct Damgevv
+
+ 
+
