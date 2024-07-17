@@ -16,8 +16,6 @@ mod helpers;
 //mod movement;
 //mod ship;
 //mod statistics;
-//mod ui::logo;
-//mod ui::sensor;
 mod enterprise;
 mod manifest;
 mod ui;
