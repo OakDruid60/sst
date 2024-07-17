@@ -10,7 +10,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub enum SectorType {
+pub enum EntityType {
     Empty,
 
     Klingon,
@@ -21,7 +21,7 @@ pub enum SectorType {
     Star,
     Planet,
 
-    Enterprise,
+    PlayerShip,
     Starbase,
 }
 
@@ -60,11 +60,12 @@ pub enum AlertStatus {
     Yellow,
 }
 
-
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Affiliation {
 Empty, Neutral, Enemy, Friend,
 }
 
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum DamageType {
 Ll, Kk
 }
