@@ -46,14 +46,38 @@ pub struct SpaceDesignator {
 
 // =======================================================
 #[derive(Copy, Clone, Serialize, Deserialize)]
-pub struct Quad {
-    loc: (i8, i8),
+pub struct GalaxyLabel {
+    label: SpaceLabel,
 }
-impl Quad {
+impl GalaxyLabel {
     pub fn new(a: i8, b: i8) -> Self {
-        Self { loc: (a, b) }
+        Self { label: SpaceLabel::new(a, b) }
     }
 }
+
+// =======================================================
+#[derive(Copy, Clone, Serialize, Deserialize)]
+pub struct QuadrantLabel {
+    label: SpaceLabel,
+}
+impl QuadrantLabel {
+    pub fn new(a: i8, b: i8) -> Self {
+        Self { label: SpaceLabel::new(a, b) }
+    }
+}
+
+// =======================================================
+#[derive(Copy, Clone, Serialize, Deserialize)]
+pub struct SectorLabel {
+    label: SpaceLabel,
+}
+impl SectorLabel {
+    pub fn new(a: i8, b: i8) -> Self {
+        Self { label: SpaceLabel::new(a, b) }
+    }
+}
+
+
 #[derive(Copy, Clone, Serialize, Deserialize)]
 pub struct Sect {
     loc: (i8, i8),
