@@ -1,7 +1,7 @@
 #![warn(missing_docs)]
-//! # entity.rs
+//! # spaceorg.rs
 //!
-//! This is stuff related to the entire game.
+//! This is stuff related to how space is organised.
 
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
 use crate::manifest::enums::SectorType;
@@ -17,8 +17,8 @@ use std::fmt;
 
 // ======================================================================
 #[derive(Clone, Copy)]
-pub struct SpaceDesignator {
-    g: Gal,
+pub struct SpaceLocation {
+    loc: (i8, i8Gal,
     q: Quad,
     s: Sect,
 }
@@ -26,7 +26,9 @@ pub struct SpaceDesignator {
 // ======================================================================
 #[derive(Clone, Copy)]
 pub struct SpaceDesignator {
-    g: Gal,
+    loc: (Gal,Quad,Sect),
+(i8,i8),(i8,i8),(i8,i8)),
+g: Gal,
     q: Quad,
     s: Sect,
 }
@@ -36,8 +38,8 @@ pub struct Quad {
     loc: (i8, i8),
 }
 impl Quad {
-    pub fn new(x: i8, y: i8) -> Self {
-        Self { loc: (x, y) }
+    pub fn new(a: i8, b: i8) -> Self {
+        Self { loc: (a, b) }
     }
 }
 #[derive(Copy, Clone, Serialize, Deserialize)]
