@@ -5,7 +5,7 @@
 use crate::enterprise::ShipInfo;
 use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::entity::Entity;
-use crate::manifest::enums::SectorType;
+use crate::manifest::enums::EntityType;
 use crate::manifest::Manifest;
 
 // =================================================================
@@ -17,7 +17,7 @@ pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Sh
         if cmd_vector[1].starts_with("sb") {
             let g_tmp = g_info.clone();
             let star_base_vec =
-                crate::manifest::create_vec_of_type(&g_tmp.gal_vec, SectorType::Starbase);
+                crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, EntityType::Starbase);
 
             let mut updated_enterprise = g_info.enterprise;
             let sector_bounds = star_base_vec[0].calc_nearby_sector_bounds();
@@ -29,7 +29,7 @@ pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Sh
                 dock_quad.1,
                 dock_sect.0,
                 dock_sect.1,
-                SectorType::Enterprise,
+                EntityType::PlayerShip,
             ));
 
             println!("Docking Enterprise at {:?}", dock_loc);
@@ -98,13 +98,13 @@ pub fn move_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Sh
                     new_quad.1,
                     new_sect.0,
                     new_sect.1,
-                    SectorType::Enterprise,
+                    EntityType::PlayerShip,
                 ));
                 let qi_vec = g_info.create_quadrant_vec(loc_tmp);
                 let tgt_info = crate::manifest::find_actual_sector_info(&qi_vec, new_sect);
-                if tgt_info.get_sector_type() != SectorType::Empty
-                    && tgt_info.get_sector_type() != SectorType::KilledKlingon
-                    && tgt_info.get_sector_type() != SectorType::KilledRomulan
+                if tgt_info.get_sector_type() != EntityType::Empty
+                    && tgt_info.get_sector_type() != EntityType::KilledKlingon
+                    && tgt_info.get_sector_type() != EntityType::KilledRomulan
                 {
                     return Err(format!(
                         "Target destination {:?} is not empty ({:?}).",

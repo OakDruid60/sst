@@ -3,43 +3,52 @@
 //!
 //! This is stuff related to how space is organised.
 
-use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
-use crate::manifest::enums::SectorType;
+//use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
+use crate::manifest::enums::{DamageType, EntityType};
 //use crate::enterprise::ShipInfo;
 //use crate::manifest::statistics::SummaryStats;
 
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 //use serde_json::from_str;
-use std::fmt;
+//use std::fmt;
 //use std::fs::File;
 //use std::io::{Read, Write};
 
-// ======================================================
-#[derive(Clone, Copy)]
-pub struct SpaceLabel{
+// =============================
+// =============================
+/// # SpaceLabel
+///
+#[derive(Clone, Copy, Serialize, Deserialize)]
+pub struct SpaceLabel {
     label: (i8, i8),
 }
 impl SpaceLabel {
-pub fn new(a: i8, b: i8) -> Self {
+    pub fn new(a: i8, b: i8) -> Self {
         Self { label: (a, b) }
     }
-pub fn new_random(max: i8) -> Self {
-        new(rand::thread_rng().gen_range(0..max),rand::thread_rng().gen_range(0..max))
+    pub fn new_random(max: i8) -> Self {
+        Self { label:(
+            rand::thread_rng().gen_range(0..max),
+            rand::thread_rng().gen_range(0..max),
+        ) } 
     }
-// =============================
-    /// # is_same_label
+    // =============================
+    /// ## is_same_label
     ///
-    pub fn is_same_label(self, comp: &SpaceLocation) -> bool {
-        if self.label.a == comp.label.a && self.label.b == comp.label.b {
+    pub fn is_same_label(self, comp: &SpaceLabel) -> bool {
+        if self.label.0 == comp.label.0 && self.label.1 == comp.label.1 {
             return true;
         }
         false
     }
 }
 
-// =======================================================
-#[derive(Clone, Copy)]
+// =============================
+// =============================
+/// # SpaceDesignator
+///
+#[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct SpaceDesignator {
     designator: (GalaxyLabel, QuadrantLabel, SectorLabel),
 }
@@ -51,7 +60,9 @@ pub struct GalaxyLabel {
 }
 impl GalaxyLabel {
     pub fn new(a: i8, b: i8) -> Self {
-        Self { label: SpaceLabel::new(a, b) }
+        Self {
+            label: SpaceLabel::new(a, b),
+        }
     }
 }
 
@@ -62,7 +73,9 @@ pub struct QuadrantLabel {
 }
 impl QuadrantLabel {
     pub fn new(a: i8, b: i8) -> Self {
-        Self { label: SpaceLabel::new(a, b) }
+        Self {
+            label: SpaceLabel::new(a, b),
+        }
     }
 }
 
@@ -73,10 +86,11 @@ pub struct SectorLabel {
 }
 impl SectorLabel {
     pub fn new(a: i8, b: i8) -> Self {
-        Self { label: SpaceLabel::new(a, b) }
+        Self {
+            label: SpaceLabel::new(a, b),
+        }
     }
 }
-
 
 #[derive(Copy, Clone, Serialize, Deserialize)]
 pub struct Sect {
@@ -88,20 +102,23 @@ impl Sect {
     }
 }
 
+
+
+/*
 // ======================================================================
 #[derive(Copy, Clone, Serialize, Deserialize)]
-pub struct Entity {
+pub struct Entity17 {
     // id: (i8, i8, i8, i8, SectorType),
     q: Quad,
     s: Sect,
     t: SectorType,
 }
-impl Default for Entity {
+impl Default for Entity17 {
     fn default() -> Self {
         Self::new()
     }
 }
-impl Entity {
+impl Entity17 {
     // =============================
     pub fn new() -> Self {
         Self {
@@ -301,34 +318,54 @@ impl fmt::Display for Entity {
         write!(f, "{}", self.to_compact_string())
     }
 }
-galaxy_vec: Vec<Galaxy>;
+//galaxy_vec: Vec<Galaxy>;
+*/
 
+
+// =============================
+// =============================
+/// # Galaxy
+///
 pub struct Galaxy {
-designator: GalaxyLabel,
-quadrant_vec: Vec<Quadrant>,
+    designator: GalaxyLabel,
+    quadrant_vec: Vec<Quadrant>,
+    //pub charted: [[bool; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
 }
 
+// =============================
+// =============================
+/// # Quadrant
+///
 pub struct Quadrant {
-designator: QuadrantLabel,
-sector_vec: Vec<Sector>,
+    designator: QuadrantLabel,
+    sector_vec: Vec<Sector>,
+    charted: bool,
 }
 
+// =============================
+// =============================
+/// # Sector
+///
 pub struct Sector {
-designator: SectorLabel,
-entity: Entity,
+    designator: SectorLabel,
+    entity: Entity,
 }
 
+// =============================
+// =============================
+/// # Entity
+///
 pub struct Entity {
-designator: SpaceDesignator,
-type: EntityType,
-damage_vec: Vec<Damage>,
+    designator: SpaceDesignator,
+    typ: EntityType,
+    damage_vec: Vec<Damage>,
 }
 
+// =============================
+// =============================
+/// # Damage
+///
 pub struct Damage {
-type: DamageType,
-amount: i32,
+    typ: DamageType,
+    amount: i32,
 }
-
-
- 
-

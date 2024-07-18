@@ -6,7 +6,7 @@
 use crate::enterprise::ShipInfo;
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
 use crate::manifest::entity::Entity;
-use crate::manifest::enums::SectorType;
+use crate::manifest::enums::EntityType;
 use crate::manifest::Manifest;
 
 // =================================================================
@@ -36,7 +36,7 @@ pub fn fire_torpedoe(
     if cmd_vector.len() == 1 {
         // look for a Klingon
         let res_tuple =
-            calc_distance_to_enemy(g_info, potential_bad_guys.clone(), SectorType::Klingon);
+            calc_distance_to_enemy(g_info, potential_bad_guys.clone(), EntityType::Klingon);
         found_it = res_tuple.0;
 
         tgt_sector = res_tuple.2;
@@ -44,7 +44,7 @@ pub fn fire_torpedoe(
         if !found_it {
             //now look for Romulan
             let res_tuple =
-                calc_distance_to_enemy(g_info, potential_bad_guys.clone(), SectorType::Romulan);
+                calc_distance_to_enemy(g_info, potential_bad_guys.clone(), EntityType::Romulan);
             tgt_sector = res_tuple.2;
         }
         println!("targetting {:?} with torpedoe", tgt_sector);
@@ -113,7 +113,7 @@ pub fn fire_phaser(
     if cmd_vector.len() == 1 {
         // look for a Romulan
         let res_tuple =
-            calc_distance_to_enemy(g_info, potential_bad_guys.clone(), SectorType::Romulan);
+            calc_distance_to_enemy(g_info, potential_bad_guys.clone(), EntityType::Romulan);
         found_it = res_tuple.0;
         current_distance = res_tuple.1;
         tgt_sector = res_tuple.2;
@@ -121,7 +121,7 @@ pub fn fire_phaser(
         if !found_it {
             //now look for Klingon
             let res_tuple =
-                calc_distance_to_enemy(g_info, potential_bad_guys.clone(), SectorType::Klingon);
+                calc_distance_to_enemy(g_info, potential_bad_guys.clone(), EntityType::Klingon);
             //found_it = res_tuple.0;
             current_distance = res_tuple.1;
             tgt_sector = res_tuple.2;
@@ -191,7 +191,7 @@ fn create_qi_enemy_vec(g_info: &Manifest) -> Result<(Vec<Entity>, Vec<Entity>), 
 fn calc_distance_to_enemy(
     g_info: &Manifest,
     potential_bad_guys: Vec<Entity>,
-    enemy_type: SectorType,
+    enemy_type: EntityType,
 ) -> (bool, f64, Entity) {
     let mut n_info: Entity;
     let mut found_it = false;

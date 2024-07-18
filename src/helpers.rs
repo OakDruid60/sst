@@ -5,7 +5,7 @@
 //!
 use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::entity::Entity;
-use crate::manifest::enums::{AlertStatus, SectorType};
+use crate::manifest::enums::{AlertStatus, EntityType};
 use crate::ui::{BORDER_COLOR_CYAN, BORDER_COLOR_GREEN, BORDER_COLOR_RED, BORDER_COLOR_YELLOW};
 
 use colored::*;
@@ -69,10 +69,10 @@ pub fn alert_status_of_quadrant(qi_vec: &Vec<Entity>) -> String {
     }
     'outer: for si in qi_vec.iter() {
         let n_info = *si;
-        if n_info.get_sector_type() == SectorType::Klingon {
+        if n_info.get_sector_type() == EntityType::Klingon {
             stat_string = "RED   ".to_string();
             break 'outer;
-        } else if n_info.get_sector_type() == SectorType::Romulan {
+        } else if n_info.get_sector_type() == EntityType::Romulan {
             stat_string = "YELLOW".to_string();
         }
     }
@@ -87,10 +87,10 @@ pub fn alert_status_of_quadrant2(qi_vec: &Vec<Entity>) -> &str {
     }
     'outer: for si in qi_vec.iter() {
         let n_info = *si;
-        if n_info.get_sector_type() == SectorType::Klingon {
+        if n_info.get_sector_type() == EntityType::Klingon {
             stat_string = BORDER_COLOR_RED;
             break 'outer;
-        } else if n_info.get_sector_type() == SectorType::Romulan {
+        } else if n_info.get_sector_type() == EntityType::Romulan {
             stat_string = BORDER_COLOR_YELLOW;
         }
     }
@@ -104,8 +104,8 @@ pub fn alert_status_of_quadrant2(qi_vec: &Vec<Entity>) -> &str {
 pub fn calc_alert_status(qi_vec: &Vec<Entity>) -> AlertStatus {
     let mut cur_alert = AlertStatus::Normal;
     // find the enterprise
-    let enterprise_vec = crate::manifest::create_vec_of_type(qi_vec, SectorType::Enterprise);
-    let star_base_vec = crate::manifest::create_vec_of_type(qi_vec, SectorType::Starbase);
+    let enterprise_vec = crate::manifest::create_vec_of_type(qi_vec, EntityType::PlayerShip);
+    let star_base_vec = crate::manifest::create_vec_of_type(qi_vec, EntityType::Starbase);
     if star_base_vec.len() != 0 {
         let distance = enterprise_vec[0].calc_sector_distance(star_base_vec[0]);
         if distance < 1.42 {
@@ -115,10 +115,10 @@ pub fn calc_alert_status(qi_vec: &Vec<Entity>) -> AlertStatus {
     if cur_alert != AlertStatus::Docked {
         'outer: for si in qi_vec.iter() {
             let n_info = *si;
-            if n_info.get_sector_type() == SectorType::Klingon {
+            if n_info.get_sector_type() == EntityType::Klingon {
                 cur_alert = AlertStatus::Red;
                 break 'outer;
-            } else if n_info.get_sector_type() == SectorType::Romulan {
+            } else if n_info.get_sector_type() == EntityType::Romulan {
                 cur_alert = AlertStatus::Yellow;
             }
         }

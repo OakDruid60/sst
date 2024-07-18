@@ -15,7 +15,7 @@ pub mod srs;
 
 use crate::enterprise::ShipInfo;
 use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
-use crate::manifest::enums::{CmdType, SectorType};
+use crate::manifest::enums::{CmdType, EntityType};
 use crate::manifest::Manifest;
 
 pub const BORDER_COLOR_RED: &str = "\x1b[91m";
@@ -52,15 +52,15 @@ pub fn command_processor() {
 
     let mut g_info: Manifest = Manifest::new();
     g_info.end_star_date = g_info.cur_star_date + 131;
-    g_info.gal_vec = crate::manifest::construct_galaxy();
+    g_info.galaxy_vec = crate::manifest::construct_galaxy();
 
     let g_tmp = g_info.clone();
-    let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.gal_vec, SectorType::Starbase);
+    let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, EntityType::Starbase);
     let tmp_loc_quad = tmp_loc_list[0].create_quad_tuple();
-    g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
+    //g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
 
     // find the enterprise in the galaxy.
-    let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.gal_vec, SectorType::Enterprise);
+    let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, EntityType::PlayerShip);
     g_info.enterprise = crate::enterprise::ShipInfo::new();
     g_info.enterprise.set_entity(tmp_loc_list[0].clone());
 
@@ -113,11 +113,11 @@ pub fn command_processor() {
                         println!("killed {:?} with phaser UI", killed_si);
 
                         //killed_si.kill_enemy();
-                        let g_tmp = g_info.gal_vec.clone();
+                        let g_tmp = g_info.galaxy_vec.clone();
                         for (pos, e) in g_tmp.iter().enumerate() {
                             if e.is_same(&killed_si) {
-                                g_info.gal_vec.remove(pos);
-                                g_info.gal_vec.push(killed_si);
+                                g_info.galaxy_vec.remove(pos);
+                                g_info.galaxy_vec.push(killed_si);
                                 break;
                             }
                         }
@@ -140,11 +140,11 @@ pub fn command_processor() {
                         let updated_enterprise: ShipInfo = res.as_ref().unwrap().0;
                         let killed_si = res.as_ref().unwrap().1;
                         println!("killed {:?} with torpedoe UI", killed_si);
-                        let g_tmp = g_info.gal_vec.clone();
+                        let g_tmp = g_info.galaxy_vec.clone();
                         for (pos, e) in g_tmp.iter().enumerate() {
                             if e.is_same(&killed_si) {
-                                g_info.gal_vec.remove(pos);
-                                g_info.gal_vec.push(killed_si);
+                                g_info.galaxy_vec.remove(pos);
+                                g_info.galaxy_vec.push(killed_si);
                                 break;
                             }
                         }
@@ -165,11 +165,11 @@ pub fn command_processor() {
                 match res {
                     Ok(_) => {
                         let updated_enterprise: ShipInfo = res.unwrap();
-                        let g_tmp = g_info.gal_vec.clone();
+                        let g_tmp = g_info.galaxy_vec.clone();
                         for (pos, e) in g_tmp.iter().enumerate() {
-                            if e.get_sector_type() == SectorType::Enterprise {
-                                g_info.gal_vec.remove(pos);
-                                g_info.gal_vec.push(updated_enterprise.get_entity());
+                            if e.get_sector_type() == EntityType::PlayerShip {
+                                g_info.galaxy_vec.remove(pos);
+                                g_info.galaxy_vec.push(updated_enterprise.get_entity());
                                 break;
                             }
                         }
@@ -191,11 +191,11 @@ pub fn command_processor() {
                 match res {
                     Ok(_) => {
                         let updated_enterprise: ShipInfo = res.unwrap();
-                        let g_tmp = g_info.gal_vec.clone();
+                        let g_tmp = g_info.galaxy_vec.clone();
                         for (pos, e) in g_tmp.iter().enumerate() {
-                            if e.get_sector_type() == SectorType::Enterprise {
-                                g_info.gal_vec.remove(pos);
-                                g_info.gal_vec.push(updated_enterprise.get_entity());
+                            if e.get_sector_type() == EntityType::PlayerShip {
+                                g_info.galaxy_vec.remove(pos);
+                                g_info.galaxy_vec.push(updated_enterprise.get_entity());
                                 break;
                             }
                         }
@@ -229,7 +229,7 @@ pub fn command_processor() {
                             y = MAX_GALAXY_SIZE_I8 - 1i8;
                         }
                         //println!("{} {}",x,y);
-                        g_info.charted[x as usize][y as usize] = true;
+                        // g_info.charted[x as usize][y as usize] = true;
                     }
                 }
                 crate::ui::lrs::long_range_sensor_disp(&g_info);
@@ -253,7 +253,7 @@ pub fn command_processor() {
                             y = MAX_GALAXY_SIZE_I8 - 1i8;
                         }
                         //println!("{} {}",x,y);
-                        g_info.charted[x as usize][y as usize] = true;
+                        // g_info.charted[x as usize][y as usize] = true;
                     }
                 }
                 crate::ui::srs::short_range_sensor_disp(&g_info);

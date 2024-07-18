@@ -62,10 +62,14 @@ pub enum AlertStatus {
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Affiliation {
-Empty, Neutral, Enemy, Friend,
+    Empty,
+    Neutral,
+    Enemy,
+    Friend,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum DamageType {
-Ll, Kk
+    Ll,
+    Kk,
 }

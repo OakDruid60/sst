@@ -5,7 +5,7 @@
 
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
 use crate::manifest::entity::Entity;
-use crate::manifest::enums::SectorType;
+use crate::manifest::enums::EntityType;
 use crate::manifest::Manifest;
 use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 
@@ -30,24 +30,24 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
         for xx in 0..MAX_SECTOR_SIZE_I8 {
             let cur_sector_info: Entity =
                 crate::manifest::find_actual_sector_info(&qi_vec, (xx, yy));
-            let cur_sector_type: SectorType = cur_sector_info.get_sector_type();
+            let cur_sector_type: EntityType = cur_sector_info.get_sector_type();
             match cur_sector_type {
-                SectorType::Empty => row_string.push_str(format!(" {}", ".").as_str()),
-                SectorType::Enterprise => {
+                EntityType::Empty => row_string.push_str(format!(" {}", ".").as_str()),
+                EntityType::PlayerShip => {
                     // print!("E");
                     row_string.push_str(format!(" {}", "E".bold().green()).as_str())
                 }
-                SectorType::Klingon => {
+                EntityType::Klingon => {
                     row_string.push_str(format!(" {}", "k".black().on_red()).as_str())
                 }
-                SectorType::Star => row_string.push_str(format!(" *").as_str()),
-                SectorType::Romulan => {
+                EntityType::Star => row_string.push_str(format!(" *").as_str()),
+                EntityType::Romulan => {
                     row_string.push_str(format!(" {}", "r".black().on_yellow()).as_str())
                 }
-                SectorType::Planet => row_string.push_str(format!(" {}", "p".on_blue()).as_str()),
-                SectorType::Starbase => row_string.push_str(format!(" {}", "B".cyan()).as_str()),
-                SectorType::KilledKlingon => row_string.push_str(format!(" {}", "k").as_str()),
-                SectorType::KilledRomulan => {
+                EntityType::Planet => row_string.push_str(format!(" {}", "p".on_blue()).as_str()),
+                EntityType::Starbase => row_string.push_str(format!(" {}", "B".cyan()).as_str()),
+                EntityType::KilledKlingon => row_string.push_str(format!(" {}", "k").as_str()),
+                EntityType::KilledRomulan => {
                     //print!("r");
                     row_string.push_str(format!(" {}", "r").as_str())
                 }

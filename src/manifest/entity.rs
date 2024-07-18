@@ -4,7 +4,7 @@
 //! This is stuff related to the entire game.
 
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
-use crate::manifest::enums::SectorType;
+use crate::manifest::enums::EntityType;
 //use crate::enterprise::ShipInfo;
 //use crate::manifest::statistics::SummaryStats;
 
@@ -41,7 +41,7 @@ pub struct Entity {
     // id: (i8, i8, i8, i8, SectorType),
     q: Quad,
     s: Sect,
-    t: SectorType,
+    t: EntityType,
 }
 impl Default for Entity {
     fn default() -> Self {
@@ -54,14 +54,14 @@ impl Entity {
         Self {
             q: Quad::new(99 as i8, 99 as i8),
             s: Sect::new(99 as i8, 99 as i8),
-            t: SectorType::Empty,
+            t: EntityType::Empty,
         }
     }
 
     // =============================
     /// # create
     ///
-    pub fn create(n: (i8, i8, i8, i8, SectorType)) -> Self {
+    pub fn create(n: (i8, i8, i8, i8, EntityType)) -> Self {
         Self {
             //    id: (n.0, n.1, n.2, n.3, n.4),
             q: Quad::new(n.0, n.1),
@@ -72,7 +72,7 @@ impl Entity {
 
     // =============================
     //
-    pub fn get_sector_type(self) -> SectorType {
+    pub fn get_sector_type(self) -> EntityType {
         self.t
     }
 
@@ -175,13 +175,13 @@ impl Entity {
     ///
     pub fn kill_enemy(&mut self) {
         let tmp_t = self.t;
-        let mut tmp_s = SectorType::Empty;
+        let mut tmp_s = EntityType::Empty;
         match tmp_t {
-            SectorType::Klingon => {
-                tmp_s = SectorType::KilledKlingon;
+            EntityType::Klingon => {
+                tmp_s = EntityType::KilledKlingon;
             }
-            SectorType::Romulan => {
-                tmp_s = SectorType::KilledRomulan;
+            EntityType::Romulan => {
+                tmp_s = EntityType::KilledRomulan;
             }
             _ => {}
         }
@@ -230,7 +230,7 @@ impl Entity {
                 rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8),
                 rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8),
             ),
-            t: SectorType::Enterprise,
+            t: EntityType::PlayerShip,
         }
     }
 }

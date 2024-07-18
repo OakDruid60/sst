@@ -5,7 +5,7 @@
 //!
 
 use crate::manifest::entity::Entity;
-use crate::manifest::enums::SectorType;
+use crate::manifest::enums::EntityType;
 
 // =====================================================================
 /// #SummaryStats
@@ -46,20 +46,20 @@ pub fn calculate(qi_vec: &Vec<Entity>) -> SummaryStats {
     for si in qi_vec.iter() {
         let n_info = *si;
         match n_info.get_sector_type() {
-            SectorType::Klingon => stats.num_alive_klingons += 1,
-            SectorType::KilledKlingon => {
+            EntityType::Klingon => stats.num_alive_klingons += 1,
+            EntityType::KilledKlingon => {
                 stats.num_killed_klingons += 1;
                 stats.cur_score += 100;
             }
-            SectorType::Romulan => stats.num_alive_romulans += 1,
-            SectorType::KilledRomulan => {
+            EntityType::Romulan => stats.num_alive_romulans += 1,
+            EntityType::KilledRomulan => {
                 stats.num_killed_romulans += 1;
                 stats.cur_score += 20;
             }
-            SectorType::Star => stats.num_stars += 1,
-            SectorType::Planet => stats.num_planets += 1,
-            SectorType::Starbase => stats.num_star_bases += 1,
-            SectorType::Enterprise => stats.num_enterprise += 1,
+            EntityType::Star => stats.num_stars += 1,
+            EntityType::Planet => stats.num_planets += 1,
+            EntityType::Starbase => stats.num_star_bases += 1,
+            EntityType::PlayerShip => stats.num_enterprise += 1,
             _ => {}
         }
     }

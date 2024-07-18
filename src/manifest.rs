@@ -14,7 +14,7 @@ pub mod statistics;
 use crate::enterprise::ShipInfo;
 use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::entity::Entity;
-use crate::manifest::enums::SectorType;
+use crate::manifest::enums::EntityType;
 use crate::manifest::statistics::SummaryStats;
 
 use rand::Rng;
@@ -32,8 +32,7 @@ use std::io::{Read, Write};
 pub struct Manifest {
     pub cur_star_date: i32,
     pub end_star_date: i32,
-    pub charted: [[bool; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
-    pub gal_vec: Vec<Entity>,
+    pub galaxy_vec: Vec<Entity>,
     pub test_cmds_vec: Vec<String>,
     pub enterprise: ShipInfo,
     pub password: String,
@@ -44,8 +43,8 @@ impl Manifest {
         Self {
             cur_star_date: 0,
             end_star_date: 0,
-            charted: [[false; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
-            gal_vec: Vec::new(),
+            //charted: [[false; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
+            galaxy_vec: Vec::new(),
             test_cmds_vec: Vec::new(),
             enterprise: ShipInfo::new(),
             password: "jap".to_string(),
@@ -59,7 +58,7 @@ impl Manifest {
     ///
     pub fn create_quadrant_vec(&self, interest_loc: Entity) -> Vec<Entity> {
         let mut n_vec: Vec<Entity> = Vec::new();
-        for si in self.gal_vec.iter() {
+        for si in self.galaxy_vec.iter() {
             let n_info = *si;
             if n_info.is_same_quad(&interest_loc) {
                 n_vec.push(n_info);
@@ -74,7 +73,7 @@ impl Manifest {
     pub fn game_stat_create_disp_vec(self, create_complete: bool) -> Vec<String> {
         let input_vec: Vec<Entity>;
         if create_complete {
-            input_vec = self.gal_vec;
+            input_vec = self.galaxy_vec;
         } else {
             input_vec = self.create_quadrant_vec(self.clone().enterprise.get_entity());
         }
@@ -114,7 +113,7 @@ impl Manifest {
 // =========================================================================
 /// # create_vec_of_type
 ///
-pub fn create_vec_of_type(orig_vec: &Vec<Entity>, n_type: SectorType) -> Vec<Entity> {
+pub fn create_vec_of_type(orig_vec: &Vec<Entity>, n_type: EntityType) -> Vec<Entity> {
     let mut n_type_vec: Vec<Entity> = Vec::new();
 
     for si in orig_vec.iter() {
@@ -142,7 +141,7 @@ pub fn construct_galaxy() -> Vec<Entity> {
     let n_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
 
     let starbase_info: Entity =
-        Entity::create((n_quad_x, n_quad_y, n_sect_x, n_sect_y, SectorType::Starbase));
+        Entity::create((n_quad_x, n_quad_y, n_sect_x, n_sect_y, EntityType::Starbase));
     n_galaxy_vec.push(starbase_info);
 
     //
@@ -159,7 +158,7 @@ pub fn construct_galaxy() -> Vec<Entity> {
             trial_quad_y,
             trial_sect_x,
             trial_sect_y,
-            SectorType::Enterprise,
+            EntityType::PlayerShip,
         ));
         for si in n_galaxy_vec.iter() {
             if enterprise_info.is_same(si) {
@@ -190,7 +189,7 @@ pub fn construct_galaxy() -> Vec<Entity> {
                         trial_quad_y,
                         trial_sect_x,
                         trial_sect_y,
-                        SectorType::Planet,
+                        EntityType::Planet,
                     ));
                     for si in n_galaxy_vec.iter() {
                         if n_info.is_same(si) {
@@ -216,7 +215,7 @@ pub fn construct_galaxy() -> Vec<Entity> {
                         trial_quad_y,
                         trial_sect_x,
                         trial_sect_y,
-                        SectorType::Star,
+                        EntityType::Star,
                     ));
                     for si in n_galaxy_vec.iter() {
                         if n_info.is_same(si) {
@@ -242,7 +241,7 @@ pub fn construct_galaxy() -> Vec<Entity> {
                         trial_quad_y,
                         trial_sect_x,
                         trial_sect_y,
-                        SectorType::Klingon,
+                        EntityType::Klingon,
                     ));
                     for si in n_galaxy_vec.iter() {
                         if n_info.is_same(si) {
@@ -268,7 +267,7 @@ pub fn construct_galaxy() -> Vec<Entity> {
                         trial_quad_y,
                         trial_sect_x,
                         trial_sect_y,
-                        SectorType::Romulan,
+                        EntityType::Romulan,
                     ));
                     for si in n_galaxy_vec.iter() {
                         if n_info.is_same(si) {
@@ -330,10 +329,10 @@ pub fn is_straight_line_path_clear(
         let y7 = (trial_loc_y.floor()) as i32;
         let sector_info: Entity = find_actual_sector_info(&quad_vec, (x7 as i8, y7 as i8));
         //println!("{} {} {:?}", x7, y7, sector_info.obj_type);
-        if sector_info.get_sector_type() != SectorType::Enterprise
-            && sector_info.get_sector_type() != SectorType::Empty
-            && sector_info.get_sector_type() != SectorType::KilledKlingon
-            && sector_info.get_sector_type() != SectorType::KilledRomulan
+        if sector_info.get_sector_type() != EntityType::PlayerShip
+            && sector_info.get_sector_type() != EntityType::Empty
+            && sector_info.get_sector_type() != EntityType::KilledKlingon
+            && sector_info.get_sector_type() != EntityType::KilledRomulan
         {
             if x7 == tgt_tuple.0 as i32 && y7 == tgt_tuple.1 as i32 {
             } else {
@@ -362,8 +361,8 @@ pub fn create_bad_guy_qi_vec(
     let mut n_vec: Vec<Entity> = Vec::new();
     for si in qi_vec.iter() {
         let n_info = *si;
-        let bad_guy_type: SectorType = n_info.get_sector_type();
-        if bad_guy_type == SectorType::Klingon || bad_guy_type == SectorType::Romulan {
+        let bad_guy_type: EntityType = n_info.get_sector_type();
+        if bad_guy_type == EntityType::Klingon || bad_guy_type == EntityType::Romulan {
             if chk_path {
                 let path_res = is_straight_line_path_clear(&qi_vec, interest_loc, n_info);
                 match path_res {
