@@ -9,21 +9,6 @@
 ///
 use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub enum EntityType {
-    Empty,
-
-    Klingon,
-    KilledKlingon,
-    Romulan,
-    KilledRomulan,
-
-    Star,
-    Planet,
-
-    PlayerShip,
-    Starbase,
-}
 
 // =====================================================================
 /// #CmdType

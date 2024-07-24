@@ -4,7 +4,7 @@
 //! This is stuff related to the entire game.
 
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
-use crate::manifest::enums::EntityType;
+//use crate::manifest::enums::EntityType;
 //use crate::enterprise::ShipInfo;
 //use crate::manifest::statistics::SummaryStats;
 
@@ -14,6 +14,23 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 //use std::fs::File;
 //use std::io::{Read, Write};
+
+#[derive( PartialEq, Serialize, Deserialize)]
+pub enum EntityType {
+    Empty,
+
+    Klingon,
+    KilledKlingon,
+    Romulan,
+    KilledRomulan,
+
+    Star,
+    Planet,
+
+    PlayerShip,
+    Starbase,
+}
+
 
 // ======================================================================
 #[derive(Copy, Clone, Serialize, Deserialize)]

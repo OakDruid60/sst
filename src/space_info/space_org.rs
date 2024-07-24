@@ -361,11 +361,3 @@ pub struct Entity {
     damage_vec: Vec<Damage>,
 }
 
-// =============================
-// =============================
-/// # Damage
-///
-pub struct Damage {
-    typ: DamageType,
-    amount: i32,
-}
