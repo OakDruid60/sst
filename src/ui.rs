@@ -53,6 +53,8 @@ pub fn command_processor() {
     let mut g_info: Manifest = Manifest::new();
     g_info.end_star_date = g_info.cur_star_date + 131;
     g_info.galaxy_vec = crate::manifest::construct_galaxy();
+    println!("len = {:?}",g_info.galaxy_vec.len());
+    println!("capacity = {:?}",g_info.galaxy_vec.capacity());
 
     let g_tmp = g_info.clone();
     let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, EntityType::Starbase);
