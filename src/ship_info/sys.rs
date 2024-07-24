@@ -1,20 +1,42 @@
 #![warn(missing_docs)]
-//! # enums.rs
+use serde::{Deserialize, Serialize};
+//! # sys.rs
 // =====================================================================
-/// #shipsystem
+/// #ShipSystem
 #[derive(Copy, Clone, Serialize, Deserialize)]
 pub struct ShipSystem {
     t: SystemType,
-    dmg_sys: i32,
-    cur_sys: i32,
-    replenish: i32,
+    dmg_sys: f32,
+    cur_sys: f32,
+    rpl_sys: f32,
 }
+
+impl ShipSystem {
+    pub fn new() -> Self {
+    }
+
+    pub fn consume(&self, amount: i32) {
+    }
+
+    pub fn replenish(&self) {
+    }
+
+    pub fn is_damaged(&self) -> bool {
+        
+    }
+}
+
+
 
 // =============================
 // =============================
-/// # Damage
+/// # SystemType
 ///
-pub struct Damage {
-    typ: DamageType,
-    amount: i32,
+#[derive(Serialize, Deserialize)]
+pub enum SystemType {
+    ImpulseEng,
+    Phaser,
+    Torpedoe,
+    WarpEng,
+
 }
