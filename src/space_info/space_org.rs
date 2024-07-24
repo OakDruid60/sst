@@ -92,15 +92,15 @@ impl SectorLabel {
     }
 }
 
-#[derive(Copy, Clone, Serialize, Deserialize)]
-pub struct Sect {
-    loc: (i8, i8),
-}
-impl Sect {
-    pub fn new(x: i8, y: i8) -> Self {
-        Self { loc: (x, y) }
-    }
-}
+//#[derive(Copy, Clone, Serialize, Deserialize)]
+//pub struct Sect {
+//    loc: (i8, i8),
+//}
+//impl Sect {
+//    pub fn new(x: i8, y: i8) -> Self {
+//        Self { loc: (x, y) }
+//    }
+//}
 
 
 
@@ -326,7 +326,7 @@ impl fmt::Display for Entity {
 // =============================
 /// # Galaxy
 ///
-pub struct Galaxy {
+pub struct GalaxyOld {
     designator: GalaxyLabel,
     quadrant_vec: Vec<Quadrant>,
     //pub charted: [[bool; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],

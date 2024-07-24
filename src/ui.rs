@@ -16,7 +16,7 @@ pub mod srs;
 use crate::enterprise::ShipInfo;
 use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
 use crate::manifest::enums::{CmdType, EntityType};
-use crate::manifest::Manifest;
+use crate::manifest::{Manifest, Galaxy};
 
 pub const BORDER_COLOR_RED: &str = "\x1b[91m";
 pub const BORDER_COLOR_YELLOW: &str = "\x1b[93m";
@@ -49,6 +49,10 @@ pub fn command_processor() {
 
     let mut test_cmds_vec: Vec<String> = Vec::new();
     let mut cmd_part2_vec: Vec<String> = Vec::new();
+
+
+let mut cur_galaxy: Galaxy;
+
 
     let mut g_info: Manifest = Manifest::new();
     g_info.end_star_date = g_info.cur_star_date + 131;

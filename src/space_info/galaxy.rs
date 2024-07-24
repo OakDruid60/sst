@@ -8,7 +8,6 @@
 pub mod constants; // various constants like the size of the galaxy
 pub mod entity;
 pub mod enums;
-pub mod galaxy;
 pub mod spaceorg;
 pub mod statistics;
 
@@ -26,20 +25,16 @@ use std::io::{Read, Write};
 
 // ======================================================================
 // ======================================================================
-/// Manifest
+/// Galaxy
 // ======================================================================
 // ======================================================================
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Manifest {
-    pub cur_star_date: i32,
-    pub end_star_date: i32,
-    pub galaxy_vec: Vec<Entity>,
-    pub test_cmds_vec: Vec<String>,
-    pub enterprise: ShipInfo,
-    pub password: String,
+pub struct Galaxy {
+    pub designator: GalaxyLabel,
+    pub data_vec: Vec<Entity>,
 }
 
-impl Manifest {
+impl Galaxy {
     pub fn new() -> Self {
         Self {
             cur_star_date: 0,
