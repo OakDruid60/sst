@@ -13,16 +13,17 @@ pub struct ShipSystem {
 
 impl ShipSystem {
     pub fn new() -> Self {
+        self(t: General, dmg_sys: 0.0, cur_sys: 0.0,
+             rpl_sys: 0.0)
     }
 
-    pub fn consume(&self, amount: i32) {
+    pub fn consume(&self, amount: f32) {
     }
 
     pub fn replenish(&self) {
     }
 
-    pub fn is_damaged(&self) -> bool {
-        
+    pub fn is_operational(&self) -> bool {        
     }
 }
 
@@ -34,6 +35,7 @@ impl ShipSystem {
 ///
 #[derive(Serialize, Deserialize)]
 pub enum SystemType {
+    General,
     ImpulseEng,
     Phaser,
     Torpedoe,
