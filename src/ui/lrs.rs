@@ -2,7 +2,7 @@
 //! # lrs.rs
 //!
 //! This is stuff related to displaying the long range sensor scan.
-
+/*
 use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::EntityType;
@@ -63,3 +63,4 @@ pub fn long_range_sensor_disp(g_info: &Manifest) {
         print!("{}", row_string);
     }
 }
+*/

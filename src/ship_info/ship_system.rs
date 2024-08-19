@@ -1,11 +1,12 @@
 #![warn(missing_docs)]
+/*
 use serde::{Deserialize, Serialize};
-//! # sys.rs
+// # ship_system.rs
 // =====================================================================
-/// #ShipSystem
+//# #ShipSystem
 #[derive(Copy, Clone, Serialize, Deserialize)]
 pub struct ShipSystem {
-    t: SystemType,
+    t: ShipSystemType,
     dmg_sys: f32,
     cur_sys: f32,
     rpl_sys: f32,
@@ -31,10 +32,10 @@ impl ShipSystem {
 
 // =============================
 // =============================
-/// # SystemType
+/// # ShipSystemType
 ///
 #[derive(Serialize, Deserialize)]
-pub enum SystemType {
+pub enum ShipSystemType {
     General,
     ImpulseEng,
     Phaser,
@@ -42,3 +43,4 @@ pub enum SystemType {
     WarpEng,
 
 }
+*/

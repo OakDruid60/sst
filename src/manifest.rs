@@ -5,14 +5,15 @@
 //! entity, enum, and statistics sourece.
 //!
 
+/*
 pub mod constants; // various constants like the size of the galaxy
-pub mod entity;
-pub mod enums;
-pub mod galaxy;
-pub mod spaceorg;
+//pub mod entity;
+//pub mod enums;
+//pub mod galaxy;
+//pub mod spaceorg;
 pub mod statistics;
 
-use crate::enterprise::ShipInfo;
+//use crate::enterprise::ShipInfo;
 use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::EntityType;
@@ -471,3 +472,5 @@ pub fn freeze(uni: &Manifest, cmd_vector: &Vec<String>) {
 
     println!("Game back-up created in {}", save_file_name);
 }
+
+*/

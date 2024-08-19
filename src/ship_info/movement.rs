@@ -2,10 +2,12 @@
 //! # movement.rs
 //!
 //! Functions for moving around the Enterprise
-use crate::enterprise::ShipInfo;
+//!
+/*
+//use crate::enterprise::ShipInfo;
 use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
-use crate::manifest::entity::Entity;
-use crate::manifest::enums::EntityType;
+//use crate::manifest::entity::Entity;
+//use crate::manifest::enums::EntityType;
 use crate::manifest::Manifest;
 
 // =================================================================
@@ -134,3 +136,5 @@ pub fn move_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Sh
         Err("Command format should be  mov x y".to_string())
     }
 }
+
+*/

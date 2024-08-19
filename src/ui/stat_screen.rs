@@ -3,6 +3,7 @@
 //!
 //! This is stuff related to displaying information, etc.
 //!
+/*
 use crate::manifest::Manifest;
 use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 
@@ -25,3 +26,4 @@ pub fn game_stat_disp(g_info: &Manifest) {
     }
     println!("  {bc}{BORDER_LL}{BORDER_HORZ_60}{BORDER_LR}{COLOR_RESET}");
 }
+*/

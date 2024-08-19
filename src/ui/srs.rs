@@ -2,7 +2,7 @@
 //! # srs.rs
 //!
 //! This is stuff related to displaying the short range sensor scan.
-
+/*
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::EntityType;
@@ -87,3 +87,4 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
     row_string.push_str(format!("    0 1 2 3 4 5 6 7 8 9  ").as_str());
     println!("{}", row_string);
 }
+*/

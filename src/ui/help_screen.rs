@@ -3,6 +3,7 @@
 //!
 //! This is stuff related to displaying general user help information.
 //!
+/*
 use crate::manifest::Manifest;
 use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 
@@ -38,3 +39,4 @@ pub fn help_screen(g_info: &Manifest) {
     println!("  {bv} {:<58} {bv}", "hel - help");
     println!("  {bc}{BORDER_LL}{BORDER_HORZ_60}{BORDER_LR}{COLOR_RESET}");
 }
+*/

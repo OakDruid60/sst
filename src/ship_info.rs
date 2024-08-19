@@ -4,7 +4,7 @@
 //! Contains the ShipInfo structure.  The directory contains the movement and weapon
 //! source
 //!
-
+/*
 pub mod movement; // jump and move
 pub mod weapon;
 
@@ -91,3 +91,4 @@ impl ShipInfo {
         ship
     }
 }
+*/

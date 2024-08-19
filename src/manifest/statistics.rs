@@ -3,7 +3,7 @@
 //!
 //! This is stuff related to the present state of the game
 //!
-
+/*
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::EntityType;
 
@@ -65,3 +65,5 @@ pub fn calculate(qi_vec: &Vec<Entity>) -> SummaryStats {
     }
     stats
 }
+
+*/

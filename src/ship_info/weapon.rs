@@ -3,10 +3,11 @@
 //!
 //! This is stuff related to weapons of the Enterprise.
 
-use crate::enterprise::ShipInfo;
+/*
+//use crate::enterprise::ShipInfo;
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
-use crate::manifest::entity::Entity;
-use crate::manifest::enums::EntityType;
+//use crate::manifest::entity::Entity;
+//use crate::manifest::enums::EntityType;
 use crate::manifest::Manifest;
 
 // =================================================================
@@ -218,3 +219,5 @@ fn calc_distance_to_enemy(
     }
     return (found_it, current_distance, tgt_sector.clone());
 }
+
+*/

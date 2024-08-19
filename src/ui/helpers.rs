@@ -3,6 +3,7 @@
 //!
 //! This supplies various helper functions used throughout the game.
 //!
+/*
 use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::entity::Entity;
 use crate::manifest::enums::{AlertStatus, EntityType};
@@ -187,3 +188,4 @@ pub fn validate_x_y_input(cmd_vector: &Vec<String>, max: i8) -> Result<(i8, i8),
 
     return Ok((xx as i8, yy as i8));
 }
+*/
