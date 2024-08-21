@@ -5,25 +5,26 @@
 //! entity, enum, and statistics sourece.
 //!
 
-/*
 pub mod constants; // various constants like the size of the galaxy
-//pub mod entity;
-//pub mod enums;
-//pub mod galaxy;
-//pub mod spaceorg;
+                   //pub mod entity;
+                   //pub mod enums;
+                   //pub mod galaxy;
+                   //pub mod spaceorg;
 pub mod statistics;
 
+use crate::astro::AstroObject;
 //use crate::enterprise::ShipInfo;
-use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
-use crate::manifest::entity::Entity;
-use crate::manifest::enums::EntityType;
-use crate::manifest::statistics::SummaryStats;
+//use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, //MAX_SECTOR_SIZE_I8};
+//use crate::manifest::entity::Entity;
+//use crate::manifest::enums::EntityType;
+//use crate::manifest::statistics::SummaryStats;
 
-use rand::Rng;
+//use rand::Rng;
 use serde::{Deserialize, Serialize};
-use serde_json::from_str;
-use std::fs::File;
-use std::io::{Read, Write};
+//use serde_json::from_str;
+use std::collections::HashMap;
+//use std::fs::File;
+//use std::io::{Read, Write};
 
 // ======================================================================
 // ======================================================================
@@ -34,9 +35,9 @@ use std::io::{Read, Write};
 pub struct Manifest {
     pub cur_star_date: i32,
     pub end_star_date: i32,
-    pub galaxy_vec: Vec<Entity>,
+    pub galaxy_map: HashMap<String, AstroObject>,
     pub test_cmds_vec: Vec<String>,
-    pub enterprise: ShipInfo,
+    //pub enterprise: ShipInfo,
     pub password: String,
 }
 
@@ -46,9 +47,9 @@ impl Manifest {
             cur_star_date: 0,
             end_star_date: 0,
             //charted: [[false; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
-            galaxy_vec: Vec::new(),
+            galaxy_map: HashMap::new(),
             test_cmds_vec: Vec::new(),
-            enterprise: ShipInfo::new(),
+            //enterprise: ShipInfo::new(),
             password: "jap".to_string(),
         }
     }
@@ -56,19 +57,20 @@ impl Manifest {
     // =========================================================================
     /// # create_quadrant_vec
     ///
-    /// create a quadrant information vector for the location of interest.
+    /// create a quadrant vector of objects for the location of interest.
     ///
-    pub fn create_quadrant_vec(&self, interest_loc: Entity) -> Vec<Entity> {
-        let mut n_vec: Vec<Entity> = Vec::new();
-        for si in self.galaxy_vec.iter() {
-            let n_info = *si;
+    pub fn create_quadrant_vec(&self, interest_loc: AstroObject) -> Vec<AstroObject> {
+        let mut n_vec: Vec<AstroObject> = Vec::new();
+        for (key, n_info) in self.galaxy_map.iter() {
+            //let n_info = *si;
             if n_info.is_same_quad(&interest_loc) {
                 n_vec.push(n_info);
             }
         }
         n_vec
     }
-
+}
+/*
     // ==========================================================================
     /// # game_stat_create_disp_vec
     ///
@@ -115,7 +117,7 @@ impl Manifest {
 // =========================================================================
 /// # create_vec_of_type
 ///
-pub fn create_vec_of_type(orig_vec: &Vec<Entity>, n_type: EntityType) -> Vec<Entity> {
+pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec<AstroObject> {
     let mut n_type_vec: Vec<Entity> = Vec::new();
 
     for si in orig_vec.iter() {
@@ -128,165 +130,6 @@ pub fn create_vec_of_type(orig_vec: &Vec<Entity>, n_type: EntityType) -> Vec<Ent
     n_type_vec
 }
 
-// =========================================================================
-/// # construct_galaxy
-///
-pub fn construct_galaxy() -> Vec<Entity> {
-    let mut n_galaxy_vec: Vec<Entity> = Vec::new();
-
-    //
-    // set initial starbase
-    let n_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-    let n_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-
-    let n_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-    let n_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-
-    let starbase_info: Entity =
-        Entity::create((n_quad_x, n_quad_y, n_sect_x, n_sect_y, EntityType::Starbase));
-    n_galaxy_vec.push(starbase_info);
-
-    //
-    // set initial enterprise
-    let mut existing_collision = false;
-    while !existing_collision {
-        let trial_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-        let trial_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-
-        let enterprise_info: Entity = Entity::create((
-            trial_quad_x,
-            trial_quad_y,
-            trial_sect_x,
-            trial_sect_y,
-            EntityType::PlayerShip,
-        ));
-        for si in n_galaxy_vec.iter() {
-            if enterprise_info.is_same(si) {
-                existing_collision = true;
-                break;
-            }
-        }
-        if !existing_collision {
-            n_galaxy_vec.push(enterprise_info);
-            break;
-        }
-    }
-
-    // now populate other things into each quadrant
-    for xx in 0..MAX_GALAXY_SIZE_I8 {
-        for yy in 0..MAX_GALAXY_SIZE_I8 {
-            let trial_quad_x: i8 = xx as i8;
-            let trial_quad_y: i8 = yy as i8;
-
-            // planets
-            for _counter in 0..rand::thread_rng().gen_range(0..3) {
-                existing_collision = false;
-                while !existing_collision {
-                    let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let n_info: Entity = Entity::create((
-                        trial_quad_x,
-                        trial_quad_y,
-                        trial_sect_x,
-                        trial_sect_y,
-                        EntityType::Planet,
-                    ));
-                    for si in n_galaxy_vec.iter() {
-                        if n_info.is_same(si) {
-                            existing_collision = true;
-                            break;
-                        }
-                    }
-                    if !existing_collision {
-                        n_galaxy_vec.push(n_info);
-                        break;
-                    }
-                }
-            }
-
-            // Stars
-            for _counter in 0..rand::thread_rng().gen_range(1..5) {
-                existing_collision = false;
-                while !existing_collision {
-                    let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let n_info: Entity = Entity::create((
-                        trial_quad_x,
-                        trial_quad_y,
-                        trial_sect_x,
-                        trial_sect_y,
-                        EntityType::Star,
-                    ));
-                    for si in n_galaxy_vec.iter() {
-                        if n_info.is_same(si) {
-                            existing_collision = true;
-                            break;
-                        }
-                    }
-                    if !existing_collision {
-                        n_galaxy_vec.push(n_info);
-                        break;
-                    }
-                }
-            }
-
-            // Klingons
-            for _counter in 0..rand::thread_rng().gen_range(0..2) {
-                existing_collision = false;
-                while !existing_collision {
-                    let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let n_info: Entity = Entity::create((
-                        trial_quad_x,
-                        trial_quad_y,
-                        trial_sect_x,
-                        trial_sect_y,
-                        EntityType::Klingon,
-                    ));
-                    for si in n_galaxy_vec.iter() {
-                        if n_info.is_same(si) {
-                            existing_collision = true;
-                            break;
-                        }
-                    }
-                    if !existing_collision {
-                        n_galaxy_vec.push(n_info);
-                        break;
-                    }
-                }
-            }
-
-            // Romulans
-            for _counter in 0..rand::thread_rng().gen_range(0..3) {
-                existing_collision = false;
-                while !existing_collision {
-                    let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let n_info: Entity = Entity::create((
-                        trial_quad_x,
-                        trial_quad_y,
-                        trial_sect_x,
-                        trial_sect_y,
-                        EntityType::Romulan,
-                    ));
-                    for si in n_galaxy_vec.iter() {
-                        if n_info.is_same(si) {
-                            existing_collision = true;
-                            break;
-                        }
-                    }
-                    if !existing_collision {
-                        n_galaxy_vec.push(n_info);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    n_galaxy_vec
-}
 
 // ============================================================
 /// # find_actual_sector_info

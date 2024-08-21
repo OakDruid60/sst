@@ -1,15 +1,15 @@
 #![warn(missing_docs)]
-//! # enterprise.rs
+//! # ship_info.rs
 //!
 //! Contains the ShipInfo structure.  The directory contains the movement and weapon
 //! source
 //!
-/*
+
 pub mod movement; // jump and move
 pub mod weapon;
 
 use crate::manifest::constants::{FULL_ENTERPRISE_ENERGY, FULL_ENTERPRISE_TORPEDOES};
-use crate::manifest::entity::Entity;
+use crate::astro::AstroObject;
 
 use serde::{Deserialize, Serialize};
 
@@ -19,19 +19,19 @@ use serde::{Deserialize, Serialize};
 ///
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize)]
-pub struct ShipInfo {
-    loc: Entity,
+pub struct PlayerShip {
+    loc: AstroObject,
     energy: isize,
     torpedoes: isize,
 }
 
 // ============================================================================
 //
-impl ShipInfo {
+impl PlayerShip {
     // =======================================================================
     /// # get_entity
     ///
-    pub fn get_entity(self) -> Entity {
+    pub fn get_entity(self) -> AstroObject {
         self.loc
     }
 
@@ -45,13 +45,13 @@ impl ShipInfo {
     // =======================================================================
     /// # reset_torpedoes
     ///
-    pub fn reset_torpedoes(&mut self) -> () {
+    pub fn reset_torpedoes(&mut self) {
         self.torpedoes = FULL_ENTERPRISE_TORPEDOES;
     }
     // =======================================================================
     /// # use_torpedoes
     ///
-    pub fn use_torpedoe(&mut self) -> () {
+    pub fn use_torpedoe(&mut self) {
         self.torpedoes -= 1;
     }
 
@@ -65,30 +65,29 @@ impl ShipInfo {
     // =======================================================================
     /// # reset_energy
     ///
-    pub fn reset_energy(&mut self) -> () {
+    pub fn reset_energy(&mut self) {
         self.energy = FULL_ENTERPRISE_ENERGY;
     }
     // =======================================================================
     /// # use_energy
     ///
-    pub fn use_energy(&mut self, n_info: isize) -> () {
+    pub fn use_energy(&mut self, n_info: isize) {
         self.energy -= n_info;
     }
 
-    pub fn set_entity(&mut self, n_info: Entity) -> () {
+    pub fn set_entity(&mut self, n_info: AstroObject) {
         self.loc = n_info;
     }
 
     // =============================
     /// # new
     ///
-    pub fn new() -> ShipInfo {
-        let ship: ShipInfo = ShipInfo {
-            loc: Entity::new(),
+    pub fn new() -> PlayerShip {
+        let ship: PlayerShip = PlayerShip {
+            loc: AstroObject::new(),
             energy: FULL_ENTERPRISE_ENERGY,
             torpedoes: FULL_ENTERPRISE_TORPEDOES,
         };
         ship
     }
 }
-*/

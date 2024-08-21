@@ -3,6 +3,11 @@
 //!
 //! This is stuff related to the user interface (ui)
 
+pub mod cmd_proc;
+pub mod help_screen;
+pub mod logo_screen;
+pub mod lrs;
+pub mod srs;
 /*
 //use serde_json::to_string;
 use colored::Colorize;
@@ -13,11 +18,15 @@ pub mod logo_screen;
 pub mod lrs;
 pub mod stat_screen;
 pub mod srs;
-
+*/
+//use crate::astro::AstroObject;
+use crate::manifest::Manifest;
+/*
 //use crate::enterprise::ShipInfo;
 use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
 //use crate::manifest::enums::{CmdType, EntityType};
 use crate::manifest::{Manifest, Galaxy};
+*/
 
 pub const BORDER_COLOR_RED: &str = "\x1b[91m";
 pub const BORDER_COLOR_YELLOW: &str = "\x1b[93m";
@@ -35,7 +44,6 @@ pub const BORDER_ML: &str = "╠";
 
 pub const COLOR_RESET: &str = "\x1b[0m";
 
-
 // ==========================================================
 /// # disp_title
 ///
@@ -45,29 +53,15 @@ pub fn disp_title(title: &str, g_info: &Manifest, bc: &str) {
     println!("");
     //let BORDER_COL: &str  = BORDER_COLOR_GREEN;
     println!("  {bc}{BORDER_UL}{BORDER_HORZ_60}{BORDER_UR}{COLOR_RESET}");
-    println!(
-        "  {bc}{BORDER_VERT}{COLOR_RESET} {: <30}{: >28} {bc}{BORDER_VERT}{COLOR_RESET}",
-        title,
-        g_info.enterprise.get_entity().to_compact_string()
-    );
+    //    println!(
+    //        "  {bc}{BORDER_VERT}{COLOR_RESET} {: <30}{: >28} {bc}{BORDER_VERT}{COLOR_RESET}",
+    //       title,
+    //        g_info.enterprise.get_entity().to_compact_string()
+    //    );
     println!("  {bc}{BORDER_ML}{BORDER_HORZ_60}{BORDER_MR}{COLOR_RESET}");
 }
 
-// ==========================================================
-/// # red_error
-/// put the
-
-pub fn red_error() -> String {
-    "Error:".underline().bright_red().to_string()
-}
-
-// ==========================================================
-/// # red_syntax_error
-///
-pub fn red_syntax_error() -> String {
-    "Syntax Error:".underline().bright_red().to_string()
-}
-
+/*
 // ==========================================================
 /// # determine_cmd_type
 ///

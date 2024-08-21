@@ -1,10 +1,12 @@
 #![warn(missing_docs)]
-//! # command.rs
+//! # cmd_proc.rs
 //!
-//! User Command functions
+//! User Command processing functions
 
-/*
-use crate::enums::CmdType;
+use crate::astro::AstroType;
+use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
+
+use colored::Colorize;
 
 // ==========================================================================
 /// # determine_cmd_type
@@ -64,23 +66,22 @@ pub fn command_processor() {
     let mut test_cmds_vec: Vec<String> = Vec::new();
     let mut cmd_part2_vec: Vec<String> = Vec::new();
 
-
-let mut cur_galaxy: Galaxy;
-
+    let mut cur_galaxy: Galaxy;
 
     let mut g_info: Manifest = Manifest::new();
     g_info.end_star_date = g_info.cur_star_date + 131;
     g_info.galaxy_vec = crate::manifest::construct_galaxy();
-    println!("len = {:?}",g_info.galaxy_vec.len());
-    println!("capacity = {:?}",g_info.galaxy_vec.capacity());
+    println!("len = {:?}", g_info.galaxy_vec.len());
+    println!("capacity = {:?}", g_info.galaxy_vec.capacity());
 
     let g_tmp = g_info.clone();
-    let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, EntityType::Starbase);
+    let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::Starbase);
     let tmp_loc_quad = tmp_loc_list[0].create_quad_tuple();
     //g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
 
     // find the enterprise in the galaxy.
-    let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, EntityType::PlayerShip);
+    let tmp_loc_list =
+        crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::PlayerShip);
     g_info.enterprise = crate::enterprise::ShipInfo::new();
     g_info.enterprise.set_entity(tmp_loc_list[0].clone());
 
@@ -93,7 +94,7 @@ let mut cur_galaxy: Galaxy;
             stdin()
                 .read_line(&mut cmd_input)
                 .expect("Failed to read line");
-        } else {
+        } else
             if startup_cmd_vec.len() > 0 {
                 cmd_input = startup_cmd_vec.remove(0);
             } else {
@@ -103,7 +104,7 @@ let mut cur_galaxy: Galaxy;
                 } else {
                     cmd_input = cmd_part2_vec.remove(0);
                 }
-            }
+            
         }
 
         let cmd_vector: Vec<String> = cmd_input
@@ -128,7 +129,7 @@ let mut cur_galaxy: Galaxy;
                 let res = crate::ship_info::weapon::fire_phaser(&g_info, &cmd_vector);
                 match res {
                     Ok(_) => {
-                        let updated_enterprise: ShipInfo = res.as_ref().unwrap().0;
+                        let updated_enterprise: PlayerInfo = res.as_ref().unwrap().0;
                         let killed_si = res.as_ref().unwrap().1;
                         println!("killed {:?} with phaser UI", killed_si);
 
@@ -157,7 +158,7 @@ let mut cur_galaxy: Galaxy;
                 let res = crate::ship_info::weapon::fire_torpedoe(&g_info, &cmd_vector);
                 match res {
                     Ok(_) => {
-                        let updated_enterprise: ShipInfo = res.as_ref().unwrap().0;
+                        let updated_enterprise: PlayerInfo = res.as_ref().unwrap().0;
                         let killed_si = res.as_ref().unwrap().1;
                         println!("killed {:?} with torpedoe UI", killed_si);
                         let g_tmp = g_info.galaxy_vec.clone();
@@ -184,10 +185,10 @@ let mut cur_galaxy: Galaxy;
                 let res = crate::ship_info::movement::jump_enterprise(&g_info, &cmd_vector);
                 match res {
                     Ok(_) => {
-                        let updated_enterprise: ShipInfo = res.unwrap();
+                        let updated_enterprise: PlayerInfo = res.unwrap();
                         let g_tmp = g_info.galaxy_vec.clone();
                         for (pos, e) in g_tmp.iter().enumerate() {
-                            if e.get_sector_type() == EntityType::PlayerShip {
+                            if e.get_sector_type() == AstroType::PlayerShip {
                                 g_info.galaxy_vec.remove(pos);
                                 g_info.galaxy_vec.push(updated_enterprise.get_entity());
                                 break;
@@ -210,10 +211,10 @@ let mut cur_galaxy: Galaxy;
 
                 match res {
                     Ok(_) => {
-                        let updated_enterprise: ShipInfo = res.unwrap();
+                        let updated_enterprise: PlayerInfo = res.unwrap();
                         let g_tmp = g_info.galaxy_vec.clone();
                         for (pos, e) in g_tmp.iter().enumerate() {
-                            if e.get_sector_type() == EntityType::PlayerShip {
+                            if e.get_sector_type() == AstroType::PlayerShip {
                                 g_info.galaxy_vec.remove(pos);
                                 g_info.galaxy_vec.push(updated_enterprise.get_entity());
                                 break;
@@ -252,7 +253,7 @@ let mut cur_galaxy: Galaxy;
                         // g_info.charted[x as usize][y as usize] = true;
                     }
                 }
-                crate::ship_info::lrs::long_range_sensor_disp(&g_info);
+                crate::ui::lrs::long_range_sensor_disp(&g_info);
             }
             CmdType::SRS => {
                 let cur_loc = g_info.enterprise.get_entity().create_quad_tuple();
@@ -276,7 +277,7 @@ let mut cur_galaxy: Galaxy;
                         // g_info.charted[x as usize][y as usize] = true;
                     }
                 }
-                crate::ship_info::srs::short_range_sensor_disp(&g_info);
+                crate::ui::srs::short_range_sensor_disp(&g_info);
             }
             CmdType::Status => {
                 crate::ui::misc::game_stat_disp(&g_info);
@@ -326,4 +327,41 @@ let mut cur_galaxy: Galaxy;
         }
     }
 }
-*/
+
+// ==========================================================
+/// # red_error
+/// put the
+
+pub fn red_error() -> String {
+    "Error:".underline().bright_red().to_string()
+}
+
+// ==========================================================
+/// # red_syntax_error
+///
+pub fn red_syntax_error() -> String {
+    "Syntax Error:".underline().bright_red().to_string()
+}
+
+// =====================================================================
+/// #CmdType
+///  The type of commands
+///
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum CmdType {
+    Help,
+    Quit,
+    SRS,
+    LRS,
+    Phaser,
+    Torpedoe,
+    Move,
+    Jump,
+    Test,
+    Status,
+    Restore,
+    Save,
+    RecordOn,
+    RecordOff,
+    Empty,
+}

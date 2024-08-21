@@ -2,160 +2,169 @@
 //! # astro.rs
 //!
 //!
-//! This is stuff related to how space is organised.
+//! This is stuff related to how the universe is organised.
 
-//use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
+use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 //use crate::manifest::enums::{DamageType, EntityType};
 //use crate::enterprise::ShipInfo;
 //use crate::manifest::statistics::SummaryStats;
 
-//use rand::Rng;
-//use serde::{Deserialize, Serialize};
+use rand::Rng;
+use serde::{Deserialize, Serialize};
 //use serde_json::from_str;
-//use std::fmt;
+use std::collections::HashMap;
+use std::fmt;
 //use std::fs::File;
 //use std::io::{Read, Write};
-/*
+
 // =============================
-// =============================
-/// # SpaceLabel
+/// # AstroCoord
 ///
 #[derive(Clone, Copy, Serialize, Deserialize)]
-pub struct SpaceLabel {
-    label: (i8, i8),
-}
-impl SpaceLabel {
-    pub fn new(a: i8, b: i8) -> Self {
-        Self { label: (a, b) }
-    }
-    pub fn new_random(max: i8) -> Self {
-        Self { label:(
-            rand::thread_rng().gen_range(0..max),
-            rand::thread_rng().gen_range(0..max),
-        ) } 
-    }
-    // =============================
-    /// ## is_same_label
-    ///
-    pub fn is_same_label(self, comp: &SpaceLabel) -> bool {
-        if self.label.0 == comp.label.0 && self.label.1 == comp.label.1 {
-            return true;
-        }
-        false
-    }
+pub struct AstroCoord {
+    id: (i8, i8, i8, i8, i8, i8),
 }
 
-// =============================
-// =============================
-/// # SpaceDesignator
-///
-#[derive(Clone, Copy, Serialize, Deserialize)]
-pub struct SpaceDesignator {
-    designator: (GalaxyLabel, QuadrantLabel, SectorLabel),
+#[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum AstroType {
+    Empty,
+
+    Klingon,
+    KilledKlingon,
+    Romulan,
+    KilledRomulan,
+
+    Star,
+    Planet,
+
+    PlayerShip,
+    Starbase,
 }
 
-// =======================================================
-#[derive(Copy, Clone, Serialize, Deserialize)]
-pub struct GalaxyLabel {
-    label: SpaceLabel,
-}
-impl GalaxyLabel {
-    pub fn new(a: i8, b: i8) -> Self {
-        Self {
-            label: SpaceLabel::new(a, b),
-        }
-    }
-}
-
-// =======================================================
-#[derive(Copy, Clone, Serialize, Deserialize)]
-pub struct QuadrantLabel {
-    label: SpaceLabel,
-}
-impl QuadrantLabel {
-    pub fn new(a: i8, b: i8) -> Self {
-        Self {
-            label: SpaceLabel::new(a, b),
-        }
-    }
-}
-
-// =======================================================
-#[derive(Copy, Clone, Serialize, Deserialize)]
-pub struct SectorLabel {
-    label: SpaceLabel,
-}
-impl SectorLabel {
-    pub fn new(a: i8, b: i8) -> Self {
-        Self {
-            label: SpaceLabel::new(a, b),
-        }
-    }
-}
-
-//#[derive(Copy, Clone, Serialize, Deserialize)]
-//pub struct Sect {
-//    loc: (i8, i8),
-//}
-//impl Sect {
-//    pub fn new(x: i8, y: i8) -> Self {
-//        Self { loc: (x, y) }
-//    }
-//}
-
-
-
-/*
 // ======================================================================
 #[derive(Copy, Clone, Serialize, Deserialize)]
-pub struct Entity17 {
+pub struct AstroObject {
     // id: (i8, i8, i8, i8, SectorType),
-    q: Quad,
-    s: Sect,
-    t: SectorType,
+    coord: (i8, i8, i8, i8, i8, i8),
+    t: AstroType,
 }
-impl Default for Entity17 {
-    fn default() -> Self {
-        Self::new()
+// =====================================================================
+//
+impl fmt::Debug for AstroObject {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Location").field("id", &self.t).finish()
     }
 }
-impl Entity17 {
-    // =============================
-    pub fn new() -> Self {
-        Self {
-            q: Quad::new(99 as i8, 99 as i8),
-            s: Sect::new(99 as i8, 99 as i8),
-            t: SectorType::Empty,
-        }
+// =====================================================================
+//
+impl fmt::Display for AstroObject {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.to_compact_string())
     }
-
+}
+impl AstroObject {
     // =============================
     /// # create
     ///
-    pub fn create(n: (i8, i8, i8, i8, SectorType)) -> Self {
+    pub fn create(n: (i8, i8, i8, i8, i8, i8), ty: AstroType) -> Self {
         Self {
-            //    id: (n.0, n.1, n.2, n.3, n.4),
-            q: Quad::new(n.0, n.1),
-            s: Sect::new(n.2, n.3),
-            t: n.4,
+            coord: (n.0, n.1, n.2, n.3, n.4, n.5),
+            t: ty,
         }
+    }
+
+    // =============================
+    /// # to_key_string
+    pub fn to_key_string(self) -> String {
+        format!(
+            "{}{}{}{}{}{}",
+            self.coord.0, self.coord.1, self.coord.2, self.coord.3, self.coord.4, self.coord.5
+        )
+    }
+    // =============================
+    /// # to_compact_string
+    pub fn to_compact_string(self) -> String {
+        format!(
+            "q:({},{}) s:({},{}) {:?}",
+            self.coord.2, self.coord.3, self.coord.4, self.coord.5, self.t
+        )
+    }
+
+    // ===========================================================================
+    /// # calc_sector_distance
+    ///
+    /// Right triangles are good!
+    pub fn calc_sector_distance(self, target: AstroObject) -> f64 {
+        let strt_x = self.coord.4 as f64;
+        let strt_y = self.coord.5 as f64;
+        let target_x = target.coord.4 as f64;
+        let target_y = target.coord.5 as f64;
+
+        let dx2 = ((strt_x - target_x).abs()).powi(2);
+        let dy2 = ((strt_y - target_y).abs()).powi(2);
+
+        (dx2 + dy2).sqrt()
+    }
+
+    // ===========================================================================
+    /// # calc_quad_distance
+    ///
+    /// Right triangles are good!
+    pub fn calc_quad_distance(self, target: AstroObject) -> f64 {
+        let strt_x = self.coord.2 as f64;
+        let strt_y = self.coord.3 as f64;
+        let target_x = target.coord.2 as f64;
+        let target_y = target.coord.3 as f64;
+
+        let dx2 = ((strt_x - target_x).abs()).powi(2);
+        let dy2 = ((strt_y - target_y).abs()).powi(2);
+
+        (dx2 + dy2).sqrt()
+    }
+
+    // =============================
+    /// #  ret_quad_tuple
+    ///
+    pub fn ret_quad_tuple(self) -> (i8, i8) {
+        (self.coord.2, self.coord.3)
+    }
+
+    // =============================
+    /// # ret_sect_tuple
+    ///
+    pub fn ret_sect_tuple(self) -> (i8, i8) {
+        (self.coord.4, self.coord.5)
+    }
+
+    // =======================================================
+    /// # kill_enemy
+    ///
+    ///
+    pub fn kill_enemy(&mut self) {
+        let tmp_t = self.t;
+        let mut tmp_s = AstroType::Empty;
+        match tmp_t {
+            AstroType::Klingon => {
+                tmp_s = AstroType::KilledKlingon;
+            }
+            AstroType::Romulan => {
+                tmp_s = AstroType::KilledRomulan;
+            }
+            _ => {}
+        }
+        self.t = tmp_s
     }
 
     // =============================
     //
-    pub fn get_sector_type(self) -> SectorType {
+    pub fn get_astro_type(self) -> AstroType {
         self.t
     }
 
     // =============================
-    //
-    //pub fn set_sector_type(mut self, n_type: SectorType) -> () {
-    //    self.id.4 = n_type.clone();
-    //}
-    // =============================
     /// # is_same
     ///
-    pub fn is_same(self, comp: &Entity) -> bool {
+    pub fn is_same(self, comp: &AstroObject) -> bool {
         if self.is_same_quad(comp) && self.is_same_sect(comp) {
             return true;
         }
@@ -164,8 +173,8 @@ impl Entity17 {
     // =============================
     /// # is_same_quad
     ///
-    pub fn is_same_quad(self, comp: &Entity) -> bool {
-        if self.q.loc.0 == comp.q.loc.0 && self.q.loc.1 == comp.q.loc.1 {
+    pub fn is_same_quad(self, comp: &AstroObject) -> bool {
+        if self.coord.2 == comp.coord.2 && self.coord.3 == comp.coord.3 {
             return true;
         }
         false
@@ -174,8 +183,8 @@ impl Entity17 {
     // =============================
     /// # is_same_sect
     ///
-    pub fn is_same_sect(self, comp: &Entity) -> bool {
-        if self.s.loc.0 == comp.s.loc.0 && self.s.loc.1 == comp.s.loc.1 {
+    pub fn is_same_sect(self, comp: &AstroObject) -> bool {
+        if self.coord.4 == comp.coord.4 && self.coord.5 == comp.coord.5 {
             return true;
         }
         false
@@ -185,7 +194,7 @@ impl Entity17 {
     /// # is_same_sect_tuple
     ///
     pub fn is_same_sect_tuple(self, comp: (i8, i8)) -> bool {
-        if self.s.loc.0 == comp.0 && self.s.loc.1 == comp.1 {
+        if self.coord.4 == comp.0 && self.coord.5 == comp.1 {
             return true;
         }
         false
@@ -195,10 +204,10 @@ impl Entity17 {
     /// # calc_nearby_sector_bounds
     ///
     pub fn calc_nearby_sector_bounds(self) -> ((i8, i8), (i8, i8)) {
-        let mut min_x: i8 = self.s.loc.0 - 1;
-        let mut max_x: i8 = self.s.loc.0 + 1;
-        let mut min_y: i8 = self.s.loc.1 - 1;
-        let mut max_y: i8 = self.s.loc.1 + 1;
+        let mut min_x: i8 = self.coord.4 - 1;
+        let mut max_x: i8 = self.coord.4 + 1;
+        let mut min_y: i8 = self.coord.5 - 1;
+        let mut max_y: i8 = self.coord.5 + 1;
         // find an empty sector for docking
 
         if min_x < 0 {
@@ -216,80 +225,8 @@ impl Entity17 {
 
         ((min_x, min_y), (max_x, max_y))
     }
-
-    // =============================
-    /// #  create_quad_tuple
-    ///
-    pub fn create_quad_tuple(self) -> (i8, i8) {
-        (self.q.loc.0, self.q.loc.1)
-    }
-
-    // =============================
-    /// # create_sect_tuple
-    ///
-    pub fn create_sect_tuple(self) -> (i8, i8) {
-        (self.s.loc.0, self.s.loc.1)
-    }
-
-    // =============================
-    /// # to_compact_string
-    pub fn to_compact_string(self) -> String {
-        return format!(
-            "q:({},{}) s:({},{}) {:?}",
-            self.q.loc.0, self.q.loc.1, self.s.loc.0, self.s.loc.1, self.t
-        );
-    }
-
-    // =======================================================
-    /// # kill_enemy
-    ///
-    ///
-    pub fn kill_enemy(&mut self) {
-        let tmp_t = self.t;
-        let mut tmp_s = SectorType::Empty;
-        match tmp_t {
-            SectorType::Klingon => {
-                tmp_s = SectorType::KilledKlingon;
-            }
-            SectorType::Romulan => {
-                tmp_s = SectorType::KilledRomulan;
-            }
-            _ => {}
-        }
-        self.t = tmp_s
-    }
-
-    // ===========================================================================
-    /// # calc_sector_distance
-    ///
-    /// Right triangles are good!
-    pub fn calc_sector_distance(self, target: Entity) -> f64 {
-        let strt_x = self.s.loc.0 as f64;
-        let strt_y = self.s.loc.1 as f64;
-        let target_x = target.s.loc.0 as f64;
-        let target_y = target.s.loc.1 as f64;
-
-        let dx2 = ((strt_x - target_x).abs()).powi(2);
-        let dy2 = ((strt_y - target_y).abs()).powi(2);
-
-        (dx2 + dy2).sqrt()
-    }
-
-    // ===========================================================================
-    /// # calc_quad_distance
-    ///
-    /// Right triangles are good!
-    pub fn calc_quad_distance(self, target: Entity) -> f64 {
-        let strt_x = self.q.loc.0 as f64;
-        let strt_y = self.q.loc.1 as f64;
-        let target_x = target.q.loc.0 as f64;
-        let target_y = target.q.loc.1 as f64;
-
-        let dx2 = ((strt_x - target_x).abs()).powi(2);
-        let dy2 = ((strt_y - target_y).abs()).powi(2);
-
-        (dx2 + dy2).sqrt()
-    }
+}
+/*
 
     // ====================================================================
     /// # create_new_random_enterprise_in_this_quad
@@ -305,24 +242,11 @@ impl Entity17 {
         }
     }
 }
-// =====================================================================
-//
-impl fmt::Debug for Entity {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Location").field("id", &self.t).finish()
-    }
-}
-// =====================================================================
-//
-impl fmt::Display for Entity {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.to_compact_string())
-    }
-}
+
 //galaxy_vec: Vec<Galaxy>;
 */
 
-
+/*
 // =============================
 // =============================
 /// # Galaxy
@@ -358,7 +282,7 @@ pub struct Sector {
 ///
 pub struct Entity {
     designator: SpaceDesignator,
-    typ: EntityType,
+    typ: AstroType,
     damage_vec: Vec<Damage>,
 }
 // # entity.rs
@@ -376,22 +300,6 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 //use std::fs::File;
 //use std::io::{Read, Write};
-
-#[derive( PartialEq, Serialize, Deserialize)]
-pub enum EntityType {
-    Empty,
-
-    Klingon,
-    KilledKlingon,
-    Romulan,
-    KilledRomulan,
-
-    Star,
-    Planet,
-
-    PlayerShip,
-    Starbase,
-}
 
 
 // ======================================================================
@@ -420,7 +328,7 @@ pub struct Entity {
     // id: (i8, i8, i8, i8, SectorType),
     q: Quad,
     s: Sect,
-    t: EntityType,
+    t: AstroType,
 }
 impl Default for Entity {
     fn default() -> Self {
@@ -433,7 +341,7 @@ impl Entity {
         Self {
             q: Quad::new(99 as i8, 99 as i8),
             s: Sect::new(99 as i8, 99 as i8),
-            t: EntityType::Empty,
+            t: AstroType::Empty,
         }
     }
 
@@ -554,13 +462,13 @@ impl Entity {
     ///
     pub fn kill_enemy(&mut self) {
         let tmp_t = self.t;
-        let mut tmp_s = EntityType::Empty;
+        let mut tmp_s = AstroType::Empty;
         match tmp_t {
-            EntityType::Klingon => {
-                tmp_s = EntityType::KilledKlingon;
+            AstroType::Klingon => {
+                tmp_s = AstroType::KilledKlingon;
             }
-            EntityType::Romulan => {
-                tmp_s = EntityType::KilledRomulan;
+            AstroType::Romulan => {
+                tmp_s = AstroType::KilledRomulan;
             }
             _ => {}
         }
@@ -609,7 +517,7 @@ impl Entity {
                 rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8),
                 rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8),
             ),
-            t: EntityType::PlayerShip,
+            t: AstroType::PlayerShip,
         }
     }
 }
@@ -627,28 +535,8 @@ impl fmt::Display for Entity {
         write!(f, "{}", self.to_compact_string())
     }
 }
-// =====================================================================
-/// #CmdType
-///  The type of commands
-///
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub enum CmdType {
-    Help,
-    Quit,
-    SRS,
-    LRS,
-    Phaser,
-    Torpedoe,
-    Move,
-    Jump,
-    Test,
-    Status,
-    Restore,
-    Save,
-    RecordOn,
-    RecordOff,
-    Empty,
-}
+*/
+/*
 
 // =====================================================================
 /// #AlertStatus
@@ -675,25 +563,215 @@ pub enum DamageType {
     Ll,
     Kk,
 }
-    
+
+*/
+
 // ======================================================================
 // ======================================================================
-/// Galaxy
+/// AstroUniverse
 // ======================================================================
 // ======================================================================
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Galaxy {
-    pub designator: GalaxyLabel,
-    pub data_vec: Vec<Entity>,
+pub struct AstroUniverse {
+    data_map: HashMap<String, AstroObject>,
 }
 
-impl Galaxy {
+impl AstroUniverse {
+    pub fn new() -> Self {
+        Self {
+            data_map: HashMap::new(),
+        }
+    }
+    // =========================================================================
+    /// # construct_galaxy
+    ///
+    pub fn construct_galaxy(gal_coord: (i8, i8)) -> HashMap<String, AstroObject> {
+        let mut n_galaxy_map: HashMap<String, AstroObject> = HashMap::new();
+        let n_gal_x = gal_coord.0;
+        let n_gal_y = gal_coord.1;
+        //
+        // set initial starbase
+        let n_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+        let n_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+
+        let n_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+        let n_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+
+        let starbase_info: AstroObject = AstroObject::create(
+            (n_gal_x, n_gal_y, n_quad_x, n_quad_y, n_sect_x, n_sect_y),
+            AstroType::Starbase,
+        );
+        n_galaxy_map.insert(starbase_info.to_key_string(), starbase_info);
+
+        //
+        // set initial enterprise
+        let mut existing_collision = false;
+        while !existing_collision {
+            let trial_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+            let trial_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+            let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+            let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+
+            let enterprise_info: AstroObject = AstroObject::create(
+                (
+                    n_gal_x,
+                    n_gal_y,
+                    trial_quad_x,
+                    trial_quad_y,
+                    trial_sect_x,
+                    trial_sect_y,
+                ),
+                AstroType::PlayerShip,
+            );
+            let n_key = enterprise_info.to_key_string();
+            existing_collision = n_galaxy_map.contains_key(&n_key);
+            if !existing_collision {
+                n_galaxy_map.insert(n_key, enterprise_info);
+                break;
+            }
+        }
+        //        for (key, value) in n_galaxy_map.iter() {
+        //            println!("{} {:?}", key,value.get_astro_type());
+        //        }
+        //        println!("=============================================");
+
+        // now populate other things into each quadrant
+        for xx in 0..MAX_GALAXY_SIZE_I8 {
+            for yy in 0..MAX_GALAXY_SIZE_I8 {
+                let trial_quad_x: i8 = xx;
+                let trial_quad_y: i8 = yy;
+
+                // planets
+                for _counter in 0..rand::thread_rng().gen_range(0..3) {
+                    existing_collision = false;
+                    while !existing_collision {
+                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let n_info: AstroObject = AstroObject::create(
+                            (
+                                n_gal_x,
+                                n_gal_y,
+                                trial_quad_x,
+                                trial_quad_y,
+                                trial_sect_x,
+                                trial_sect_y,
+                            ),
+                            AstroType::Planet,
+                        );
+                        let n_key = n_info.to_key_string();
+                        existing_collision = n_galaxy_map.contains_key(&n_key);
+                        if !existing_collision {
+                            n_galaxy_map.insert(n_key, n_info);
+                            break;
+                        }
+                    }
+                }
+
+                // Stars
+                for _counter in 0..rand::thread_rng().gen_range(1..5) {
+                    existing_collision = false;
+                    while !existing_collision {
+                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let n_info: AstroObject = AstroObject::create(
+                            (
+                                n_gal_x,
+                                n_gal_y,
+                                trial_quad_x,
+                                trial_quad_y,
+                                trial_sect_x,
+                                trial_sect_y,
+                            ),
+                            AstroType::Star,
+                        );
+                        let n_key = n_info.to_key_string();
+                        existing_collision = n_galaxy_map.contains_key(&n_key);
+                        if !existing_collision {
+                            n_galaxy_map.insert(n_key, n_info);
+                            break;
+                        }
+                    }
+                }
+
+                // Klingons
+                for _counter in 0..rand::thread_rng().gen_range(0..2) {
+                    existing_collision = false;
+                    while !existing_collision {
+                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let n_info: AstroObject = AstroObject::create(
+                            (
+                                n_gal_x,
+                                n_gal_y,
+                                trial_quad_x,
+                                trial_quad_y,
+                                trial_sect_x,
+                                trial_sect_y,
+                            ),
+                            AstroType::Klingon,
+                        );
+                        let n_key = n_info.to_key_string();
+                        existing_collision = n_galaxy_map.contains_key(&n_key);
+                        if !existing_collision {
+                            n_galaxy_map.insert(n_key, n_info);
+                            break;
+                        }
+                    }
+                }
+
+                // Romulans
+                for _counter in 0..rand::thread_rng().gen_range(0..3) {
+                    existing_collision = false;
+                    while !existing_collision {
+                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let n_info: AstroObject = AstroObject::create(
+                            (
+                                n_gal_x,
+                                n_gal_y,
+                                trial_quad_x,
+                                trial_quad_y,
+                                trial_sect_x,
+                                trial_sect_y,
+                            ),
+                            AstroType::Romulan,
+                        );
+                        let n_key = n_info.to_key_string();
+                        existing_collision = n_galaxy_map.contains_key(&n_key);
+                        if !existing_collision {
+                            n_galaxy_map.insert(n_key, n_info);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for (key, value) in n_galaxy_map.iter() {
+            //let n_info = *si;
+            println!("{} {:?}", key, value.get_astro_type());
+        }
+        n_galaxy_map
+    }
+}
+
+/*
+// ======================================================================
+// ======================================================================
+/// GameWideData
+// ======================================================================
+// ======================================================================
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GameWideData {
+    //pub designator: GalaxyLabel,
+    universe_map: HashMap<String, AstroObject>,
+}
+impl GameWideData {
     pub fn new() -> Self {
         Self {
             cur_star_date: 0,
             end_star_date: 0,
             //charted: [[false; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
-            galaxy_vec: Vec::new(),
+            data_map: Vec::new(),
             test_cmds_vec: Vec::new(),
             enterprise: ShipInfo::new(),
             password: "jap".to_string(),
@@ -705,8 +783,8 @@ impl Galaxy {
     ///
     /// create a quadrant information vector for the location of interest.
     ///
-    pub fn create_quadrant_vec(&self, interest_loc: Entity) -> Vec<Entity> {
-        let mut n_vec: Vec<Entity> = Vec::new();
+    pub fn create_quadrant_vec(&self, interest_loc: AstroType) -> Vec<AstroObject> {
+        let mut n_vec: Vec<AstroObject> = Vec::new();
         for si in self.galaxy_vec.iter() {
             let n_info = *si;
             if n_info.is_same_quad(&interest_loc) {
@@ -720,7 +798,7 @@ impl Galaxy {
     /// # game_stat_create_disp_vec
     ///
     pub fn game_stat_create_disp_vec(self, create_complete: bool) -> Vec<String> {
-        let input_vec: Vec<Entity>;
+        let input_vec: Vec<AstroObject>;
         if create_complete {
             input_vec = self.galaxy_vec;
         } else {
@@ -762,8 +840,8 @@ impl Galaxy {
 // =========================================================================
 /// # create_vec_of_type
 ///
-pub fn create_vec_of_type(orig_vec: &Vec<Entity>, n_type: EntityType) -> Vec<Entity> {
-    let mut n_type_vec: Vec<Entity> = Vec::new();
+pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec<AstroObject> {
+    let mut n_type_vec: Vec<AstroObject> = Vec::new();
 
     for si in orig_vec.iter() {
         let n_info = *si;
@@ -775,170 +853,11 @@ pub fn create_vec_of_type(orig_vec: &Vec<Entity>, n_type: EntityType) -> Vec<Ent
     n_type_vec
 }
 
-// =========================================================================
-/// # construct_galaxy
-///
-pub fn construct_galaxy() -> Vec<Entity> {
-    let mut n_galaxy_vec: Vec<Entity> = Vec::new();
-
-    //
-    // set initial starbase
-    let n_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-    let n_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-
-    let n_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-    let n_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-
-    let starbase_info: Entity =
-        Entity::create((n_quad_x, n_quad_y, n_sect_x, n_sect_y, EntityType::Starbase));
-    n_galaxy_vec.push(starbase_info);
-
-    //
-    // set initial enterprise
-    let mut existing_collision = false;
-    while !existing_collision {
-        let trial_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-        let trial_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-
-        let enterprise_info: Entity = Entity::create((
-            trial_quad_x,
-            trial_quad_y,
-            trial_sect_x,
-            trial_sect_y,
-            EntityType::PlayerShip,
-        ));
-        for si in n_galaxy_vec.iter() {
-            if enterprise_info.is_same(si) {
-                existing_collision = true;
-                break;
-            }
-        }
-        if !existing_collision {
-            n_galaxy_vec.push(enterprise_info);
-            break;
-        }
-    }
-
-    // now populate other things into each quadrant
-    for xx in 0..MAX_GALAXY_SIZE_I8 {
-        for yy in 0..MAX_GALAXY_SIZE_I8 {
-            let trial_quad_x: i8 = xx as i8;
-            let trial_quad_y: i8 = yy as i8;
-
-            // planets
-            for _counter in 0..rand::thread_rng().gen_range(0..3) {
-                existing_collision = false;
-                while !existing_collision {
-                    let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let n_info: Entity = Entity::create((
-                        trial_quad_x,
-                        trial_quad_y,
-                        trial_sect_x,
-                        trial_sect_y,
-                        EntityType::Planet,
-                    ));
-                    for si in n_galaxy_vec.iter() {
-                        if n_info.is_same(si) {
-                            existing_collision = true;
-                            break;
-                        }
-                    }
-                    if !existing_collision {
-                        n_galaxy_vec.push(n_info);
-                        break;
-                    }
-                }
-            }
-
-            // Stars
-            for _counter in 0..rand::thread_rng().gen_range(1..5) {
-                existing_collision = false;
-                while !existing_collision {
-                    let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let n_info: Entity = Entity::create((
-                        trial_quad_x,
-                        trial_quad_y,
-                        trial_sect_x,
-                        trial_sect_y,
-                        EntityType::Star,
-                    ));
-                    for si in n_galaxy_vec.iter() {
-                        if n_info.is_same(si) {
-                            existing_collision = true;
-                            break;
-                        }
-                    }
-                    if !existing_collision {
-                        n_galaxy_vec.push(n_info);
-                        break;
-                    }
-                }
-            }
-
-            // Klingons
-            for _counter in 0..rand::thread_rng().gen_range(0..2) {
-                existing_collision = false;
-                while !existing_collision {
-                    let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let n_info: Entity = Entity::create((
-                        trial_quad_x,
-                        trial_quad_y,
-                        trial_sect_x,
-                        trial_sect_y,
-                        EntityType::Klingon,
-                    ));
-                    for si in n_galaxy_vec.iter() {
-                        if n_info.is_same(si) {
-                            existing_collision = true;
-                            break;
-                        }
-                    }
-                    if !existing_collision {
-                        n_galaxy_vec.push(n_info);
-                        break;
-                    }
-                }
-            }
-
-            // Romulans
-            for _counter in 0..rand::thread_rng().gen_range(0..3) {
-                existing_collision = false;
-                while !existing_collision {
-                    let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                    let n_info: Entity = Entity::create((
-                        trial_quad_x,
-                        trial_quad_y,
-                        trial_sect_x,
-                        trial_sect_y,
-                        EntityType::Romulan,
-                    ));
-                    for si in n_galaxy_vec.iter() {
-                        if n_info.is_same(si) {
-                            existing_collision = true;
-                            break;
-                        }
-                    }
-                    if !existing_collision {
-                        n_galaxy_vec.push(n_info);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    n_galaxy_vec
-}
 
 // ============================================================
 /// # find_actual_sector_info
 /// Given a vector of SectorInfo, return the given sector, or Empty if not found.
-pub fn find_actual_sector_info(orig_vec: &Vec<Entity>, sect: (i8, i8)) -> Entity {
+pub fn find_actual_sector_info(orig_vec: &Vec<AstroObject>, sect: (i8, i8)) -> Entity {
     for si in orig_vec.iter() {
         let n_info = *si;
         if n_info.is_same_sect_tuple(sect) {
@@ -952,7 +871,7 @@ pub fn find_actual_sector_info(orig_vec: &Vec<Entity>, sect: (i8, i8)) -> Entity
 /// # is_straight_line_path_clear
 ///
 pub fn is_straight_line_path_clear(
-    quad_vec: &Vec<Entity>,
+    quad_vec: &Vec<AstroObject>,
     strt: Entity,
     tgt: Entity,
 ) -> Result<bool, String> {
@@ -978,10 +897,10 @@ pub fn is_straight_line_path_clear(
         let y7 = (trial_loc_y.floor()) as i32;
         let sector_info: Entity = find_actual_sector_info(&quad_vec, (x7 as i8, y7 as i8));
         //println!("{} {} {:?}", x7, y7, sector_info.obj_type);
-        if sector_info.get_sector_type() != EntityType::PlayerShip
-            && sector_info.get_sector_type() != EntityType::Empty
-            && sector_info.get_sector_type() != EntityType::KilledKlingon
-            && sector_info.get_sector_type() != EntityType::KilledRomulan
+        if sector_info.get_sector_type() != AstroType::PlayerShip
+            && sector_info.get_sector_type() != AstroType::Empty
+            && sector_info.get_sector_type() != AstroType::KilledKlingon
+            && sector_info.get_sector_type() != AstroType::KilledRomulan
         {
             if x7 == tgt_tuple.0 as i32 && y7 == tgt_tuple.1 as i32 {
             } else {
@@ -1003,15 +922,15 @@ pub fn is_straight_line_path_clear(
 /// create a quadrant informationm vector from the supplied quadrant vector
 /// and location of interest (probably the enterprise).
 pub fn create_bad_guy_qi_vec(
-    qi_vec: &Vec<Entity>,
+    qi_vec: &Vec<AstroObject>,
     interest_loc: Entity,
     chk_path: bool,
-) -> Vec<Entity> {
-    let mut n_vec: Vec<Entity> = Vec::new();
+) -> Vec<AstroObject> {
+    let mut n_vec: Vec<AstroObject> = Vec::new();
     for si in qi_vec.iter() {
         let n_info = *si;
-        let bad_guy_type: EntityType = n_info.get_sector_type();
-        if bad_guy_type == EntityType::Klingon || bad_guy_type == EntityType::Romulan {
+        let bad_guy_type: AstroType = n_info.get_sector_type();
+        if bad_guy_type == AstroType::Klingon || bad_guy_type == AstroType::Romulan {
             if chk_path {
                 let path_res = is_straight_line_path_clear(&qi_vec, interest_loc, n_info);
                 match path_res {

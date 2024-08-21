@@ -2,10 +2,9 @@
 //! # lrs.rs
 //!
 //! This is stuff related to displaying the long range sensor scan.
-/*
+
+use crate::astro::{AstroObject, AstroType};
 use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
-use crate::manifest::entity::Entity;
-use crate::manifest::enums::EntityType;
 use crate::manifest::Manifest;
 use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 
@@ -22,10 +21,10 @@ use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 ///
 pub fn long_range_sensor_disp(g_info: &Manifest) {
     //
-    let loc_tmp = g_info.enterprise.get_entity().clone();
+    //fixme: let loc_tmp = g_info.enterprise.get_entity().clone();
     let qi_vec = g_info.create_quadrant_vec(loc_tmp);
-    let bc = crate::helpers::alert_status_of_quadrant2(&qi_vec);
-    crate::ui::disp_title("Long Range Scan", g_info, bc);
+    //fixme: let bc = crate::helpers::alert_status_of_quadrant2(&qi_vec);
+    //fixme: crate::ui::disp_title("Long Range Scan", g_info, bc);
 
     for yy in { 00..MAX_GALAXY_SIZE_I8 }.rev() {
         let mut row_string = format!("{} {bc}{BORDER_VERT}{COLOR_RESET}", yy);
@@ -33,14 +32,15 @@ pub fn long_range_sensor_disp(g_info: &Manifest) {
             let tmp_quadx: i8 = xx as i8;
             let tmp_quady: i8 = yy as i8;
             let zero: i8 = 0 as i8;
-            let tmp_loc = Entity::create((tmp_quadx, tmp_quady, zero, zero, EntityType::Empty));
+            let tmp_loc =
+                AstroObject::create((0, 0, tmp_quadx, tmp_quady, zero, zero), AstroType::Empty);
 
             let tmp_qi_vec = g_info.create_quadrant_vec(tmp_loc);
             let mut tmp: String = crate::helpers::compact_summary_string(&tmp_qi_vec);
             //if g_info.charted[xx as usize][yy as usize] {
             //    tmp = format!("{}", tmp);
             //} else {
-                tmp = format!("   .   ");
+            tmp = format!("   .   ");
             //}
             row_string.push_str(tmp.as_str());
         }
@@ -63,4 +63,3 @@ pub fn long_range_sensor_disp(g_info: &Manifest) {
         print!("{}", row_string);
     }
 }
-*/

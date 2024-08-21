@@ -3,7 +3,7 @@
 //!
 //! This is stuff related to displaying general user help information.
 //!
-/*
+
 use crate::manifest::Manifest;
 use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 
@@ -15,9 +15,9 @@ use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 /// **Note** needs more details.
 ///
 pub fn help_screen(g_info: &Manifest) {
-    let loc_tmp = g_info.enterprise.get_entity().clone();
-    let qi_vec = g_info.create_quadrant_vec(loc_tmp);
-    let bc = crate::helpers::alert_status_of_quadrant2(&qi_vec);
+    //let loc_tmp = g_info.enterprise.get_entity().clone();
+    //let qi_vec = g_info.create_quadrant_vec(loc_tmp);
+    let bc = "5"; //crate::helpers::alert_status_of_quadrant2(&qi_vec);
     crate::ui::disp_title("Command Help", g_info, bc);
     let bv: &str = &(bc.to_owned() + BORDER_VERT + COLOR_RESET);
     println!("  {bv} {:<58} {bv}", "qui - quit");
@@ -39,4 +39,3 @@ pub fn help_screen(g_info: &Manifest) {
     println!("  {bv} {:<58} {bv}", "hel - help");
     println!("  {bc}{BORDER_LL}{BORDER_HORZ_60}{BORDER_LR}{COLOR_RESET}");
 }
-*/

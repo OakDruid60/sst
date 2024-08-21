@@ -10,7 +10,6 @@
 //mod helpers;
 mod astro;
 mod ship_info;
-//mod space_org;
 mod manifest;
 mod ui;
 // todo: this
@@ -25,9 +24,10 @@ mod ui;
 // hack to get around this
 
 fn main() {
-    //ui::logo_screen::game_logo();
+    ui::logo_screen::game_logo();
+    astro::AstroUniverse::construct_galaxy((0, 0));
 
-    // ui::cmd_proc::command_processor();
+    ui::cmd_proc::command_processor();
 
-    println!("Good Bye, Live long and Prosper");
+    println!("Good Bye... Live long and Prosper");
 }
