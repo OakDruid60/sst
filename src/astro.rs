@@ -263,18 +263,6 @@ impl AstroObject {
 */
 /*
 
-// =====================================================================
-/// #AlertStatus
-///  The alert status types
-///
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub enum AlertStatus {
-    Normal,
-    Docked,
-    Red,
-    Yellow,
-}
-
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Affiliation {
     Empty,
@@ -673,95 +661,6 @@ pub fn create_bad_guy_qi_vec(
     }
 
     n_vec
-}
-
-/// Thaw a game.
-///
-/// The .sst file type is as follows:
-///
-/// (password)0x1e(json data for Universe object)
-pub fn thaw(cmd_vector: &Vec<String>) -> Option<Manifest> {
-    let mut save_file_name: &str = DEBUG_FILE_NAME;
-    if cmd_vector.len() == 2 {
-        save_file_name = cmd_vector[1].as_str();
-    }
-    let mut save_file: File = File::open(save_file_name).expect("Reason");
-    let uni: Manifest;
-
-    let temp = File::open(save_file_name);
-    match temp {
-        Ok(p) => save_file = p,
-        Err(_) => {
-            println!("ERROR: Unable to find save file.\n");
-        }
-    }
-
-    //let pass = input("Password: ");
-    let mut enc_data = String::new();
-    match save_file.read_to_string(&mut enc_data) {
-        Ok(_) => {}
-        Err(_) => {
-            eprintln!("\nERROR: The save file is corrupted.");
-            return None;
-        }
-    }
-
-    let raw_parts: Vec<String> = enc_data
-        .split("\0")
-        .collect::<Vec<&str>>()
-        .into_iter()
-        .map(|element| String::from(element))
-        .collect();
-
-    uni = match from_str(raw_parts[1].as_str()) {
-        Ok(data) => {
-            //println!("Restored");
-            println!("Game back-up restored from {}", save_file_name);
-            data
-        }
-        Err(_) => {
-            println!("\nERROR: The save file is corrupted.");
-            return None;
-        }
-    };
-    return Some(uni);
-}
-
-// ==========================================================================
-/// # freeze
-///
-///
-//pub fn freeze (filename: Option<String>, uni: &GameWideData) {
-pub fn freeze(uni: &Manifest, cmd_vector: &Vec<String>) {
-    /* let filename = match filename {
-        Some(v) => v,
-        None => input("Filename: ")
-    };
-    */
-    let mut save_file_name = DEBUG_FILE_NAME;
-    if cmd_vector.len() == 2 {
-        save_file_name = cmd_vector[1].as_str();
-    }
-    let mut file = match File::create(&save_file_name) {
-        Ok(f) => f,
-        Err(e) => {
-            if DEBUG {
-                println!("{}", e);
-            }
-            println!("Alas, it is impossible to create a file in that location.");
-            return;
-        }
-    };
-
-    // println!("{}",serde_json::to_string(uni).unwrap().as_str());
-    match file.write_all(
-        (uni.password.clone() + "\0" + serde_json::to_string(uni).unwrap().as_str()).as_bytes(),
-    ) {
-        Ok(_) => {}
-        Err(_) => println!("I'm sorry, but that file cannot be written to."),
-    }
-
-    println!("Game back-up created in {}", save_file_name);
 }
 
 */

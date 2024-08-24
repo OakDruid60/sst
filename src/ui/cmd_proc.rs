@@ -4,10 +4,11 @@
 //! User Command processing functions
 
 use crate::astro::AstroType;
-use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
+use crate::manifest::constants::MAX_GALAXY_SIZE_I8; //, MAX_SECTOR_SIZE_I8};
 
 use colored::Colorize;
 
+use std::io::{stdin,stdout,Write};
 // ==========================================================================
 /// # determine_cmd_type
 ///

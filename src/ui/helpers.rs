@@ -98,34 +98,6 @@ pub fn alert_status_of_quadrant2(qi_vec: &Vec<Entity>) -> &str {
     return stat_string;
 }
 
-// ===============================
-/// # calc_alert_status
-///
-/// Calculate some stuff
-pub fn calc_alert_status(qi_vec: &Vec<Entity>) -> AlertStatus {
-    let mut cur_alert = AlertStatus::Normal;
-    // find the enterprise
-    let enterprise_vec = crate::manifest::create_vec_of_type(qi_vec, EntityType::PlayerShip);
-    let star_base_vec = crate::manifest::create_vec_of_type(qi_vec, EntityType::Starbase);
-    if star_base_vec.len() != 0 {
-        let distance = enterprise_vec[0].calc_sector_distance(star_base_vec[0]);
-        if distance < 1.42 {
-            cur_alert = AlertStatus::Docked;
-        }
-    }
-    if cur_alert != AlertStatus::Docked {
-        'outer: for si in qi_vec.iter() {
-            let n_info = *si;
-            if n_info.get_sector_type() == EntityType::Klingon {
-                cur_alert = AlertStatus::Red;
-                break 'outer;
-            } else if n_info.get_sector_type() == EntityType::Romulan {
-                cur_alert = AlertStatus::Yellow;
-            }
-        }
-    }
-    cur_alert
-}
 
 // =====================================================================
 /// # validate_x_y_input

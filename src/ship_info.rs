@@ -8,13 +8,13 @@
 pub mod movement; // jump and move
 pub mod weapon;
 
+use crate::astro::{AstroObject, AstroType};
 use crate::manifest::constants::{FULL_ENTERPRISE_ENERGY, FULL_ENTERPRISE_TORPEDOES};
-use crate::astro::AstroObject;
 
 use serde::{Deserialize, Serialize};
 
 // ================================================================
-/// #ShipInfo
+/// #PlayerShip
 ///  Information about the ship i.e. energy, location, torpedoes
 ///
 
@@ -84,7 +84,7 @@ impl PlayerShip {
     ///
     pub fn new() -> PlayerShip {
         let ship: PlayerShip = PlayerShip {
-            loc: AstroObject::new(),
+            loc: AstroObject::create((99i8, 99i8, 99i8, 99i8, 99i8, 99i8), AstroType::PlayerShip),
             energy: FULL_ENTERPRISE_ENERGY,
             torpedoes: FULL_ENTERPRISE_TORPEDOES,
         };

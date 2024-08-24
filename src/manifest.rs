@@ -13,7 +13,7 @@ pub mod constants; // various constants like the size of the galaxy
 pub mod statistics;
 
 use crate::astro::AstroObject;
-//use crate::enterprise::ShipInfo;
+use crate::ship_info::PlayerShip;
 //use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, //MAX_SECTOR_SIZE_I8};
 //use crate::manifest::entity::Entity;
 //use crate::manifest::enums::EntityType;
@@ -35,9 +35,9 @@ use std::collections::HashMap;
 pub struct Manifest {
     pub cur_star_date: i32,
     pub end_star_date: i32,
-    pub galaxy_map: HashMap<String, AstroObject>,
+    galaxy_map: HashMap<String, AstroObject>,
     pub test_cmds_vec: Vec<String>,
-    //pub enterprise: ShipInfo,
+    player_ship: PlayerShip,
     pub password: String,
 }
 
@@ -49,11 +49,17 @@ impl Manifest {
             //charted: [[false; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
             galaxy_map: HashMap::new(),
             test_cmds_vec: Vec::new(),
-            //enterprise: ShipInfo::new(),
+            player_ship: PlayerShip::new(),
             password: "jap".to_string(),
         }
     }
 
+    pub fn galaxy_map(&self) -> &HashMap<String, AstroObject> {
+        &self.galaxy_map
+    }
+    pub fn player_ship(&self) -> PlayerShip {
+        &self.player_ship.clone();
+    }
     // =========================================================================
     /// # create_quadrant_vec
     ///
@@ -61,10 +67,10 @@ impl Manifest {
     ///
     pub fn create_quadrant_vec(&self, interest_loc: AstroObject) -> Vec<AstroObject> {
         let mut n_vec: Vec<AstroObject> = Vec::new();
-        for (key, n_info) in self.galaxy_map.iter() {
+        for n_info in self.galaxy_map.values() {
             //let n_info = *si;
             if n_info.is_same_quad(&interest_loc) {
-                n_vec.push(n_info);
+                n_vec.push(*n_info);
             }
         }
         n_vec

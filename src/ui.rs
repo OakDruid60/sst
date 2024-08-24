@@ -8,9 +8,10 @@ pub mod help_screen;
 pub mod logo_screen;
 pub mod lrs;
 pub mod srs;
-/*
+
 //use serde_json::to_string;
 use colored::Colorize;
+/*
 use std::io::{stdin, stdout, Write};
 
 pub mod help_screen;
@@ -19,7 +20,7 @@ pub mod lrs;
 pub mod stat_screen;
 pub mod srs;
 */
-//use crate::astro::AstroObject;
+use crate::astro::{AstroObject, AstroType};
 use crate::manifest::Manifest;
 /*
 //use crate::enterprise::ShipInfo;
@@ -32,7 +33,6 @@ pub const BORDER_COLOR_RED: &str = "\x1b[91m";
 pub const BORDER_COLOR_YELLOW: &str = "\x1b[93m";
 pub const BORDER_COLOR_GREEN: &str = "\x1b[92m";
 pub const BORDER_COLOR_CYAN: &str = "\x1b[96m";
-//pub const BORDER_COLOR: &str = "\x1b[91m";
 pub const BORDER_HORZ_60: &str = "════════════════════════════════════════════════════════════";
 pub const BORDER_VERT: &str = "║";
 pub const BORDER_UR: &str = "╗";
@@ -49,59 +49,71 @@ pub const COLOR_RESET: &str = "\x1b[0m";
 ///
 /// New attempt at a command title bar
 pub fn disp_title(title: &str, g_info: &Manifest, bc: &str) {
-    //let tmp_title = format!("{}", title.underline())
+    let tmp_title = format!("{}", title.underline());
     println!("");
-    //let BORDER_COL: &str  = BORDER_COLOR_GREEN;
     println!("  {bc}{BORDER_UL}{BORDER_HORZ_60}{BORDER_UR}{COLOR_RESET}");
-    //    println!(
-    //        "  {bc}{BORDER_VERT}{COLOR_RESET} {: <30}{: >28} {bc}{BORDER_VERT}{COLOR_RESET}",
-    //       title,
-    //        g_info.enterprise.get_entity().to_compact_string()
-    //    );
+    println!(
+        "  {bc}{BORDER_VERT}{COLOR_RESET} {: <30}{: >28} {bc}{BORDER_VERT}{COLOR_RESET}",
+        tmp_title,
+        g_info.player_ship().get_entity().to_compact_string()
+    );
     println!("  {bc}{BORDER_ML}{BORDER_HORZ_60}{BORDER_MR}{COLOR_RESET}");
 }
 
-/*
-// ==========================================================
-/// # determine_cmd_type
-///
-pub fn determine_cmd_type(cmd_string: String) -> CmdType {
-    if cmd_string.starts_with("tor") {
-        return CmdType::Torpedoe;
-    } else if cmd_string.starts_with("pha") {
-        return CmdType::Phaser;
-    } else if abbrev(&cmd_string, "jum", "jump") {
-        return CmdType::Jump;
-    } else if abbrev(&cmd_string, "mov", "move") {
-        return CmdType::Move;
-    } else if abbrev(&cmd_string, "lrs", "lrs") {
-        return CmdType::LRS;
-    } else if abbrev(&cmd_string, "srs", "srs") {
-        return CmdType::SRS;
-    } else if abbrev(&cmd_string, "stat", "status") {
-        return CmdType::Status;
-    } else if abbrev(&cmd_string, "save", "save") {
-        return CmdType::Save;
-    } else if abbrev(&cmd_string, "rest", "restore") {
-        return CmdType::Restore;
-    } else if abbrev(&cmd_string, "test", "test") {
-        return CmdType::Test;
-    } else if cmd_string.starts_with("q") || cmd_string.starts_with("exit") {
-        return CmdType::Quit;
-    } else if cmd_string.starts_with("?") || cmd_string.starts_with("hel") {
-        return CmdType::Help;
-    } else if abbrev(&cmd_string, "recordon", "recordon") {
-        return CmdType::RecordOn;
-    } else if abbrev(&cmd_string, "recordoff", "recordoff") {
-        return CmdType::RecordOff;
-    } else {
-        return CmdType::Empty;
+pub fn alert_status_of_quadrant2(qi_vec: &Vec<AstroObject>) -> &str {
+    let cur_alert = calc_alert_status(qi_vec);
+    let mut stat_string = BORDER_COLOR_GREEN;
+    if cur_alert == AlertStatus::Docked {
+        stat_string = BORDER_COLOR_CYAN;
+        return stat_string;
     }
+    'outer: for si in qi_vec.iter() {
+        let n_info = *si;
+        if n_info.get_sector_type() == AstroType::Klingon {
+            stat_string = BORDER_COLOR_RED;
+            break 'outer;
+        } else if n_info.get_sector_type() == AstroType::Romulan {
+            stat_string = BORDER_COLOR_YELLOW;
+        }
+    }
+    return stat_string;
 }
-
-#[inline]
-pub fn abbrev(what: &String, least: &str, full: &str) -> bool {
-    //! Check if `what` is an abbreviation of `full` and starts with `least`.
-    return what.starts_with(&least) && full.contains(what);
+// ===============================
+/// # calc_alert_status
+///
+/// Calculate some stuff
+pub fn calc_alert_status(qi_vec: &Vec<AstroObject>) -> AlertStatus {
+    let mut cur_alert = AlertStatus::Normal;
+    // find the enterprise
+    let enterprise_vec = crate::manifest::create_vec_of_type(qi_vec, AstroType::PlayerShip);
+    let star_base_vec = crate::manifest::create_vec_of_type(qi_vec, AstroType::Starbase);
+    if star_base_vec.len() != 0 {
+        let distance = enterprise_vec[0].calc_sector_distance(star_base_vec[0]);
+        if distance < 1.42 {
+            cur_alert = AlertStatus::Docked;
+        }
+    }
+    if cur_alert != AlertStatus::Docked {
+        'outer: for si in qi_vec.iter() {
+            let n_info = *si;
+            if n_info.get_sector_type() == AstroType::Klingon {
+                cur_alert = AlertStatus::Red;
+                break 'outer;
+            } else if n_info.get_sector_type() == AstroType::Romulan {
+                cur_alert = AlertStatus::Yellow;
+            }
+        }
+    }
+    cur_alert
 }
-*/
+// =====================================================================
+/// #AlertStatus
+///  The alert status types
+///
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum AlertStatus {
+    Normal,
+    Docked,
+    Red,
+    Yellow,
+}

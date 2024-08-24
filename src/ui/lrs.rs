@@ -21,7 +21,7 @@ use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 ///
 pub fn long_range_sensor_disp(g_info: &Manifest) {
     //
-    //fixme: let loc_tmp = g_info.enterprise.get_entity().clone();
+    let loc_tmp = g_info.player_ship().get_entity().clone();
     let qi_vec = g_info.create_quadrant_vec(loc_tmp);
     //fixme: let bc = crate::helpers::alert_status_of_quadrant2(&qi_vec);
     //fixme: crate::ui::disp_title("Long Range Scan", g_info, bc);
