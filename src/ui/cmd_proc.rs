@@ -67,24 +67,24 @@ pub fn command_processor() {
     let mut test_cmds_vec: Vec<String> = Vec::new();
     let mut cmd_part2_vec: Vec<String> = Vec::new();
 
-    let mut cur_galaxy: Galaxy;
+    //let mut cur_galaxy: Galaxy;
 
-    let mut g_info: Manifest = Manifest::new();
-    g_info.end_star_date = g_info.cur_star_date + 131;
-    g_info.galaxy_vec = crate::manifest::construct_galaxy();
-    println!("len = {:?}", g_info.galaxy_vec.len());
-    println!("capacity = {:?}", g_info.galaxy_vec.capacity());
+    let mut g_info: crate::manifest::Manifest = crate::manifest::Manifest::new();
+    //g_info.end_star_date = g_info.cur_star_date + 131;
+    //g_info.galaxy_vec = crate::manifest::construct_galaxy();
+    println!("len = {:?}", g_info.uni_map().len());
+    println!("capacity = {:?}", g_info.uni_map().capacity());
 
     let g_tmp = g_info.clone();
     let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::Starbase);
-    let tmp_loc_quad = tmp_loc_list[0].create_quad_tuple();
+    let tmp_loc_quad = tmp_loc_list[0].ret_quad_tuple();
     //g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
 
     // find the enterprise in the galaxy.
     let tmp_loc_list =
-        crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::PlayerShip);
-    g_info.enterprise = crate::enterprise::ShipInfo::new();
-    g_info.enterprise.set_entity(tmp_loc_list[0].clone());
+        crate::manifest::create_vec_of_type(&g_tmp.uni_map, AstroType::PlayerShip);
+    g_info.player_ship = crate::ship_info::PlayerShip::new();
+    g_info.player_ship.set_entity(tmp_loc_list[0].clone());
 
     'proccess_loop: loop {
         let mut cmd_input: String = String::new();
@@ -127,7 +127,8 @@ pub fn command_processor() {
             // Phaser
             CmdType::Phaser => {
                 // println!("{:?}", cmd_vector);
-                let res = crate::ship_info::weapon::fire_phaser(&g_info, &cmd_vector);
+                // fixme let res = crate::ship_info::weapon::fire_phaser(&g_info, &cmd_vector);
+                /*
                 match res {
                     Ok(_) => {
                         let updated_enterprise: PlayerInfo = res.as_ref().unwrap().0;
@@ -153,10 +154,12 @@ pub fn command_processor() {
                         println!("{} {:?}", red_error(), e);
                     }
                 }
+                */
             }
 
             CmdType::Torpedoe => {
-                let res = crate::ship_info::weapon::fire_torpedoe(&g_info, &cmd_vector);
+                // fixme let res = crate::ship_info::weapon::fire_torpedoe(&g_info, &cmd_vector);
+                /*
                 match res {
                     Ok(_) => {
                         let updated_enterprise: PlayerInfo = res.as_ref().unwrap().0;
@@ -180,13 +183,15 @@ pub fn command_processor() {
                         println!("{} {:?}", red_error(), e);
                     }
                 }
+                */
             }
 
             CmdType::Jump => {
-                let res = crate::ship_info::movement::jump_enterprise(&g_info, &cmd_vector);
+                // fixme let res = crate::ship_info::movement::jump_enterprise(&g_info, &cmd_vector);
+                /*
                 match res {
                     Ok(_) => {
-                        let updated_enterprise: PlayerInfo = res.unwrap();
+                        let updated_enterprise: crate::ship_info::PlayerShip = res.unwrap();
                         let g_tmp = g_info.galaxy_vec.clone();
                         for (pos, e) in g_tmp.iter().enumerate() {
                             if e.get_sector_type() == AstroType::PlayerShip {
@@ -205,14 +210,15 @@ pub fn command_processor() {
                         println!("{} {:?}", red_error(), e);
                     }
                 };
+                */
             }
 
             CmdType::Move => {
-                let res = crate::ship_info::movement::move_enterprise(&g_info, &cmd_vector);
-
+                // fixme let res = crate::ship_info::movement::move_enterprise(&g_info, &cmd_vector);
+/*
                 match res {
                     Ok(_) => {
-                        let updated_enterprise: PlayerInfo = res.unwrap();
+                        let updated_enterprise: crate::ship_info::PlayerShip = res.unwrap();
                         let g_tmp = g_info.galaxy_vec.clone();
                         for (pos, e) in g_tmp.iter().enumerate() {
                             if e.get_sector_type() == AstroType::PlayerShip {
@@ -231,9 +237,10 @@ pub fn command_processor() {
                         println!("{} {:?}", red_error(), e);
                     }
                 };
+                */
             }
             CmdType::LRS => {
-                let cur_loc = g_info.enterprise.get_entity().create_quad_tuple();
+                let cur_loc = g_info.player_ship().get_entity().ret_quad_tuple();
                 for x_delta in -1i8..=1i8 {
                     for y_delta in -1i8..=1i8 {
                         let mut x: i8 = cur_loc.0 + x_delta;
@@ -257,7 +264,7 @@ pub fn command_processor() {
                 crate::ui::lrs::long_range_sensor_disp(&g_info);
             }
             CmdType::SRS => {
-                let cur_loc = g_info.enterprise.get_entity().create_quad_tuple();
+                let cur_loc = g_info.player_ship().get_entity().ret_quad_tuple();
                 for x_delta in -1i8..=1i8 {
                     for y_delta in -1i8..=1i8 {
                         let mut x: i8 = cur_loc.0 + x_delta;
@@ -278,11 +285,11 @@ pub fn command_processor() {
                         // g_info.charted[x as usize][y as usize] = true;
                     }
                 }
-                crate::ui::srs::short_range_sensor_disp(&g_info);
+               // crate::ui::srs::short_range_sensor_disp(&g_info);
             }
-            CmdType::Status => {
-                crate::ui::misc::game_stat_disp(&g_info);
-            }
+           // fixme CmdType::Status => {
+           //     crate::ui::misc::game_stat_disp(&g_info);
+           // }
             CmdType::Test => {
                 //test_cmds_vec.push("stat".to_string());
                 //test_cmds_vec.push("srs".to_string());
@@ -305,7 +312,7 @@ pub fn command_processor() {
                 crate::manifest::freeze(&g_info, &cmd_vector);
             }
             CmdType::Help => {
-                crate::ui::help::help_screen(&g_info);
+                crate::ui::help_screen::help_screen(&g_info);
             }
             CmdType::Quit => {
                 break 'proccess_loop;

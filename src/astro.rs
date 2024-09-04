@@ -281,12 +281,12 @@ pub enum DamageType {
 
 // ======================================================================
 // ======================================================================
-/// AstroUniverse
+// AstroUniverse
 // ======================================================================
 // ======================================================================
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/* #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AstroUniverse {
-    data_map: HashMap<String, AstroObject>,
+    pub data_map: HashMap<String, AstroObject>,
 }
 
 impl AstroUniverse {
@@ -295,177 +295,8 @@ impl AstroUniverse {
             data_map: HashMap::new(),
         }
     }
-    // =========================================================================
-    /// # construct_galaxy
-    ///
-    pub fn construct_galaxy(gal_coord: (i8, i8)) -> HashMap<String, AstroObject> {
-        let mut n_galaxy_map: HashMap<String, AstroObject> = HashMap::new();
-        let n_gal_x = gal_coord.0;
-        let n_gal_y = gal_coord.1;
-        //
-        // set initial starbase
-        let n_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-        let n_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-
-        let n_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-        let n_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-
-        let starbase_info: AstroObject = AstroObject::create(
-            (n_gal_x, n_gal_y, n_quad_x, n_quad_y, n_sect_x, n_sect_y),
-            AstroType::Starbase,
-        );
-        n_galaxy_map.insert(starbase_info.to_key_string(), starbase_info);
-
-        //
-        // set initial enterprise
-        let mut existing_collision = false;
-        while !existing_collision {
-            let trial_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-            let trial_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-            let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-            let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-
-            let enterprise_info: AstroObject = AstroObject::create(
-                (
-                    n_gal_x,
-                    n_gal_y,
-                    trial_quad_x,
-                    trial_quad_y,
-                    trial_sect_x,
-                    trial_sect_y,
-                ),
-                AstroType::PlayerShip,
-            );
-            let n_key = enterprise_info.to_key_string();
-            existing_collision = n_galaxy_map.contains_key(&n_key);
-            if !existing_collision {
-                n_galaxy_map.insert(n_key, enterprise_info);
-                break;
-            }
-        }
-        //        for (key, value) in n_galaxy_map.iter() {
-        //            println!("{} {:?}", key,value.get_astro_type());
-        //        }
-        //        println!("=============================================");
-
-        // now populate other things into each quadrant
-        for xx in 0..MAX_GALAXY_SIZE_I8 {
-            for yy in 0..MAX_GALAXY_SIZE_I8 {
-                let trial_quad_x: i8 = xx;
-                let trial_quad_y: i8 = yy;
-
-                // planets
-                for _counter in 0..rand::thread_rng().gen_range(0..3) {
-                    existing_collision = false;
-                    while !existing_collision {
-                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let n_info: AstroObject = AstroObject::create(
-                            (
-                                n_gal_x,
-                                n_gal_y,
-                                trial_quad_x,
-                                trial_quad_y,
-                                trial_sect_x,
-                                trial_sect_y,
-                            ),
-                            AstroType::Planet,
-                        );
-                        let n_key = n_info.to_key_string();
-                        existing_collision = n_galaxy_map.contains_key(&n_key);
-                        if !existing_collision {
-                            n_galaxy_map.insert(n_key, n_info);
-                            break;
-                        }
-                    }
-                }
-
-                // Stars
-                for _counter in 0..rand::thread_rng().gen_range(1..5) {
-                    existing_collision = false;
-                    while !existing_collision {
-                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let n_info: AstroObject = AstroObject::create(
-                            (
-                                n_gal_x,
-                                n_gal_y,
-                                trial_quad_x,
-                                trial_quad_y,
-                                trial_sect_x,
-                                trial_sect_y,
-                            ),
-                            AstroType::Star,
-                        );
-                        let n_key = n_info.to_key_string();
-                        existing_collision = n_galaxy_map.contains_key(&n_key);
-                        if !existing_collision {
-                            n_galaxy_map.insert(n_key, n_info);
-                            break;
-                        }
-                    }
-                }
-
-                // Klingons
-                for _counter in 0..rand::thread_rng().gen_range(0..2) {
-                    existing_collision = false;
-                    while !existing_collision {
-                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let n_info: AstroObject = AstroObject::create(
-                            (
-                                n_gal_x,
-                                n_gal_y,
-                                trial_quad_x,
-                                trial_quad_y,
-                                trial_sect_x,
-                                trial_sect_y,
-                            ),
-                            AstroType::Klingon,
-                        );
-                        let n_key = n_info.to_key_string();
-                        existing_collision = n_galaxy_map.contains_key(&n_key);
-                        if !existing_collision {
-                            n_galaxy_map.insert(n_key, n_info);
-                            break;
-                        }
-                    }
-                }
-
-                // Romulans
-                for _counter in 0..rand::thread_rng().gen_range(0..3) {
-                    existing_collision = false;
-                    while !existing_collision {
-                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let n_info: AstroObject = AstroObject::create(
-                            (
-                                n_gal_x,
-                                n_gal_y,
-                                trial_quad_x,
-                                trial_quad_y,
-                                trial_sect_x,
-                                trial_sect_y,
-                            ),
-                            AstroType::Romulan,
-                        );
-                        let n_key = n_info.to_key_string();
-                        existing_collision = n_galaxy_map.contains_key(&n_key);
-                        if !existing_collision {
-                            n_galaxy_map.insert(n_key, n_info);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        for (key, value) in n_galaxy_map.iter() {
-            //let n_info = *si;
-            println!("{} {:?}", key, value.get_astro_type());
-        }
-        n_galaxy_map
-    }
-}
+*/
+//}
 
 /*
 // ======================================================================

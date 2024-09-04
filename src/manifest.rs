@@ -12,19 +12,19 @@ pub mod constants; // various constants like the size of the galaxy
                    //pub mod spaceorg;
 pub mod statistics;
 
-use crate::astro::{AstroType,AstroObject};
-use crate::ship_info::PlayerShip;
-//use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, //MAX_SECTOR_SIZE_I8};
-//use crate::manifest::entity::Entity;
-//use crate::manifest::enums::AstroType;
-//use crate::manifest::statistics::SummaryStats;
+use crate::astro::{AstroObject, AstroType};
+use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
+use crate::ship_info::PlayerShip; //,;
+                                  //use crate::manifest::entity::Entity;
+                                  //use crate::manifest::enums::AstroType;
+                                  //use crate::manifest::statistics::SummaryStats;
 
-//use rand::Rng;
+use rand::Rng;
 use serde::{Deserialize, Serialize};
-//use serde_json::from_str;
+use serde_json::from_str;
 use std::collections::HashMap;
-//use std::fs::File;
-//use std::io::{Read, Write};
+use std::fs::File;
+use std::io::{Read, Write};
 
 // ======================================================================
 // ======================================================================
@@ -35,9 +35,9 @@ use std::collections::HashMap;
 pub struct Manifest {
     pub cur_star_date: i32,
     pub end_star_date: i32,
-    galaxy_map: HashMap<String, AstroObject>,
+    pub uni_map: HashMap<String, AstroObject>,
     pub test_cmds_vec: Vec<String>,
-    player_ship: PlayerShip,
+    pub player_ship: PlayerShip,
     pub password: String,
 }
 
@@ -47,18 +47,189 @@ impl Manifest {
             cur_star_date: 0,
             end_star_date: 0,
             //charted: [[false; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
-            galaxy_map: HashMap::new(),
+            uni_map: HashMap::new(),
             test_cmds_vec: Vec::new(),
             player_ship: PlayerShip::new(),
             password: "jap".to_string(),
         }
     }
 
-    pub fn galaxy_map(&self) -> &HashMap<String, AstroObject> {
-        &self.galaxy_map
+    pub fn uni_map(&self) -> &HashMap<String, AstroObject> {
+        &self.uni_map
     }
-    pub fn player_ship(&self) -> PlayerShip {
-        &self.player_ship.clone();
+    pub fn player_ship(&self) -> &PlayerShip {
+        &self.player_ship
+    }
+
+    // =========================================================================
+    /// # construct_galaxy
+    ///
+    pub fn construct_galaxy(gal_coord: (i8, i8)) -> HashMap<String, AstroObject> {
+        let mut n_galaxy_map: HashMap<String, AstroObject> = HashMap::new();
+        let n_gal_x = gal_coord.0;
+        let n_gal_y = gal_coord.1;
+        //
+        // set initial starbase
+        let n_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+        let n_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+
+        let n_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+        let n_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+
+        let starbase_info: AstroObject = AstroObject::create(
+            (n_gal_x, n_gal_y, n_quad_x, n_quad_y, n_sect_x, n_sect_y),
+            AstroType::Starbase,
+        );
+        n_galaxy_map.insert(starbase_info.to_key_string(), starbase_info);
+
+        //
+        // set initial enterprise
+        let mut existing_collision = false;
+        while !existing_collision {
+            let trial_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+            let trial_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+            let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+            let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+
+            let enterprise_info: AstroObject = AstroObject::create(
+                (
+                    n_gal_x,
+                    n_gal_y,
+                    trial_quad_x,
+                    trial_quad_y,
+                    trial_sect_x,
+                    trial_sect_y,
+                ),
+                AstroType::PlayerShip,
+            );
+            let n_key = enterprise_info.to_key_string();
+            existing_collision = n_galaxy_map.contains_key(&n_key);
+            if !existing_collision {
+                n_galaxy_map.insert(n_key, enterprise_info);
+                break;
+            }
+        }
+        //        for (key, value) in n_galaxy_map.iter() {
+        //            println!("{} {:?}", key,value.get_astro_type());
+        //        }
+        //        println!("=============================================");
+
+        // now populate other things into each quadrant
+        for xx in 0..MAX_GALAXY_SIZE_I8 {
+            for yy in 0..MAX_GALAXY_SIZE_I8 {
+                let trial_quad_x: i8 = xx;
+                let trial_quad_y: i8 = yy;
+
+                // planets
+                for _counter in 0..rand::thread_rng().gen_range(0..3) {
+                    existing_collision = false;
+                    while !existing_collision {
+                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let n_info: AstroObject = AstroObject::create(
+                            (
+                                n_gal_x,
+                                n_gal_y,
+                                trial_quad_x,
+                                trial_quad_y,
+                                trial_sect_x,
+                                trial_sect_y,
+                            ),
+                            AstroType::Planet,
+                        );
+                        let n_key = n_info.to_key_string();
+                        existing_collision = n_galaxy_map.contains_key(&n_key);
+                        if !existing_collision {
+                            n_galaxy_map.insert(n_key, n_info);
+                            break;
+                        }
+                    }
+                }
+
+                // Stars
+                for _counter in 0..rand::thread_rng().gen_range(1..5) {
+                    existing_collision = false;
+                    while !existing_collision {
+                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let n_info: AstroObject = AstroObject::create(
+                            (
+                                n_gal_x,
+                                n_gal_y,
+                                trial_quad_x,
+                                trial_quad_y,
+                                trial_sect_x,
+                                trial_sect_y,
+                            ),
+                            AstroType::Star,
+                        );
+                        let n_key = n_info.to_key_string();
+                        existing_collision = n_galaxy_map.contains_key(&n_key);
+                        if !existing_collision {
+                            n_galaxy_map.insert(n_key, n_info);
+                            break;
+                        }
+                    }
+                }
+
+                // Klingons
+                for _counter in 0..rand::thread_rng().gen_range(0..2) {
+                    existing_collision = false;
+                    while !existing_collision {
+                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let n_info: AstroObject = AstroObject::create(
+                            (
+                                n_gal_x,
+                                n_gal_y,
+                                trial_quad_x,
+                                trial_quad_y,
+                                trial_sect_x,
+                                trial_sect_y,
+                            ),
+                            AstroType::Klingon,
+                        );
+                        let n_key = n_info.to_key_string();
+                        existing_collision = n_galaxy_map.contains_key(&n_key);
+                        if !existing_collision {
+                            n_galaxy_map.insert(n_key, n_info);
+                            break;
+                        }
+                    }
+                }
+
+                // Romulans
+                for _counter in 0..rand::thread_rng().gen_range(0..3) {
+                    existing_collision = false;
+                    while !existing_collision {
+                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                        let n_info: AstroObject = AstroObject::create(
+                            (
+                                n_gal_x,
+                                n_gal_y,
+                                trial_quad_x,
+                                trial_quad_y,
+                                trial_sect_x,
+                                trial_sect_y,
+                            ),
+                            AstroType::Romulan,
+                        );
+                        let n_key = n_info.to_key_string();
+                        existing_collision = n_galaxy_map.contains_key(&n_key);
+                        if !existing_collision {
+                            n_galaxy_map.insert(n_key, n_info);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for (key, value) in n_galaxy_map.iter() {
+            //let n_info = *si;
+            println!("{} {:?}", key, value.get_astro_type());
+        }
+        n_galaxy_map
     }
     // =========================================================================
     /// # create_quadrant_vec
@@ -67,7 +238,7 @@ impl Manifest {
     ///
     pub fn create_quadrant_vec(&self, interest_loc: AstroObject) -> Vec<AstroObject> {
         let mut n_vec: Vec<AstroObject> = Vec::new();
-        for n_info in self.galaxy_map.values() {
+        for n_info in self.uni_map.values() {
             //let n_info = *si;
             if n_info.is_same_quad(&interest_loc) {
                 n_vec.push(*n_info);
@@ -137,7 +308,6 @@ pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec
     n_type_vec
 }
 
-
 // ============================================================
 /// # find_actual_sector_info
 /// Given a vector of SectorInfo, return the given sector, or Empty if not found.
@@ -148,10 +318,9 @@ pub fn find_actual_sector_info(orig_vec: &Vec<AstroObject>, sect: (i8, i8)) -> A
             return n_info;
         }
     }
-    AstroObject::new()
-}
 
-// =================================================================
+    AstroObject::create((0, 0, 99, 99, 99, 99), AstroType::Empty)
+} // =================================================================
 /// # is_straight_line_path_clear
 ///
 pub fn is_straight_line_path_clear(
@@ -159,8 +328,8 @@ pub fn is_straight_line_path_clear(
     strt: AstroObject,
     tgt: AstroObject,
 ) -> Result<bool, String> {
-    let strt_tuple = strt.create_sect_tuple();
-    let tgt_tuple = tgt.create_sect_tuple();
+    let strt_tuple = strt.ret_sect_tuple();
+    let tgt_tuple = tgt.ret_sect_tuple();
 
     let mut delta_x: f64 = tgt_tuple.0 as f64 - strt_tuple.0 as f64;
     let mut delta_y: f64 = tgt_tuple.1 as f64 - strt_tuple.1 as f64;
@@ -185,7 +354,8 @@ pub fn is_straight_line_path_clear(
             && sector_info.get_astro_type() != AstroType::Empty
             && sector_info.get_astro_type() != AstroType::KilledKlingon
             && sector_info.get_astro_type() != AstroType::KilledRomulan
-    get_    {         if x7 == tgt_tuple.0 as i32 && y7 == tgt_tuple.1 as i32 {
+        {
+            if x7 == tgt_tuple.0 as i32 && y7 == tgt_tuple.1 as i32 {
             } else {
                 return Err(format!(
                     "Straight line path from {:?} to {:?} is blocked at {:?}",
@@ -321,5 +491,3 @@ pub fn freeze(uni: &Manifest, cmd_vector: &Vec<String>) {
 
     println!("Game back-up created in {}", save_file_name);
 }
-
-

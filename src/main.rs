@@ -26,7 +26,7 @@ mod ui;
 
 fn main() {
     ui::logo_screen::game_logo();
-    astro::AstroUniverse::construct_galaxy((0, 0));
+    //astro::AstroUniverse::construct_galaxy((0, 0));
 
     ui::cmd_proc::command_processor();
 
