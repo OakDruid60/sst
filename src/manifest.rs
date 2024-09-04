@@ -12,11 +12,11 @@ pub mod constants; // various constants like the size of the galaxy
                    //pub mod spaceorg;
 pub mod statistics;
 
-use crate::astro::AstroObject;
+use crate::astro::{AstroType,AstroObject};
 use crate::ship_info::PlayerShip;
 //use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, //MAX_SECTOR_SIZE_I8};
 //use crate::manifest::entity::Entity;
-//use crate::manifest::enums::EntityType;
+//use crate::manifest::enums::AstroType;
 //use crate::manifest::statistics::SummaryStats;
 
 //use rand::Rng;
@@ -119,16 +119,17 @@ impl Manifest {
         human_out
     }
 }
+*/
 
 // =========================================================================
 /// # create_vec_of_type
 ///
 pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec<AstroObject> {
-    let mut n_type_vec: Vec<Entity> = Vec::new();
+    let mut n_type_vec: Vec<AstroObject> = Vec::new();
 
     for si in orig_vec.iter() {
         let n_info = *si;
-        if n_info.get_sector_type() == n_type {
+        if n_info.get_astro_type() == n_type {
             n_type_vec.push(n_info);
         }
     }
@@ -140,23 +141,23 @@ pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec
 // ============================================================
 /// # find_actual_sector_info
 /// Given a vector of SectorInfo, return the given sector, or Empty if not found.
-pub fn find_actual_sector_info(orig_vec: &Vec<Entity>, sect: (i8, i8)) -> Entity {
+pub fn find_actual_sector_info(orig_vec: &Vec<AstroObject>, sect: (i8, i8)) -> AstroObject {
     for si in orig_vec.iter() {
         let n_info = *si;
         if n_info.is_same_sect_tuple(sect) {
             return n_info;
         }
     }
-    Entity::new()
+    AstroObject::new()
 }
 
 // =================================================================
 /// # is_straight_line_path_clear
 ///
 pub fn is_straight_line_path_clear(
-    quad_vec: &Vec<Entity>,
-    strt: Entity,
-    tgt: Entity,
+    quad_vec: &Vec<AstroObject>,
+    strt: AstroObject,
+    tgt: AstroObject,
 ) -> Result<bool, String> {
     let strt_tuple = strt.create_sect_tuple();
     let tgt_tuple = tgt.create_sect_tuple();
@@ -178,14 +179,13 @@ pub fn is_straight_line_path_clear(
         trial_loc_y += delta_y;
         let x7 = (trial_loc_x.floor()) as i32;
         let y7 = (trial_loc_y.floor()) as i32;
-        let sector_info: Entity = find_actual_sector_info(&quad_vec, (x7 as i8, y7 as i8));
+        let sector_info: AstroObject = find_actual_sector_info(&quad_vec, (x7 as i8, y7 as i8));
         //println!("{} {} {:?}", x7, y7, sector_info.obj_type);
-        if sector_info.get_sector_type() != EntityType::PlayerShip
-            && sector_info.get_sector_type() != EntityType::Empty
-            && sector_info.get_sector_type() != EntityType::KilledKlingon
-            && sector_info.get_sector_type() != EntityType::KilledRomulan
-        {
-            if x7 == tgt_tuple.0 as i32 && y7 == tgt_tuple.1 as i32 {
+        if sector_info.get_astro_type() != AstroType::PlayerShip
+            && sector_info.get_astro_type() != AstroType::Empty
+            && sector_info.get_astro_type() != AstroType::KilledKlingon
+            && sector_info.get_astro_type() != AstroType::KilledRomulan
+    get_    {         if x7 == tgt_tuple.0 as i32 && y7 == tgt_tuple.1 as i32 {
             } else {
                 return Err(format!(
                     "Straight line path from {:?} to {:?} is blocked at {:?}",
@@ -205,15 +205,15 @@ pub fn is_straight_line_path_clear(
 /// create a quadrant informationm vector from the supplied quadrant vector
 /// and location of interest (probably the enterprise).
 pub fn create_bad_guy_qi_vec(
-    qi_vec: &Vec<Entity>,
-    interest_loc: Entity,
+    qi_vec: &Vec<AstroObject>,
+    interest_loc: AstroObject,
     chk_path: bool,
-) -> Vec<Entity> {
-    let mut n_vec: Vec<Entity> = Vec::new();
+) -> Vec<AstroObject> {
+    let mut n_vec: Vec<AstroObject> = Vec::new();
     for si in qi_vec.iter() {
         let n_info = *si;
-        let bad_guy_type: EntityType = n_info.get_sector_type();
-        if bad_guy_type == EntityType::Klingon || bad_guy_type == EntityType::Romulan {
+        let bad_guy_type: AstroType = n_info.get_astro_type();
+        if bad_guy_type == AstroType::Klingon || bad_guy_type == AstroType::Romulan {
             if chk_path {
                 let path_res = is_straight_line_path_clear(&qi_vec, interest_loc, n_info);
                 match path_res {
@@ -322,4 +322,4 @@ pub fn freeze(uni: &Manifest, cmd_vector: &Vec<String>) {
     println!("Game back-up created in {}", save_file_name);
 }
 
-*/
+

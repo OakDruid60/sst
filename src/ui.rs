@@ -69,10 +69,10 @@ pub fn alert_status_of_quadrant2(qi_vec: &Vec<AstroObject>) -> &str {
     }
     'outer: for si in qi_vec.iter() {
         let n_info = *si;
-        if n_info.get_sector_type() == AstroType::Klingon {
+        if n_info.get_astro_type() == AstroType::Klingon {
             stat_string = BORDER_COLOR_RED;
             break 'outer;
-        } else if n_info.get_sector_type() == AstroType::Romulan {
+        } else if n_info.get_astro_type() == AstroType::Romulan {
             stat_string = BORDER_COLOR_YELLOW;
         }
     }
@@ -96,10 +96,10 @@ pub fn calc_alert_status(qi_vec: &Vec<AstroObject>) -> AlertStatus {
     if cur_alert != AlertStatus::Docked {
         'outer: for si in qi_vec.iter() {
             let n_info = *si;
-            if n_info.get_sector_type() == AstroType::Klingon {
+            if n_info.get_astro_type() == AstroType::Klingon {
                 cur_alert = AlertStatus::Red;
                 break 'outer;
-            } else if n_info.get_sector_type() == AstroType::Romulan {
+            } else if n_info.get_astro_type() == AstroType::Romulan {
                 cur_alert = AlertStatus::Yellow;
             }
         }
