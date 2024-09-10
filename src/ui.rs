@@ -54,13 +54,30 @@ pub fn disp_title(title: &str, g_info: &Manifest, bc: &str) {
     println!("");
     println!("  {bc}{BORDER_UL}{BORDER_HORZ_60}{BORDER_UR}{COLOR_RESET}");
     println!(
-        "  {bc}{BORDER_VERT}{COLOR_RESET} {: <30}{: >28} {bc}{BORDER_VERT}{COLOR_RESET}",
+        "  {bc}{BORDER_VERT}{COLOR_RESET} {: <38}{: >28} {bc}{BORDER_VERT}{COLOR_RESET}",
         tmp_title,
         g_info.player_ship().get_entity().to_compact_string()
     );
     println!("  {bc}{BORDER_ML}{BORDER_HORZ_60}{BORDER_MR}{COLOR_RESET}");
 }
-
+pub fn alert_status_of_quadrant(qi_vec: &Vec<AstroObject>) -> String {
+    let cur_alert = calc_alert_status(qi_vec);
+    let mut stat_string = "Normal".normal().to_string();
+    if cur_alert == AlertStatus::Docked {
+        stat_string = "DOCKED".normal().to_string();
+        return stat_string;
+    }
+    'outer: for si in qi_vec.iter() {
+        let n_info = *si;
+        if n_info.get_astro_type() == AstroType::Klingon {
+            stat_string = "RED   ".to_string();
+            break 'outer;
+        } else if n_info.get_astro_type() == AstroType::Romulan {
+            stat_string = "YELLOW".to_string();
+        }
+    }
+    return stat_string;
+}
 pub fn alert_status_of_quadrant2(qi_vec: &Vec<AstroObject>) -> &str {
     let cur_alert = calc_alert_status(qi_vec);
     let mut stat_string = BORDER_COLOR_GREEN;

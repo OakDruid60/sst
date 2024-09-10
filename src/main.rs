@@ -12,11 +12,11 @@ mod astro;
 mod manifest;
 mod ship_info;
 mod ui;
-// todo: this
+// TODO: this
 // research this stuff
 // temp stuff
-// bug: this is broken big time
-// fixme: because I could be better
+// BUG: this is broken big time
+// FIXME: because I could be better
 // optimize me for even better
 // changed some stuff
 // review this could be better

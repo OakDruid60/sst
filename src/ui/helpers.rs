@@ -61,24 +61,7 @@ pub fn compact_summary_string(qi_vec: &Vec<Entity>) -> String {
 /// # alert_status_of_quadrant
 /// Return the alert status for all sectors in the quadrant.
 ///
-pub fn alert_status_of_quadrant(qi_vec: &Vec<Entity>) -> String {
-    let cur_alert = calc_alert_status(qi_vec);
-    let mut stat_string = "Normal".normal().to_string();
-    if cur_alert == AlertStatus::Docked {
-        stat_string = "DOCKED".normal().to_string();
-        return stat_string;
-    }
-    'outer: for si in qi_vec.iter() {
-        let n_info = *si;
-        if n_info.get_sector_type() == EntityType::Klingon {
-            stat_string = "RED   ".to_string();
-            break 'outer;
-        } else if n_info.get_sector_type() == EntityType::Romulan {
-            stat_string = "YELLOW".to_string();
-        }
-    }
-    return stat_string;
-}
+
 pub fn alert_status_of_quadrant2(qi_vec: &Vec<Entity>) -> &str {
     let cur_alert = calc_alert_status(qi_vec);
     let mut stat_string = BORDER_COLOR_GREEN;
