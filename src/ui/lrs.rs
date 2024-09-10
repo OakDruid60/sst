@@ -21,10 +21,6 @@ use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 ///
 pub fn long_range_sensor_disp(g_info: &Manifest) {
     //
-    //let loc_tmp = g_info.player_ship().get_entity().clone();
-    //let qi_vec = g_info.isolatecreate_quadrant_vec(loc_tmp);
-    //fixme: let bc = crate::helpers::alert_status_of_quadrant2(&qi_vec);
-    //let bc = " ";
     let qi_vec = crate::manifest::isolate_cur_quadrant(&g_info);
     let bc = crate::ui::alert_status_of_quadrant2(&qi_vec);
     crate::ui::disp_title("Long Range Scan", g_info, bc);
@@ -35,15 +31,15 @@ pub fn long_range_sensor_disp(g_info: &Manifest) {
             let tmp_quadx: i8 = xx as i8;
             let tmp_quady: i8 = yy as i8;
             let zero: i8 = 0 as i8;
-            //let tmp_loc =
-            AstroObject::create((0, 0, tmp_quadx, tmp_quady, zero, zero), AstroType::Empty);
+            let tmp_loc =
+                AstroObject::create((0, 0, tmp_quadx, tmp_quady, zero, zero), AstroType::Empty);
 
-            //let tmp_qi_vec = g_info.create_quadrant_vec(tmp_loc);
-            // fixme let mut tmp: String = crate::helpers::compact_summary_string(&tmp_qi_vec);
+            let tmp_qi_vec = g_info.create_quadrant_vec(tmp_loc);
+            let mut tmp: String = crate::manifest::compact_summary_string(&tmp_qi_vec);
             //if g_info.charted[xx as usize][yy as usize] {
-            //let    tmp = format!("{}", tmp);
+            //    tmp = format!("{}", tmp);
             //} else {
-            let tmp = format!("   .   ");
+            //let  tmp = format!("   .   ");
             //}
             row_string.push_str(tmp.as_str());
         }

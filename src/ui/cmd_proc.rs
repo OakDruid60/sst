@@ -8,7 +8,7 @@ use crate::manifest::constants::MAX_GALAXY_SIZE_I8; //, MAX_SECTOR_SIZE_I8};
 
 use colored::Colorize;
 
-use std::io::{stdin,stdout,Write};
+use std::io::{stdin, stdout, Write};
 // ==========================================================================
 /// # determine_cmd_type
 ///
@@ -71,26 +71,27 @@ pub fn command_processor() {
 
     let mut g_info: crate::manifest::Manifest = crate::manifest::Manifest::new();
     g_info.end_star_date = g_info.cur_star_date + 131;
-    g_info.uni_map = crate::manifest::Manifest::construct_galaxy((0,0));
+
+    // Actually construct the galaxy
+    g_info.uni_map = crate::manifest::Manifest::construct_galaxy((0, 0));
     //println!("len = {:?}", g_info.uni_map().len());
     //println!("capacity = {:?}", g_info.uni_map().capacity());
 
     let g_tmp = g_info.clone();
-    
+
     // fixme let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::Starbase);
     //let tmp_loc_quad = tmp_loc_list[0].ret_quad_tuple();
     //g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
 
     // find the enterprise in the galaxy.
-    let tmp_loc_list =
-        crate::manifest::isolate_type(&g_tmp, AstroType::PlayerShip);
+    let tmp_loc_list = crate::manifest::isolate_type(&g_tmp, AstroType::PlayerShip);
     g_info.player_ship = crate::ship_info::PlayerShip::new();
     g_info.player_ship.set_entity(tmp_loc_list[0].clone());
 
-  let japt1=crate::manifest::isolate_quadrant(&g_tmp,&g_info.player_ship.get_entity());
-  for ao in japt1.iter() {
-  println!("{}",ao);
-  }
+    let japt1 = crate::manifest::isolate_quadrant(&g_tmp, &g_info.player_ship.get_entity());
+    for ao in japt1.iter() {
+        println!("{}", ao);
+    }
 
     'proccess_loop: loop {
         let mut cmd_input: String = String::new();
@@ -101,17 +102,15 @@ pub fn command_processor() {
             stdin()
                 .read_line(&mut cmd_input)
                 .expect("Failed to read line");
-        } else
-            if startup_cmd_vec.len() > 0 {
-                cmd_input = startup_cmd_vec.remove(0);
+        } else if startup_cmd_vec.len() > 0 {
+            cmd_input = startup_cmd_vec.remove(0);
+        } else {
+            if test_cmds_vec.len() > 0 {
+                cmd_input = test_cmds_vec.remove(0);
+                println!(" === auto test cmd ===  {}", cmd_input);
             } else {
-                if test_cmds_vec.len() > 0 {
-                    cmd_input = test_cmds_vec.remove(0);
-                    println!(" === auto test cmd ===  {}", cmd_input);
-                } else {
-                    cmd_input = cmd_part2_vec.remove(0);
-                }
-            
+                cmd_input = cmd_part2_vec.remove(0);
+            }
         }
 
         let cmd_vector: Vec<String> = cmd_input
@@ -221,7 +220,7 @@ pub fn command_processor() {
 
             CmdType::Move => {
                 // fixme let res = crate::ship_info::movement::move_enterprise(&g_info, &cmd_vector);
-/*
+                /*
                 match res {
                     Ok(_) => {
                         let updated_enterprise: crate::ship_info::PlayerShip = res.unwrap();

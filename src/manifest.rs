@@ -26,6 +26,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Read, Write};
 
+use colored::*;
+
 // ======================================================================
 // ======================================================================
 /// Manifest
@@ -109,9 +111,9 @@ impl Manifest {
                 break;
             }
         }
-                for (key, value) in n_galaxy_map.iter() {
-                    println!("{} {:?}", key,value.get_astro_type());
-              }
+        for (key, value) in n_galaxy_map.iter() {
+            println!("{} {:?}", key, value.get_astro_type());
+        }
         //        println!("=============================================");
 
         // now populate other things into each quadrant
@@ -225,14 +227,13 @@ impl Manifest {
                 }
             }
         }
-      
+
         //for (key, value) in n_galaxy_map.iter() {
-            //let n_info = *si;
+        //let n_info = *si;
         //    println!("{} {:?}", key, value.get_astro_type());
         //}
         //n_galaxy_map.shrink_to(n_galaxy_map.len()+50);
         n_galaxy_map
-        
     }
     // =========================================================================
     /// # create_quadrant_vec
@@ -291,16 +292,16 @@ impl Manifest {
 
         human_out
     }
-}  
+}
 // =========================================================================
 /// # create_vec_of_type
 ///
-pub fn isolate_cur_quadrant(g_info:&Manifest)-> Vec<AstroObject>{
-      let mut n_type_vec: Vec<AstroObject> = Vec::new();
-let comp= &g_info.player_ship.get_entity();
+pub fn isolate_cur_quadrant(g_info: &Manifest) -> Vec<AstroObject> {
+    let mut n_type_vec: Vec<AstroObject> = Vec::new();
+    let comp = &g_info.player_ship.get_entity();
     for ao in g_info.uni_map.values() {
         //let n_info = *si;
-        if ao.is_same_quad(comp)  {
+        if ao.is_same_quad(comp) {
             n_type_vec.push(*ao);
         }
     }
@@ -308,12 +309,12 @@ let comp= &g_info.player_ship.get_entity();
     n_type_vec
 }
 
-pub fn isolate_quadrant(g_info:&Manifest,comp: &AstroObject)-> Vec<AstroObject>{
-      let mut n_type_vec: Vec<AstroObject> = Vec::new();
+pub fn isolate_quadrant(g_info: &Manifest, comp: &AstroObject) -> Vec<AstroObject> {
+    let mut n_type_vec: Vec<AstroObject> = Vec::new();
 
     for ao in g_info.uni_map.values() {
         //let n_info = *si;
-        if ao.is_same_quad(comp)  {
+        if ao.is_same_quad(comp) {
             n_type_vec.push(*ao);
         }
     }
@@ -321,13 +322,12 @@ pub fn isolate_quadrant(g_info:&Manifest,comp: &AstroObject)-> Vec<AstroObject>{
     n_type_vec
 }
 
-
-pub fn isolate_type(g_info:&Manifest, n_type: AstroType)-> Vec<AstroObject>{
-      let mut n_type_vec: Vec<AstroObject> = Vec::new();
+pub fn isolate_type(g_info: &Manifest, n_type: AstroType) -> Vec<AstroObject> {
+    let mut n_type_vec: Vec<AstroObject> = Vec::new();
 
     for ao in g_info.uni_map.values() {
         //let n_info = *si;
-        if ao.get_astro_type() == n_type  {
+        if ao.get_astro_type() == n_type {
             n_type_vec.push(*ao);
         }
     }
@@ -586,4 +586,50 @@ pub fn calculate(qi_vec: &Vec<AstroObject>) -> SummaryStats {
         }
     }
     stats
+}
+
+// ==============================================================
+/// # compact_summary_string
+///
+///  designed to work at the quadrant info level, not galaxy level
+pub fn compact_summary_string(qi_vec: &Vec<AstroObject>) -> String {
+    let stats = crate::manifest::calculate(qi_vec);
+    let mut encoded = format!("");
+
+    let mut tmp: String = format!("{}", stats.num_alive_klingons);
+    if stats.num_alive_klingons > 0 {
+        tmp = tmp.red().to_string();
+    }
+    encoded.push_str(tmp.as_str());
+
+    tmp = format!("{}", stats.num_alive_romulans);
+    if stats.num_alive_romulans > 0 {
+        tmp = tmp.bright_yellow().to_string();
+    }
+    encoded.push_str(tmp.as_str());
+
+    tmp = format!("{}", stats.num_star_bases);
+    if stats.num_star_bases > 0 {
+        tmp = tmp.bright_cyan().to_string();
+    }
+    encoded.push_str(tmp.as_str());
+
+    tmp = format!("{}", stats.num_planets);
+    if stats.num_planets > 0 {
+        tmp = tmp.bright_blue().to_string();
+    }
+    encoded.push_str(tmp.as_str());
+
+    tmp = format!("{}", stats.num_stars);
+    encoded.push_str(tmp.as_str());
+
+    // Indicate that the quad contains the enterprise
+    let tmp2 = encoded.to_string();
+    encoded = format!("");
+    if stats.num_enterprise > 0 {
+        encoded.push_str(format!("<{}>", tmp2).as_str())
+    } else {
+        encoded.push_str(format!(" {} ", tmp2).as_str())
+    }
+    encoded.to_string()
 }

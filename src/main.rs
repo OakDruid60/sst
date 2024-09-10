@@ -12,7 +12,7 @@ mod astro;
 mod manifest;
 mod ship_info;
 mod ui;
-// todo this is stuff
+// todo: this
 // research this stuff
 // temp stuff
 // bug: this is broken big time
@@ -22,7 +22,6 @@ mod ui;
 // review this could be better
 // debug this new code
 // hack to get around this
-// jap jap
 
 fn main() {
     ui::logo_screen::game_logo();
