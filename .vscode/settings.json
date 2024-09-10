@@ -2,5 +2,6 @@
     "todo-tree.tree.scanMode": "workspace",
     "todo-tree.regex.regexCaseSensitive": false,
     "todo-tree.highlights.useColourScheme": true,
-    "todohighlight.isCaseSensitive": false
+    "todohighlight.isCaseSensitive": false,
+    
 }

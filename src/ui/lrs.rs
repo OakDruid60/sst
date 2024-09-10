@@ -56,7 +56,7 @@ pub fn long_range_sensor_disp(g_info: &Manifest) {
                 .as_str(),
             );
         } else {
-            row_string.push_str(format!("\n").as_str());
+            row_string.push('\n');
         }
 
         print!("{}", row_string);

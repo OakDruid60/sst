@@ -17,12 +17,7 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
     let qi_vec = crate::manifest::isolate_cur_quadrant(g_info);
     let bc = crate::ui::alert_status_of_quadrant2(&qi_vec);
     crate::ui::disp_title("Short Range Scan", g_info, bc);
-    /*
-        let loc_tmp = g_info.enterprise.get_entity().clone();
-        let qi_vec = g_info.create_quadrant_vec(loc_tmp);
-        let bc = crate::helpers::alert_status_of_quadrant2(&qi_vec);
-        crate::ui::disp_title("Short Range Scan", g_info, bc);
-    */
+
     let g_tmp = g_info.clone();
     let mut human_out: Vec<String> = g_tmp.game_stat_create_disp_vec(false);
 
@@ -43,7 +38,7 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
                 AstroType::Klingon => {
                     row_string.push_str(format!(" {}", "k".black().on_red()).as_str())
                 }
-                AstroType::Star => row_string.push_str(format!(" *").as_str()),
+                AstroType::Star => row_string.push_str(" *"),
                 AstroType::Romulan => {
                     row_string.push_str(format!(" {}", "r".black().on_yellow()).as_str())
                 }
@@ -89,6 +84,6 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
     //
     // put in axis points
     let mut row_string = String::from("");
-    row_string.push_str(format!("    0 1 2 3 4 5 6 7 8 9  ").as_str());
+    row_string.push_str("    0 1 2 3 4 5 6 7 8 9  ");
     println!("{}", row_string);
 }
