@@ -2,10 +2,9 @@
 //! # srs.rs
 //!
 //! This is stuff related to displaying the short range sensor scan.
-/*
+
 use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
-use crate::manifest::entity::Entity;
-use crate::manifest::enums::EntityType;
+use crate::astro::{AstroObject, AstroType};
 use crate::manifest::Manifest;
 use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 
@@ -15,6 +14,10 @@ use colored::*;
 /// # short_range_sensor_disp
 ///
 pub fn short_range_sensor_disp(g_info: &Manifest) {
+    let qi_vec = crate::manifest::isolate_cur_quadrant(&g_info);
+    let bc = crate::ui::alert_status_of_quadrant2(&qi_vec);
+   crate::ui::disp_title("Short Range Scan", g_info, bc);
+   /*
     let loc_tmp = g_info.enterprise.get_entity().clone();
     let qi_vec = g_info.create_quadrant_vec(loc_tmp);
     let bc = crate::helpers::alert_status_of_quadrant2(&qi_vec);
@@ -79,12 +82,12 @@ pub fn short_range_sensor_disp(g_info: &Manifest) {
         }
         println!("{}", row_string);
     }
-    //
+    */
     println!("  {bc}{BORDER_LL}{BORDER_HORZ_60}{BORDER_LR}{COLOR_RESET}");
+    
     //
     // put in axis points
     let mut row_string = String::from("");
     row_string.push_str(format!("    0 1 2 3 4 5 6 7 8 9  ").as_str());
     println!("{}", row_string);
 }
-*/

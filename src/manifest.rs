@@ -65,7 +65,7 @@ impl Manifest {
     /// # construct_galaxy
     ///
     pub fn construct_galaxy(gal_coord: (i8, i8)) -> HashMap<String, AstroObject> {
-        let mut n_galaxy_map: HashMap<String, AstroObject> = HashMap::new();
+        let mut n_galaxy_map: HashMap<String, AstroObject> = HashMap::with_capacity(400);
         let n_gal_x = gal_coord.0;
         let n_gal_y = gal_coord.1;
         //
@@ -109,9 +109,9 @@ impl Manifest {
                 break;
             }
         }
-        //        for (key, value) in n_galaxy_map.iter() {
-        //            println!("{} {:?}", key,value.get_astro_type());
-        //        }
+                for (key, value) in n_galaxy_map.iter() {
+                    println!("{} {:?}", key,value.get_astro_type());
+              }
         //        println!("=============================================");
 
         // now populate other things into each quadrant
@@ -225,11 +225,14 @@ impl Manifest {
                 }
             }
         }
-        for (key, value) in n_galaxy_map.iter() {
+      
+        //for (key, value) in n_galaxy_map.iter() {
             //let n_info = *si;
-            println!("{} {:?}", key, value.get_astro_type());
-        }
+        //    println!("{} {:?}", key, value.get_astro_type());
+        //}
+        //n_galaxy_map.shrink_to(n_galaxy_map.len()+50);
         n_galaxy_map
+        
     }
     // =========================================================================
     /// # create_quadrant_vec
@@ -246,25 +249,24 @@ impl Manifest {
         }
         n_vec
     }
-}
-/*
+
     // ==========================================================================
     /// # game_stat_create_disp_vec
     ///
     pub fn game_stat_create_disp_vec(self, create_complete: bool) -> Vec<String> {
-        let input_vec: Vec<Entity>;
+        let input_vec: Vec<AstroObject>;
         if create_complete {
-            input_vec = self.galaxy_vec;
+            input_vec = self.uni_map.values().cloned().collect();
         } else {
-            input_vec = self.create_quadrant_vec(self.clone().enterprise.get_entity());
+            input_vec = self.create_quadrant_vec(self.clone().player_ship.get_entity());
         }
-        let summary: SummaryStats = crate::manifest::statistics::calculate(&input_vec);
+        let summary: SummaryStats = crate::manifest::calculate(&input_vec);
 
         let mut human_out: Vec<String> = Vec::new();
         human_out.push(format!(
             "  Enterprise ┃ energy:{:<6} torp:{:<3}",
-            self.enterprise.get_energy(),
-            self.enterprise.get_torpedoes()
+            self.player_ship.get_energy(),
+            self.player_ship.get_torpedoes()
         ));
         human_out.push(format!(
             " Astro Count ┃ stars:{:<3}  planets:{:<3}",
@@ -289,12 +291,48 @@ impl Manifest {
 
         human_out
     }
-}
-*/
-
+}  
 // =========================================================================
 /// # create_vec_of_type
 ///
+pub fn isolate_cur_quadrant(g_info:&Manifest)-> Vec<AstroObject>{
+      let mut n_type_vec: Vec<AstroObject> = Vec::new();
+let comp= &g_info.player_ship.get_entity();
+    for ao in g_info.uni_map.values() {
+        //let n_info = *si;
+        if ao.is_same_quad(comp)  {
+            n_type_vec.push(*ao);
+        }
+    }
+
+    n_type_vec
+}
+
+pub fn isolate_quadrant(g_info:&Manifest,comp: &AstroObject)-> Vec<AstroObject>{
+      let mut n_type_vec: Vec<AstroObject> = Vec::new();
+
+    for ao in g_info.uni_map.values() {
+        //let n_info = *si;
+        if ao.is_same_quad(comp)  {
+            n_type_vec.push(*ao);
+        }
+    }
+
+    n_type_vec
+}
+
+
+pub fn isolate_type(g_info:&Manifest, n_type: AstroType)-> Vec<AstroObject>{
+      let mut n_type_vec: Vec<AstroObject> = Vec::new();
+
+    for ao in g_info.uni_map.values() {
+        //let n_info = *si;
+        if ao.get_astro_type() == n_type  {
+            n_type_vec.push(*ao);
+        }
+    }
+    n_type_vec
+}
 pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec<AstroObject> {
     let mut n_type_vec: Vec<AstroObject> = Vec::new();
 
@@ -490,4 +528,62 @@ pub fn freeze(uni: &Manifest, cmd_vector: &Vec<String>) {
     }
 
     println!("Game back-up created in {}", save_file_name);
+}
+// =====================================================================
+/// #SummaryStats
+///  Information that is the summary for tha supplied vector of SectorInfo
+///
+
+#[derive(Copy, Clone, Debug)]
+pub struct SummaryStats {
+    pub num_alive_klingons: isize,
+    pub num_killed_klingons: isize,
+    pub num_alive_romulans: isize,
+    pub num_killed_romulans: isize,
+    pub num_stars: isize,
+    pub num_planets: isize,
+    pub num_star_bases: isize,
+    pub num_enterprise: isize,
+    pub cur_score: isize,
+}
+
+// ============================================================================
+//
+impl SummaryStats {}
+// =============================
+/// # calculate
+/// Given an input quad info vaector, calculate the current state of the game
+pub fn calculate(qi_vec: &Vec<AstroObject>) -> SummaryStats {
+    let mut stats = SummaryStats {
+        num_enterprise: 0,
+        num_killed_klingons: 0,
+        num_killed_romulans: 0,
+        num_alive_klingons: 0,
+        num_planets: 0,
+        num_alive_romulans: 0,
+        num_star_bases: 0,
+        num_stars: 0,
+        cur_score: 0,
+    };
+    for si in qi_vec.iter() {
+        let n_info = *si;
+        match n_info.get_astro_type() {
+            AstroType::Klingon => stats.num_alive_klingons += 1,
+            AstroType::KilledKlingon => {
+                stats.num_killed_klingons += 1;
+                stats.cur_score += 100;
+            }
+            AstroType::Romulan => stats.num_alive_romulans += 1,
+            AstroType::KilledRomulan => {
+                stats.num_killed_romulans += 1;
+                stats.cur_score += 20;
+            }
+            AstroType::Star => stats.num_stars += 1,
+            AstroType::Planet => stats.num_planets += 1,
+            AstroType::Starbase => stats.num_star_bases += 1,
+            AstroType::PlayerShip => stats.num_enterprise += 1,
+            _ => {}
+        }
+    }
+    stats
 }

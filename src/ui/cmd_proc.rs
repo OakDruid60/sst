@@ -70,21 +70,27 @@ pub fn command_processor() {
     //let mut cur_galaxy: Galaxy;
 
     let mut g_info: crate::manifest::Manifest = crate::manifest::Manifest::new();
-    //g_info.end_star_date = g_info.cur_star_date + 131;
-    //g_info.galaxy_vec = crate::manifest::construct_galaxy();
-    println!("len = {:?}", g_info.uni_map().len());
-    println!("capacity = {:?}", g_info.uni_map().capacity());
+    g_info.end_star_date = g_info.cur_star_date + 131;
+    g_info.uni_map = crate::manifest::Manifest::construct_galaxy((0,0));
+    //println!("len = {:?}", g_info.uni_map().len());
+    //println!("capacity = {:?}", g_info.uni_map().capacity());
 
     let g_tmp = g_info.clone();
-    let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::Starbase);
-    let tmp_loc_quad = tmp_loc_list[0].ret_quad_tuple();
+    
+    // fixme let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::Starbase);
+    //let tmp_loc_quad = tmp_loc_list[0].ret_quad_tuple();
     //g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
 
     // find the enterprise in the galaxy.
     let tmp_loc_list =
-        crate::manifest::create_vec_of_type(&g_tmp.uni_map, AstroType::PlayerShip);
+        crate::manifest::isolate_type(&g_tmp, AstroType::PlayerShip);
     g_info.player_ship = crate::ship_info::PlayerShip::new();
     g_info.player_ship.set_entity(tmp_loc_list[0].clone());
+
+  let japt1=crate::manifest::isolate_quadrant(&g_tmp,&g_info.player_ship.get_entity());
+  for ao in japt1.iter() {
+  println!("{}",ao);
+  }
 
     'proccess_loop: loop {
         let mut cmd_input: String = String::new();
@@ -285,11 +291,11 @@ pub fn command_processor() {
                         // g_info.charted[x as usize][y as usize] = true;
                     }
                 }
-               // crate::ui::srs::short_range_sensor_disp(&g_info);
+                crate::ui::srs::short_range_sensor_disp(&g_info);
             }
-           // fixme CmdType::Status => {
-           //     crate::ui::misc::game_stat_disp(&g_info);
-           // }
+            CmdType::Status => {
+                crate::ui::stat_screen::game_stat_disp(&g_info);
+            }
             CmdType::Test => {
                 //test_cmds_vec.push("stat".to_string());
                 //test_cmds_vec.push("srs".to_string());

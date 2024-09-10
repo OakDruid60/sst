@@ -9,10 +9,10 @@
 
 //mod helpers;
 mod astro;
-mod ship_info;
 mod manifest;
+mod ship_info;
 mod ui;
-// todo: this
+// todo this is stuff
 // research this stuff
 // temp stuff
 // bug: this is broken big time

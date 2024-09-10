@@ -4,15 +4,15 @@
 //!
 //! This is stuff related to how the universe is organised.
 
-use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
+use crate::manifest::constants::{MAX_SECTOR_SIZE_I8};
 //use crate::manifest::enums::{DamageType, EntityType};
 //use crate::enterprise::ShipInfo;
 //use crate::manifest::statistics::SummaryStats;
 
-use rand::Rng;
+//use rand::Rng;
 use serde::{Deserialize, Serialize};
 //use serde_json::from_str;
-use std::collections::HashMap;
+//use std::collections::HashMap;
 use std::fmt;
 //use std::fs::File;
 //use std::io::{Read, Write};

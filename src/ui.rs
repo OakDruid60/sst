@@ -8,6 +8,7 @@ pub mod help_screen;
 pub mod logo_screen;
 pub mod lrs;
 pub mod srs;
+pub mod stat_screen;
 
 //use serde_json::to_string;
 use colored::Colorize;
