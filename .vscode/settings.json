@@ -3,5 +3,35 @@
     "todo-tree.regex.regexCaseSensitive": false,
     "todo-tree.highlights.useColourScheme": true,
     "todohighlight.isCaseSensitive": false,
-    
+    "workbench.colorCustomizations": {
+        "tab.activeBorder": "#ffc600",
+        "tab.activeBorderTop": "#ffc600"
+    },
+    "rust-analyzer.check.command": "clippy",
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "TODO",
+        "FIXME",
+        "XXX",
+        "[ ]",
+        "[x]",
+        "todo",
+        "fixme",
+        "bug"
+    ],
+    "todo-tree.highlights.customHighlight": {
+        "bug": {
+            "icon": "bug",
+            "foreground": "#000000",
+            "background": "#ff0000",
+            "iconColour": "#ff0000"
+        },
+        "todo": {
+            "icon": "tools",
+            "foreground": "#ff6c00",
+            "background": "#000000",
+            "iconColour": "#ff6c00"
+        }
+    }
 }
