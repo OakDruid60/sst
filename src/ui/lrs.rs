@@ -36,11 +36,11 @@ pub fn long_range_sensor_disp(g_info: &Manifest) {
 
             let tmp_qi_vec = g_info.create_quadrant_vec(tmp_loc);
             let mut tmp: String = crate::manifest::compact_summary_string(&tmp_qi_vec);
-            //if g_info.charted[xx as usize][yy as usize] {
-            //    tmp = format!("{}", tmp);
-            //} else {
-            //let  tmp = format!("   .   ");
-            //}
+            if g_info.charted[xx as usize][yy as usize] {
+                tmp = format!("{}", tmp);
+            } else {
+                tmp = format!("   .   ");
+            }
             row_string.push_str(tmp.as_str());
         }
         row_string.push_str(format!("    {bc}{BORDER_VERT}{COLOR_RESET}").as_str());

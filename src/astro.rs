@@ -4,12 +4,12 @@
 //!
 //! This is stuff related to how the universe is organised.
 
-use crate::manifest::constants::{MAX_SECTOR_SIZE_I8};
+use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
 //use crate::manifest::enums::{DamageType, EntityType};
 //use crate::enterprise::ShipInfo;
 //use crate::manifest::statistics::SummaryStats;
 
-//use rand::Rng;
+use rand::Rng;
 use serde::{Deserialize, Serialize};
 //use serde_json::from_str;
 //use std::collections::HashMap;
@@ -52,7 +52,8 @@ pub struct AstroObject {
 //
 impl fmt::Debug for AstroObject {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Location").field("id", &self.t).finish()
+        write!(f, "{}", self.to_compact_string())
+        //f.debug_struct("Location").field("id", &self.t).finish()
     }
 }
 // =====================================================================
@@ -225,26 +226,24 @@ impl AstroObject {
 
         ((min_x, min_y), (max_x, max_y))
     }
-}
-/*
 
     // ====================================================================
     /// # create_new_random_enterprise_in_this_quad
     ///
     pub fn create_new_random_enterprise_in_this_quad(nq: (i8, i8)) -> Self {
         Self {
-            q: Quad::new(nq.0, nq.1),
-            s: Sect::new(
+            coord: (
+                0,
+                0,
+                nq.0,
+                nq.1,
                 rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8),
                 rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8),
             ),
-            t: SectorType::Enterprise,
+            t: AstroType::PlayerShip,
         }
     }
 }
-
-*/
-
 /*
 
 // =============================

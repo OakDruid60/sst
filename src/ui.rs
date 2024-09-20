@@ -22,6 +22,7 @@ pub mod stat_screen;
 pub mod srs;
 */
 use crate::astro::{AstroObject, AstroType};
+use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::Manifest;
 /*
 //use crate::enterprise::ShipInfo;
@@ -60,6 +61,69 @@ pub fn disp_title(title: &str, g_info: &Manifest, bc: &str) {
     );
     println!("  {bc}{BORDER_ML}{BORDER_HORZ_60}{BORDER_MR}{COLOR_RESET}");
 }
+
+// =====================================================================
+/// # validate_x_y_input
+///
+/// make sure the new cmd x y values are valid
+pub fn validate_x_y_input(cmd_vector: &Vec<String>, max: i8) -> Result<(i8, i8), String> {
+    let mut chk_max = MAX_GALAXY_SIZE_I8;
+    let mut chk_title = "Quadrant";
+    if max == MAX_SECTOR_SIZE_I8 {
+        chk_max = MAX_SECTOR_SIZE_I8;
+        chk_title = "Sector";
+    }
+
+    chk_max -= 1;
+    // handle the x value
+    let res_x: Result<i8, core::num::ParseIntError> = cmd_vector[1].trim().parse();
+    match res_x {
+        Ok(_) => {}
+        Err(_e) => {
+            let err_string = format!(
+                "Please type a number for the new X coord of the {}!",
+                chk_title
+            )
+            .to_string();
+            return Err(err_string);
+        }
+    }
+    let xx: i8 = res_x.unwrap();
+    if xx > chk_max {
+        let err_string = format!(
+            "The x value {} is outside the range of 0..{} for a {}.",
+            xx, chk_max, chk_title
+        )
+        .to_string();
+        return Err(err_string);
+    }
+
+    // Now handle y value
+    let res_y: Result<i8, core::num::ParseIntError> = cmd_vector[2].trim().parse();
+    match res_y {
+        Ok(_) => {}
+        Err(_e) => {
+            let err_string = format!(
+                "Please type a number for the new Y coord of the {}!",
+                chk_title
+            )
+            .to_string();
+            return Err(err_string);
+        }
+    }
+    let yy: i8 = res_y.unwrap();
+    if yy > chk_max {
+        let err_string = format!(
+            "The y value {} is outside the range of 0..{} for a {}.",
+            yy, chk_max, chk_title
+        )
+        .to_string();
+        return Err(err_string);
+    }
+
+    return Ok((xx as i8, yy as i8));
+}
+
 pub fn alert_status_of_quadrant(qi_vec: &Vec<AstroObject>) -> String {
     let cur_alert = calc_alert_status(qi_vec);
     let mut stat_string = "Normal".normal().to_string();
