@@ -56,9 +56,9 @@ pub fn fire_torpedoe(
         tgt_sector.kill_enemy();
         let mut updated_enterprise = g_info.player_ship;
         updated_enterprise.use_torpedoe();
-        return Ok((updated_enterprise, tgt_sector));
+        Ok((updated_enterprise, tgt_sector))
     } else if cmd_vector.len() == 3 {
-        let res = crate::ui::validate_x_y_input(&cmd_vector, MAX_SECTOR_SIZE_I8);
+        let res = crate::ui::validate_x_y_input(cmd_vector, MAX_SECTOR_SIZE_I8);
         let mut n_info: AstroObject;
         match res {
             Ok(_) => {
@@ -142,9 +142,9 @@ pub fn fire_phaser(
 
         let mut updated_enterprise = g_info.player_ship;
         updated_enterprise.use_energy(1000 + (current_distance * 100.0) as isize);
-        return Ok((updated_enterprise, tgt_sector));
+        Ok((updated_enterprise, tgt_sector))
     } else if cmd_vector.len() == 3 {
-        let res = crate::ui::validate_x_y_input(&cmd_vector, MAX_SECTOR_SIZE_I8);
+        let res = crate::ui::validate_x_y_input(cmd_vector, MAX_SECTOR_SIZE_I8);
         let mut n_info: AstroObject;
         match res {
             Ok(_) => {

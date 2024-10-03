@@ -10,7 +10,7 @@ pub mod statistics;
 
 use crate::astro::{AstroObject, AstroType};
 use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
-use crate::ship_info::PlayerShip; 
+use crate::ship_info::PlayerShip;
 
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -50,9 +50,10 @@ impl Manifest {
         }
     }
 
-    pub fn uni_map(&self) -> &HashMap<String, AstroObject> {
+    /*pub fn uni_map(&self) -> &HashMap<String, AstroObject> {
         &self.uni_map
-    }
+    }*/
+
     pub fn player_ship(&self) -> &PlayerShip {
         &self.player_ship
     }
@@ -221,9 +222,9 @@ impl Manifest {
                 }
             }
         }
-       n_galaxy_map
+        n_galaxy_map
     }
-    
+
     // =========================================================================
     /// # create_quadrant_vec
     ///
@@ -282,8 +283,9 @@ impl Manifest {
         human_out
     }
 }
+
 // =========================================================================
-/// # create_vec_of_type
+/// # isolate_cur_quadrant
 ///
 pub fn isolate_cur_quadrant(g_info: &Manifest) -> Vec<AstroObject> {
     let mut n_type_vec: Vec<AstroObject> = Vec::new();
@@ -312,6 +314,10 @@ pub fn isolate_cur_quadrant(g_info: &Manifest) -> Vec<AstroObject> {
 }
 */
 
+// =========================================================================
+/// # isolate_type
+/// isolate the type from the universe
+///
 pub fn isolate_type(g_info: &Manifest, n_type: AstroType) -> Vec<AstroObject> {
     let mut n_type_vec: Vec<AstroObject> = Vec::new();
 
@@ -323,6 +329,11 @@ pub fn isolate_type(g_info: &Manifest, n_type: AstroType) -> Vec<AstroObject> {
     }
     n_type_vec
 }
+
+// =========================================================================
+/// # create_vec_of_type
+///  From a vector of objests
+///
 pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec<AstroObject> {
     let mut n_type_vec: Vec<AstroObject> = Vec::new();
 
@@ -365,8 +376,8 @@ pub fn is_straight_line_path_clear(
     let mut delta_y: f64 = tgt_tuple.1 as f64 - strt_tuple.1 as f64;
     let distance: f64 = (delta_x.powi(2) + delta_y.powi(2)).sqrt();
 
-    delta_x = delta_x / distance;
-    delta_y = delta_y / distance;
+    delta_x /= distance;
+    delta_y /= distance;
 
     let mut trial_loc_x = strt_tuple.0 as f64 + 0.5;
     let mut trial_loc_y = strt_tuple.1 as f64 + 0.5;
@@ -396,7 +407,7 @@ pub fn is_straight_line_path_clear(
         }
     }
 
-    return Ok(true);
+    Ok(true)
 }
 
 // ==========================================================================
@@ -415,7 +426,7 @@ pub fn create_bad_guy_qi_vec(
         let bad_guy_type: AstroType = n_info.get_astro_type();
         if bad_guy_type == AstroType::Klingon || bad_guy_type == AstroType::Romulan {
             if chk_path {
-                let path_res = is_straight_line_path_clear(&qi_vec, interest_loc, n_info);
+                let path_res = is_straight_line_path_clear(qi_vec, interest_loc, n_info);
                 match path_res {
                     Ok(_) => {
                         if path_res.unwrap() {
@@ -443,13 +454,13 @@ pub fn create_qi_enemy_vec(
     let qi_vec = g_info.create_quadrant_vec(g_info.player_ship.get_entity());
     let potential_bad_guys =
         crate::manifest::create_bad_guy_qi_vec(&qi_vec, g_info.player_ship.get_entity(), false);
-    if potential_bad_guys.len() == 0 {
-        return Err(format!("No enemy targets found in the current quadrant.").to_string());
+    if potential_bad_guys.is_empty() {
+        return Err("No enemy targets found in the current quadrant.".to_string());
     }
     let potential_bad_guys =
         crate::manifest::create_bad_guy_qi_vec(&qi_vec, g_info.player_ship.get_entity(), true);
-    if potential_bad_guys.len() == 0 {
-        return Err(format!("No enemy targets found in current quadrant along a straight line path from the Enterprise to the target that is not blocked by some other object.").to_string());
+    if potential_bad_guys.is_empty() {
+        return Err("No enemy targets found in current quadrant along a straight line path from the player ship to the target that is not blocked by some other object.".to_string());
     }
     Ok((qi_vec.clone(), potential_bad_guys.clone()))
 }
@@ -577,6 +588,7 @@ pub fn freeze(uni: &Manifest, cmd_vector: &Vec<String>) {
 
     println!("Game back-up created in {}", save_file_name);
 }
+
 // =====================================================================
 /// #SummaryStats
 ///  Information that is the summary for tha supplied vector of SectorInfo

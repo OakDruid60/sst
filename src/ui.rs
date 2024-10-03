@@ -52,7 +52,7 @@ pub const COLOR_RESET: &str = "\x1b[0m";
 /// New attempt at a command title bar
 pub fn disp_title(title: &str, g_info: &Manifest, bc: &str) {
     let tmp_title = format!("{}", title.underline());
-    println!("");
+    println!();
     println!("  {bc}{BORDER_UL}{BORDER_HORZ_60}{BORDER_UR}{COLOR_RESET}");
     println!(
         "  {bc}{BORDER_VERT}{COLOR_RESET} {: <38}{: >28} {bc}{BORDER_VERT}{COLOR_RESET}",
@@ -121,7 +121,7 @@ pub fn validate_x_y_input(cmd_vector: &Vec<String>, max: i8) -> Result<(i8, i8),
         return Err(err_string);
     }
 
-    return Ok((xx as i8, yy as i8));
+    Ok((xx, yy))
 }
 
 pub fn alert_status_of_quadrant(qi_vec: &Vec<AstroObject>) -> String {
@@ -142,6 +142,7 @@ pub fn alert_status_of_quadrant(qi_vec: &Vec<AstroObject>) -> String {
     }
     return stat_string;
 }
+
 pub fn alert_status_of_quadrant2(qi_vec: &Vec<AstroObject>) -> &str {
     let cur_alert = calc_alert_status(qi_vec);
     let mut stat_string = BORDER_COLOR_GREEN;
@@ -158,7 +159,7 @@ pub fn alert_status_of_quadrant2(qi_vec: &Vec<AstroObject>) -> &str {
             stat_string = BORDER_COLOR_YELLOW;
         }
     }
-    return stat_string;
+    stat_string
 }
 // ===============================
 /// # calc_alert_status
@@ -169,7 +170,7 @@ pub fn calc_alert_status(qi_vec: &Vec<AstroObject>) -> AlertStatus {
     // find the enterprise
     let enterprise_vec = crate::manifest::create_vec_of_type(qi_vec, AstroType::PlayerShip);
     let star_base_vec = crate::manifest::create_vec_of_type(qi_vec, AstroType::Starbase);
-    if star_base_vec.len() != 0 {
+    if !star_base_vec.is_empty() {
         let distance = enterprise_vec[0].calc_sector_distance(star_base_vec[0]);
         if distance < 1.42 {
             cur_alert = AlertStatus::Docked;

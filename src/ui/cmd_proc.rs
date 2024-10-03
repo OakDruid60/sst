@@ -22,9 +22,9 @@ pub fn determine_cmd_type(cmd_string: String) -> CmdType {
     } else if abbrev(&cmd_string, "mov", "move") {
         return CmdType::Move;
     } else if abbrev(&cmd_string, "lrs", "lrs") {
-        return CmdType::LRS;
+        return CmdType::Lrs;
     } else if abbrev(&cmd_string, "srs", "srs") {
-        return CmdType::SRS;
+        return CmdType::Srs;
     } else if abbrev(&cmd_string, "stat", "status") {
         return CmdType::Status;
     } else if abbrev(&cmd_string, "save", "save") {
@@ -76,7 +76,6 @@ pub fn command_processor() {
     //println!("capacity = {:?}", g_info.uni_map().capacity());
 
     let g_tmp = g_info.clone();
-
     // fixme let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::Starbase);
     //let tmp_loc_quad = tmp_loc_list[0].ret_quad_tuple();
     //g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
@@ -91,10 +90,10 @@ pub fn command_processor() {
     //    println!("{}", ao);
     //}
 
-    'proccess_loop: loop {
+    'process_loop: loop {
         let mut cmd_input: String = String::new();
 
-        if startup_cmd_vec.len() == 0 && test_cmds_vec.len() == 0 && cmd_part2_vec.len() == 0 {
+        if startup_cmd_vec.is_empty() && test_cmds_vec.is_empty() && cmd_part2_vec.is_empty() {
             print!(" Command:");
             stdout().flush().unwrap();
             stdin()
@@ -102,13 +101,11 @@ pub fn command_processor() {
                 .expect("Failed to read line");
         } else if startup_cmd_vec.len() > 0 {
             cmd_input = startup_cmd_vec.remove(0);
+        } else if !test_cmds_vec.is_empty() {
+            cmd_input = test_cmds_vec.remove(0);
+            println!(" === auto test cmd ===  {}", cmd_input);
         } else {
-            if test_cmds_vec.len() > 0 {
-                cmd_input = test_cmds_vec.remove(0);
-                println!(" === auto test cmd ===  {}", cmd_input);
-            } else {
-                cmd_input = cmd_part2_vec.remove(0);
-            }
+            cmd_input = cmd_part2_vec.remove(0);
         }
 
         let cmd_vector: Vec<String> = cmd_input
@@ -119,14 +116,12 @@ pub fn command_processor() {
             .map(str::to_string)
             .collect();
 
-        if recording_commands {
-            if cmd_input.ends_with("\n") {
-                g_info.test_cmds_vec.push(cmd_input.clone());
-            }
+        if recording_commands && cmd_input.ends_with("\n") {
+            g_info.test_cmds_vec.push(cmd_input.clone());
         }
 
         let cmd_type: CmdType = determine_cmd_type(cmd_vector[0].to_string());
-        
+
         // make sure proper sectors are explored
         let cur_loc = g_info.player_ship().get_entity().ret_quad_tuple();
         for x_delta in -1i8..=1i8 {
@@ -149,7 +144,7 @@ pub fn command_processor() {
                 g_info.charted[x as usize][y as usize] = true;
             }
         }
-        
+
         // the actual command executor
         match cmd_type {
             // Phaser
@@ -169,7 +164,7 @@ pub fn command_processor() {
                         g_info.uni_map.insert(killed_si.to_key_string(), killed_si);
                         g_info.player_ship = updated_enterprise;
                         // auto perform a short range scan
-                        if cmd_part2_vec.len() == 0 {
+                        if cmd_part2_vec.is_empty() {
                             cmd_part2_vec.push("srs".to_string());
                         }
                     }
@@ -199,7 +194,7 @@ pub fn command_processor() {
                         //}
                         g_info.player_ship = updated_enterprise;
                         // auto perform a short range scan
-                        if cmd_part2_vec.len() == 0 {
+                        if cmd_part2_vec.is_empty() {
                             cmd_part2_vec.push("srs".to_string());
                         }
                     }
@@ -225,7 +220,7 @@ pub fn command_processor() {
 
                         g_info.player_ship = updated_enterprise;
                         // auto perform a short range scan
-                        if cmd_part2_vec.len() == 0 {
+                        if cmd_part2_vec.is_empty() {
                             cmd_part2_vec.push("srs".to_string());
                         }
                     }
@@ -252,7 +247,7 @@ pub fn command_processor() {
 
                         g_info.player_ship = updated_enterprise;
                         // auto perform a short range scan
-                        if cmd_part2_vec.len() == 0 {
+                        if cmd_part2_vec.is_empty() {
                             cmd_part2_vec.push("srs".to_string());
                         }
                     }
@@ -261,10 +256,10 @@ pub fn command_processor() {
                     }
                 };
             }
-            CmdType::LRS => {
+            CmdType::Lrs => {
                 crate::ui::lrs::long_range_sensor_disp(&g_info);
             }
-            CmdType::SRS => {
+            CmdType::Srs => {
                 crate::ui::srs::short_range_sensor_disp(&g_info);
             }
             CmdType::Status => {
@@ -279,12 +274,12 @@ pub fn command_processor() {
             }
             CmdType::Restore => {
                 g_info = crate::manifest::thaw(&cmd_vector).expect("REASON");
-                if g_info.test_cmds_vec.len() > 0 {
+                if !g_info.test_cmds_vec.is_empty() {
                     test_cmds_vec = g_info.test_cmds_vec.clone();
                     //println!("{:?}", test_cmds_vec);
                     g_info.test_cmds_vec = Vec::new();
                 }
-                if cmd_part2_vec.len() == 0 {
+                if cmd_part2_vec.is_empty() {
                     cmd_part2_vec.push("stat".to_string());
                 }
             }
@@ -295,7 +290,7 @@ pub fn command_processor() {
                 crate::ui::help_screen::help_screen(&g_info);
             }
             CmdType::Quit => {
-                break 'proccess_loop;
+                break 'process_loop;
             }
             CmdType::RecordOn => {
                 println!("Command recording ON");
@@ -339,8 +334,8 @@ pub fn red_syntax_error() -> String {
 pub enum CmdType {
     Help,
     Quit,
-    SRS,
-    LRS,
+    Srs,
+    Lrs,
     Phaser,
     Torpedoe,
     Move,

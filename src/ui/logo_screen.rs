@@ -11,25 +11,24 @@ use colored::*;
 /// put the opening game identification info on the console
 ///
 pub fn game_logo() {
-    println!("");
+    println!();
     println!(
         "{} v{} -- {}",
         env!("CARGO_PKG_NAME"),
         env!("CARGO_PKG_VERSION"),
         env!("CARGO_PKG_DESCRIPTION")
     );
-    println!("");
+    println!();
 
     println!("                     ,------*------,");
     println!("     ,-------------   '---  ------'");
     println!("      '-------- --'      / /");
     println!("          ,---' '-------/ /--,");
     println!("           '----------------'");
-    println!("");
+    println!();
 
     println!(
-        "{} {} {} {} \n",
-        "     ",
+        "      {} {} {} \n",
         "USS ENTERPRISE".green(),
         " --- ".clear(),
         "NCC-1701".bright_purple()

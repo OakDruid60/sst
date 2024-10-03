@@ -165,12 +165,12 @@ impl AstroObject {
     // =============================
     /// # is_same
     ///
-    pub fn is_same(self, comp: &AstroObject) -> bool {
+    /*pub fn is_same(self, comp: &AstroObject) -> bool {
         if self.is_same_quad(comp) && self.is_same_sect(comp) {
             return true;
         }
         false
-    }
+    }*/
     // =============================
     /// # is_same_quad
     ///
@@ -184,13 +184,13 @@ impl AstroObject {
     // =============================
     /// # is_same_sect
     ///
-    pub fn is_same_sect(self, comp: &AstroObject) -> bool {
-        if self.coord.4 == comp.coord.4 && self.coord.5 == comp.coord.5 {
-            return true;
+    /*pub fn is_same_sect(self, comp: &AstroObject) -> bool {
+            if self.coord.4 == comp.coord.4 && self.coord.5 == comp.coord.5 {
+                return true;
+            }
+            false
         }
-        false
-    }
-
+    */
     // =============================
     /// # is_same_sect_tuple
     ///
