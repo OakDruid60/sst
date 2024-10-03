@@ -76,9 +76,10 @@ pub fn command_processor() {
     //println!("capacity = {:?}", g_info.uni_map().capacity());
 
     let g_tmp = g_info.clone();
-    // fixme let tmp_loc_list = crate::manifest::create_vec_of_type(&g_tmp.galaxy_vec, AstroType::Starbase);
-    //let tmp_loc_quad = tmp_loc_list[0].ret_quad_tuple();
-    //g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
+    // bug mark the starbase as charted
+    let tmp_loc_list = crate::manifest::isolate_type(&g_tmp, AstroType::Starbase);
+    let tmp_loc_quad = tmp_loc_list[0].ret_quad_tuple();
+    g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
 
     // find the enterprise in the galaxy.
     let tmp_loc_list = crate::manifest::isolate_type(&g_tmp, AstroType::PlayerShip);

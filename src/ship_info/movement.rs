@@ -19,9 +19,10 @@ pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Pl
     if cmd_vector.len() == 2 {
         if cmd_vector[1].starts_with("sb") {
             //let g_tmp = g_info.clone();
-            let qi_vec = g_info.create_quadrant_vec(g_info.player_ship.get_entity());
-            let star_base_vec = crate::manifest::create_vec_of_type(&qi_vec, AstroType::Starbase);
-
+            let tqi_vec = crate::manifest::isolate_type(g_info, AstroType::Starbase);
+            //println!("{:?}", tqi_vec);
+            let star_base_vec = crate::manifest::create_vec_of_type(&tqi_vec, AstroType::Starbase);
+            //println!("{:?}", star_base_vec);
             let mut updated_player_ship = g_info.player_ship;
             let sector_bounds = star_base_vec[0].calc_nearby_sector_bounds();
 
