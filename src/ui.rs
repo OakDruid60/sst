@@ -127,7 +127,7 @@ pub fn validate_x_y_input(cmd_vector: &[String], max: i8) -> Result<(i8, i8), St
 // =====================================================================
 /// # alert_status_of_quadrant
 ///
-pub fn alert_status_of_quadrant(qi_vec: &Vec<AstroObject>) -> String {
+pub fn alert_status_of_quadrant(qi_vec: &[AstroObject]) -> String {
     let cur_alert = calc_alert_status(qi_vec);
     let mut stat_string = "Normal".normal().to_string();
     if cur_alert == AlertStatus::Docked {
@@ -143,10 +143,10 @@ pub fn alert_status_of_quadrant(qi_vec: &Vec<AstroObject>) -> String {
             stat_string = "YELLOW".to_string();
         }
     }
-    return stat_string;
+    stat_string
 }
 
-pub fn alert_status_of_quadrant2(qi_vec: &Vec<AstroObject>) -> &str {
+pub fn alert_status_of_quadrant2(qi_vec: &[AstroObject]) -> &str {
     let cur_alert = calc_alert_status(qi_vec);
     let mut stat_string = BORDER_COLOR_GREEN;
     if cur_alert == AlertStatus::Docked {
@@ -168,7 +168,7 @@ pub fn alert_status_of_quadrant2(qi_vec: &Vec<AstroObject>) -> &str {
 /// # calc_alert_status
 ///
 /// Calculate some stuff
-pub fn calc_alert_status(qi_vec: &Vec<AstroObject>) -> AlertStatus {
+pub fn calc_alert_status(qi_vec: &[AstroObject]) -> AlertStatus {
     let mut cur_alert = AlertStatus::Normal;
     // find the enterprise
     let enterprise_vec = crate::manifest::create_vec_of_type(qi_vec, AstroType::PlayerShip);
