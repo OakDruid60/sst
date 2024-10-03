@@ -14,42 +14,42 @@ use std::io::{stdin, stdout, Write};
 ///
 pub fn determine_cmd_type(cmd_string: String) -> CmdType {
     if cmd_string.starts_with("tor") {
-        return CmdType::Torpedoe;
+        CmdType::Torpedoe
     } else if cmd_string.starts_with("pha") {
-        return CmdType::Phaser;
+        CmdType::Phaser
     } else if abbrev(&cmd_string, "jum", "jump") {
-        return CmdType::Jump;
+        CmdType::Jump
     } else if abbrev(&cmd_string, "mov", "move") {
-        return CmdType::Move;
+        CmdType::Move
     } else if abbrev(&cmd_string, "lrs", "lrs") {
-        return CmdType::Lrs;
+        CmdType::Lrs
     } else if abbrev(&cmd_string, "srs", "srs") {
-        return CmdType::Srs;
+        CmdType::Srs
     } else if abbrev(&cmd_string, "stat", "status") {
-        return CmdType::Status;
+        CmdType::Status
     } else if abbrev(&cmd_string, "save", "save") {
-        return CmdType::Save;
+        CmdType::Save
     } else if abbrev(&cmd_string, "rest", "restore") {
-        return CmdType::Restore;
+        CmdType::Restore
     } else if abbrev(&cmd_string, "test", "test") {
-        return CmdType::Test;
+        CmdType::Test
     } else if cmd_string.starts_with("qui") || cmd_string.starts_with("exit") {
-        return CmdType::Quit;
+        CmdType::Quit
     } else if cmd_string.starts_with("?") || cmd_string.starts_with("hel") {
-        return CmdType::Help;
+        CmdType::Help
     } else if abbrev(&cmd_string, "recordon", "recordon") {
-        return CmdType::RecordOn;
+        CmdType::RecordOn
     } else if abbrev(&cmd_string, "recordoff", "recordoff") {
-        return CmdType::RecordOff;
+        CmdType::RecordOff
     } else {
-        return CmdType::Empty;
+        CmdType::Empty
     }
 }
 
 #[inline]
 pub fn abbrev(what: &String, least: &str, full: &str) -> bool {
     //! Check if `what` is an abbreviation of `full` and starts with `least`.
-    return what.starts_with(&least) && full.contains(what);
+    what.starts_with(&least) && full.contains(what)
 }
 // =========================================================
 /// # command_processor
@@ -76,7 +76,7 @@ pub fn command_processor() {
     //println!("capacity = {:?}", g_info.uni_map().capacity());
 
     let g_tmp = g_info.clone();
-    // bug mark the starbase as charted
+    //
     let tmp_loc_list = crate::manifest::isolate_type(&g_tmp, AstroType::Starbase);
     let tmp_loc_quad = tmp_loc_list[0].ret_quad_tuple();
     g_info.charted[tmp_loc_quad.0 as usize][tmp_loc_quad.1 as usize] = true;
@@ -85,11 +85,6 @@ pub fn command_processor() {
     let tmp_loc_list = crate::manifest::isolate_type(&g_tmp, AstroType::PlayerShip);
     g_info.player_ship = crate::ship_info::PlayerShip::new();
     g_info.player_ship.set_entity(tmp_loc_list[0].clone());
-
-    //let japt1 = crate::manifest::isolate_quadrant(&g_tmp, &g_info.player_ship.get_entity());
-    //for ao in japt1.iter() {
-    //    println!("{}", ao);
-    //}
 
     'process_loop: loop {
         let mut cmd_input: String = String::new();
@@ -100,7 +95,7 @@ pub fn command_processor() {
             stdin()
                 .read_line(&mut cmd_input)
                 .expect("Failed to read line");
-        } else if startup_cmd_vec.len() > 0 {
+        } else if !startup_cmd_vec.is_empty() {
             cmd_input = startup_cmd_vec.remove(0);
         } else if !test_cmds_vec.is_empty() {
             cmd_input = test_cmds_vec.remove(0);

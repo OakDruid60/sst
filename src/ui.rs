@@ -66,7 +66,7 @@ pub fn disp_title(title: &str, g_info: &Manifest, bc: &str) {
 /// # validate_x_y_input
 ///
 /// make sure the new cmd x y values are valid
-pub fn validate_x_y_input(cmd_vector: &Vec<String>, max: i8) -> Result<(i8, i8), String> {
+pub fn validate_x_y_input(cmd_vector: &[String], max: i8) -> Result<(i8, i8), String> {
     let mut chk_max = MAX_GALAXY_SIZE_I8;
     let mut chk_title = "Quadrant";
     if max == MAX_SECTOR_SIZE_I8 {
@@ -124,6 +124,9 @@ pub fn validate_x_y_input(cmd_vector: &Vec<String>, max: i8) -> Result<(i8, i8),
     Ok((xx, yy))
 }
 
+// =====================================================================
+/// # alert_status_of_quadrant
+///
 pub fn alert_status_of_quadrant(qi_vec: &Vec<AstroObject>) -> String {
     let cur_alert = calc_alert_status(qi_vec);
     let mut stat_string = "Normal".normal().to_string();

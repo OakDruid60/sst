@@ -14,18 +14,15 @@ use crate::ship_info::PlayerShip;
 ///
 pub fn fire_torpedoe(
     g_info: &Manifest,
-    cmd_vector: &Vec<String>,
+    cmd_vector: &[String],
 ) -> Result<(PlayerShip, AstroObject), String> {
     if g_info.player_ship.get_torpedoes() <= 0 {
         return Err("No torpedoes available!  You need to dock at a Starbase.".to_string());
     }
 
     let res = crate::manifest::create_qi_enemy_vec(g_info);
-    match res {
-        Err(e) => {
-            return Err(e);
-        }
-        Ok(_) => {}
+    if let Err(e) = res {
+        return Err(e);
     }
 
     let potential_bad_guys = res.unwrap().1;
@@ -95,7 +92,7 @@ pub fn fire_torpedoe(
 ///
 pub fn fire_phaser(
     g_info: &Manifest,
-    cmd_vector: &Vec<String>,
+    cmd_vector: &[String],
 ) -> Result<(PlayerShip, AstroObject), String> {
     if g_info.player_ship.get_energy() <= 0 {
         return Err(
@@ -103,11 +100,8 @@ pub fn fire_phaser(
         );
     }
     let res = crate::manifest::create_qi_enemy_vec(g_info);
-    match res {
-        Err(e) => {
-            return Err(e);
-        }
-        Ok(_) => {}
+    if let Err(e) = res {
+        return Err(e);
     }
 
     let potential_bad_guys = res.unwrap().1;

@@ -15,7 +15,7 @@ use crate::manifest::Manifest;
 /// # jump_enterprise
 ///
 /// jump the enterprise to a new quadrant  It is possible to jump to the starbase.
-pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<PlayerShip, String> {
+pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &[String]) -> Result<PlayerShip, String> {
     if cmd_vector.len() == 2 {
         if cmd_vector[1].starts_with("sb") {
             //let g_tmp = g_info.clone();
@@ -77,7 +77,7 @@ pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<Pl
 /// # move_enterprise
 ///
 /// Move the enterprise to a new sector in the current quadrant
-pub fn move_enterprise(g_info: &Manifest, cmd_vector: &Vec<String>) -> Result<PlayerShip, String> {
+pub fn move_enterprise(g_info: &Manifest, cmd_vector: &[String]) -> Result<PlayerShip, String> {
     if cmd_vector.len() == 3 {
         let res = crate::ui::validate_x_y_input(cmd_vector, MAX_SECTOR_SIZE_I8);
 

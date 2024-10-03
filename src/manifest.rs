@@ -245,12 +245,11 @@ impl Manifest {
     /// # game_stat_create_disp_vec
     ///
     pub fn game_stat_create_disp_vec(self, create_complete: bool) -> Vec<String> {
-        let input_vec: Vec<AstroObject>;
-        if create_complete {
-            input_vec = self.uni_map.values().cloned().collect();
+        let input_vec: Vec<AstroObject> = if create_complete {
+            self.uni_map.values().cloned().collect()
         } else {
-            input_vec = self.create_quadrant_vec(self.clone().player_ship.get_entity());
-        }
+            self.create_quadrant_vec(self.clone().player_ship.get_entity())
+        };
         let summary: SummaryStats = crate::manifest::calculate(&input_vec);
 
         let mut human_out: Vec<String> = Vec::new();
@@ -334,7 +333,7 @@ pub fn isolate_type(g_info: &Manifest, n_type: AstroType) -> Vec<AstroObject> {
 /// # create_vec_of_type
 ///  From a vector of objests
 ///
-pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec<AstroObject> {
+pub fn create_vec_of_type(orig_vec: &[AstroObject], n_type: AstroType) -> Vec<AstroObject> {
     let mut n_type_vec: Vec<AstroObject> = Vec::new();
 
     for si in orig_vec.iter() {
@@ -350,7 +349,7 @@ pub fn create_vec_of_type(orig_vec: &Vec<AstroObject>, n_type: AstroType) -> Vec
 // ============================================================
 /// # find_actual_sector_info
 /// Given a vector of SectorInfo, return the given sector, or Empty if not found.
-pub fn find_actual_sector_info(orig_vec: &Vec<AstroObject>, sect: (i8, i8)) -> AstroObject {
+pub fn find_actual_sector_info(orig_vec: &[AstroObject], sect: (i8, i8)) -> AstroObject {
     for si in orig_vec.iter() {
         let n_info = *si;
         if n_info.is_same_sect_tuple(sect) {
@@ -365,7 +364,7 @@ pub fn find_actual_sector_info(orig_vec: &Vec<AstroObject>, sect: (i8, i8)) -> A
 /// # is_straight_line_path_clear
 ///
 pub fn is_straight_line_path_clear(
-    quad_vec: &Vec<AstroObject>,
+    quad_vec: &[AstroObject],
     strt: AstroObject,
     tgt: AstroObject,
 ) -> Result<bool, String> {
@@ -389,7 +388,7 @@ pub fn is_straight_line_path_clear(
         trial_loc_y += delta_y;
         let x7 = (trial_loc_x.floor()) as i32;
         let y7 = (trial_loc_y.floor()) as i32;
-        let sector_info: AstroObject = find_actual_sector_info(&quad_vec, (x7 as i8, y7 as i8));
+        let sector_info: AstroObject = find_actual_sector_info(quad_vec, (x7 as i8, y7 as i8));
         //println!("{} {} {:?}", x7, y7, sector_info.obj_type);
         if sector_info.get_astro_type() != AstroType::PlayerShip
             && sector_info.get_astro_type() != AstroType::Empty
@@ -416,7 +415,7 @@ pub fn is_straight_line_path_clear(
 /// create a quadrant informationm vector from the supplied quadrant vector
 /// and location of interest (probably the enterprise).
 pub fn create_bad_guy_qi_vec(
-    qi_vec: &Vec<AstroObject>,
+    qi_vec: &[AstroObject],
     interest_loc: AstroObject,
     chk_path: bool,
 ) -> Vec<AstroObject> {
@@ -427,14 +426,19 @@ pub fn create_bad_guy_qi_vec(
         if bad_guy_type == AstroType::Klingon || bad_guy_type == AstroType::Romulan {
             if chk_path {
                 let path_res = is_straight_line_path_clear(qi_vec, interest_loc, n_info);
-                match path_res {
-                    Ok(_) => {
-                        if path_res.unwrap() {
-                            n_vec.push(n_info);
-                        }
+                if let Ok(_) = path_res {
+                    if path_res.unwrap() {
+                        n_vec.push(n_info);
                     }
-                    _ => {}
                 }
+            //                match path_res {
+            //                    Ok(_) => {
+            //                        if path_res.unwrap() {
+            //                            n_vec.push(n_info);
+            //                        }
+            //                    }
+            //                    _ => {}
+            //                }
             } else {
                 n_vec.push(n_info);
             }
@@ -497,7 +501,7 @@ pub fn calc_distance_to_enemy(
             }
         }
     }
-    return (found_it, current_distance, tgt_sector.clone());
+    (found_it, current_distance, tgt_sector.clone())
 }
 
 /// Thaw a game.
@@ -505,13 +509,13 @@ pub fn calc_distance_to_enemy(
 /// The .sst file type is as follows:
 ///
 /// (password)0x1e(json data for Universe object)
-pub fn thaw(cmd_vector: &Vec<String>) -> Option<Manifest> {
+pub fn thaw(cmd_vector: &[String]) -> Option<Manifest> {
     let mut save_file_name: &str = DEBUG_FILE_NAME;
     if cmd_vector.len() == 2 {
         save_file_name = cmd_vector[1].as_str();
     }
     let mut save_file: File = File::open(save_file_name).expect("Reason");
-    let uni: Manifest;
+    //let uni: Manifest;
 
     let temp = File::open(save_file_name);
     match temp {
@@ -538,7 +542,7 @@ pub fn thaw(cmd_vector: &Vec<String>) -> Option<Manifest> {
         .map(|element| String::from(element))
         .collect();
 
-    uni = match from_str(raw_parts[1].as_str()) {
+    let uni = match from_str(raw_parts[1].as_str()) {
         Ok(data) => {
             //println!("Restored");
             println!("Game back-up restored from {}", save_file_name);
@@ -549,7 +553,7 @@ pub fn thaw(cmd_vector: &Vec<String>) -> Option<Manifest> {
             return None;
         }
     };
-    return Some(uni);
+    Some(uni)
 }
 
 // ==========================================================================
@@ -557,7 +561,7 @@ pub fn thaw(cmd_vector: &Vec<String>) -> Option<Manifest> {
 ///
 ///
 //pub fn freeze (filename: Option<String>, uni: &GameWideData) {
-pub fn freeze(uni: &Manifest, cmd_vector: &Vec<String>) {
+pub fn freeze(uni: &Manifest, cmd_vector: &[String]) {
     /* let filename = match filename {
         Some(v) => v,
         None => input("Filename: ")
@@ -613,7 +617,7 @@ impl SummaryStats {}
 // =============================
 /// # calculate
 /// Given an input quad info vaector, calculate the current state of the game
-pub fn calculate(qi_vec: &Vec<AstroObject>) -> SummaryStats {
+pub fn calculate(qi_vec: &[AstroObject]) -> SummaryStats {
     let mut stats = SummaryStats {
         num_enterprise: 0,
         num_killed_klingons: 0,
@@ -652,9 +656,9 @@ pub fn calculate(qi_vec: &Vec<AstroObject>) -> SummaryStats {
 /// # compact_summary_string
 ///
 ///  designed to work at the quadrant info level, not galaxy level
-pub fn compact_summary_string(qi_vec: &Vec<AstroObject>) -> String {
+pub fn compact_summary_string(qi_vec: &[AstroObject]) -> String {
     let stats = crate::manifest::calculate(qi_vec);
-    let mut encoded = format!("");
+    let mut encoded = String::new();
 
     let mut tmp: String = format!("{}", stats.num_alive_klingons);
     if stats.num_alive_klingons > 0 {
@@ -685,7 +689,7 @@ pub fn compact_summary_string(qi_vec: &Vec<AstroObject>) -> String {
 
     // Indicate that the quad contains the enterprise
     let tmp2 = encoded.to_string();
-    encoded = format!("");
+    encoded = String::new();
     if stats.num_enterprise > 0 {
         encoded.push_str(format!("<{}>", tmp2).as_str())
     } else {
