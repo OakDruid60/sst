@@ -4,7 +4,7 @@
 //! This is stuff related to displaying the long range sensor scan.
 
 use crate::astro::{AstroObject, AstroType};
-use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
+use crate::constants::MAX_GALAXY_SIZE_I8;
 use crate::manifest::Manifest;
 use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 
@@ -30,7 +30,7 @@ pub fn long_range_sensor_disp(g_info: &Manifest) {
         for xx in 0..MAX_GALAXY_SIZE_I8 {
             let tmp_quadx: i8 = xx;
             let tmp_quady: i8 = yy;
-            let zero: i8 = 0 ;
+            let zero: i8 = 0;
             let tmp_loc =
                 AstroObject::create((0, 0, tmp_quadx, tmp_quady, zero, zero), AstroType::Empty);
 

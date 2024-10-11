@@ -4,7 +4,7 @@
 //! This is stuff related to weapons of the Enterprise.
 
 use crate::astro::{AstroObject, AstroType};
-use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
+use crate::constants::MAX_SECTOR_SIZE_I8;
 use crate::manifest::Manifest;
 use crate::ship_info::PlayerShip;
 
@@ -20,12 +20,12 @@ pub fn fire_torpedoe(
         return Err("No torpedoes available!  You need to dock at a Starbase.".to_string());
     }
 
-    let res = crate::manifest::create_qi_enemy_vec(g_info);
-    if let Err(e) = res {
-        return Err(e);
-    }
+    let res = crate::manifest::create_qi_enemy_vec(g_info)?;
+    //   if let Err(e) = res {
+    //       return Err(e);
+    //   }
 
-    let potential_bad_guys = res.unwrap().1;
+    let potential_bad_guys = res; //.unwrap().1;
     let mut tgt_sector: AstroObject;
     let found_it: bool;
 
@@ -33,7 +33,7 @@ pub fn fire_torpedoe(
         // look for a Klingon
         let res_tuple = crate::manifest::calc_distance_to_enemy(
             g_info,
-            potential_bad_guys.clone(),
+            potential_bad_guys.0.clone(),
             AstroType::Klingon,
         );
         found_it = res_tuple.0;
@@ -44,7 +44,7 @@ pub fn fire_torpedoe(
             //now look for Romulan
             let res_tuple = crate::manifest::calc_distance_to_enemy(
                 g_info,
-                potential_bad_guys.clone(),
+                potential_bad_guys.0,
                 AstroType::Romulan,
             );
             tgt_sector = res_tuple.2;
@@ -60,7 +60,7 @@ pub fn fire_torpedoe(
         match res {
             Ok(_) => {
                 let tgt_sector: (i8, i8) = res.unwrap();
-                let mut pbg = potential_bad_guys.clone();
+                let mut pbg = potential_bad_guys.0.clone();
                 for si in pbg.iter_mut() {
                     n_info = *si;
                     if n_info.is_same_sect_tuple(tgt_sector) {
@@ -99,12 +99,8 @@ pub fn fire_phaser(
             "No energy is available to be used.  You need to dock at a Starbase.".to_string(),
         );
     }
-    let res = crate::manifest::create_qi_enemy_vec(g_info);
-    if let Err(e) = res {
-        return Err(e);
-    }
-
-    let potential_bad_guys = res.unwrap().1;
+    let res = crate::manifest::create_qi_enemy_vec(g_info)?;
+    let potential_bad_guys = res;
     let mut tgt_sector: AstroObject;
     let found_it: bool;
     let mut current_distance: f64;
@@ -113,7 +109,7 @@ pub fn fire_phaser(
         // look for a Romulan
         let res_tuple = crate::manifest::calc_distance_to_enemy(
             g_info,
-            potential_bad_guys.clone(),
+            potential_bad_guys.0.clone(),
             AstroType::Romulan,
         );
         found_it = res_tuple.0;
@@ -124,7 +120,7 @@ pub fn fire_phaser(
             //now look for Klingon
             let res_tuple = crate::manifest::calc_distance_to_enemy(
                 g_info,
-                potential_bad_guys.clone(),
+                potential_bad_guys.0.clone(),
                 AstroType::Klingon,
             );
             //found_it = res_tuple.0;
@@ -143,7 +139,7 @@ pub fn fire_phaser(
         match res {
             Ok(_) => {
                 let tgt_sector: (i8, i8) = res.unwrap();
-                let mut pbg = potential_bad_guys.clone();
+                let mut pbg = potential_bad_guys.0.clone();
                 for si in pbg.iter_mut() {
                     n_info = *si;
                     if n_info.is_same_sect_tuple(tgt_sector) {

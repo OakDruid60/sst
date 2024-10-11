@@ -9,7 +9,7 @@ pub mod movement; // jump and move
 pub mod weapon;
 
 use crate::astro::{AstroObject, AstroType};
-use crate::manifest::constants::{FULL_ENTERPRISE_ENERGY, FULL_ENTERPRISE_TORPEDOES};
+use crate::constants::{FULL_ENTERPRISE_ENERGY, FULL_ENTERPRISE_TORPEDOES};
 
 use serde::{Deserialize, Serialize};
 

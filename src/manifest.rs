@@ -5,11 +5,8 @@
 //! entity, enum, and statistics sourece.
 //!
 
-pub mod constants; // various constants like the size of the galaxy
-pub mod statistics;
-
 use crate::astro::{AstroObject, AstroType};
-use crate::manifest::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
+use crate::constants::{DEBUG, DEBUG_FILE_NAME, MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::ship_info::PlayerShip;
 
 use rand::Rng;
@@ -49,10 +46,6 @@ impl Manifest {
             password: "jap".to_string(),
         }
     }
-
-    /*pub fn uni_map(&self) -> &HashMap<String, AstroObject> {
-        &self.uni_map
-    }*/
 
     pub fn player_ship(&self) -> &PlayerShip {
         &self.player_ship
@@ -299,20 +292,6 @@ pub fn isolate_cur_quadrant(g_info: &Manifest) -> Vec<AstroObject> {
     n_type_vec
 }
 
-/* pub fn isolate_quadrant(g_info: &Manifest, comp: &AstroObject) -> Vec<AstroObject> {
-    let mut n_type_vec: Vec<AstroObject> = Vec::new();
-
-    for ao in g_info.uni_map.values() {
-        //let n_info = *si;
-        if ao.is_same_quad(comp) {
-            n_type_vec.push(*ao);
-        }
-    }
-
-    n_type_vec
-}
-*/
-
 // =========================================================================
 /// # isolate_type
 /// isolate the type from the universe
@@ -400,8 +379,7 @@ pub fn is_straight_line_path_clear(
                 return Err(format!(
                     "Straight line path from {:?} to {:?} is blocked at {:?}",
                     strt, tgt, sector_info
-                )
-                .to_string());
+                ));
             }
         }
     }
@@ -425,20 +403,13 @@ pub fn create_bad_guy_qi_vec(
         let bad_guy_type: AstroType = n_info.get_astro_type();
         if bad_guy_type == AstroType::Klingon || bad_guy_type == AstroType::Romulan {
             if chk_path {
+                // fixme fix me sometime
                 let path_res = is_straight_line_path_clear(qi_vec, interest_loc, n_info);
-                if let Ok(_) = path_res {
-                    if path_res.unwrap() {
-                        n_vec.push(n_info);
-                    }
+                if path_res.is_ok() && path_res.unwrap() {
+                    // if path_res.unwrap() {
+                    n_vec.push(n_info);
+                    // }
                 }
-            //                match path_res {
-            //                    Ok(_) => {
-            //                        if path_res.unwrap() {
-            //                            n_vec.push(n_info);
-            //                        }
-            //                    }
-            //                    _ => {}
-            //                }
             } else {
                 n_vec.push(n_info);
             }
@@ -481,17 +452,17 @@ pub fn calc_distance_to_enemy(
     let mut n_info: AstroObject;
     let mut found_it = false;
     let mut potential_enemies = potential_bad_guys.clone();
-    let mut tgt_sector = potential_enemies[0].clone();
+    let mut tgt_sector = potential_enemies[0]; //.clone();
     let mut current_distance: f64 = 1000.0;
     for si in potential_enemies.iter_mut() {
         n_info = *si;
         if n_info.get_astro_type() == enemy_type {
             if !found_it {
                 found_it = true;
-                tgt_sector = n_info.clone();
+                tgt_sector = n_info; //.clone();
                 current_distance = tgt_sector.calc_sector_distance(g_info.player_ship.get_entity());
             } else {
-                let n_tgt_sector = n_info.clone();
+                let n_tgt_sector = n_info; //.clone();
                 let new_distance: f64 =
                     n_tgt_sector.calc_sector_distance(g_info.player_ship.get_entity());
                 if new_distance < current_distance {
@@ -501,7 +472,7 @@ pub fn calc_distance_to_enemy(
             }
         }
     }
-    (found_it, current_distance, tgt_sector.clone())
+    (found_it, current_distance, tgt_sector)
 }
 
 /// Thaw a game.
@@ -539,7 +510,7 @@ pub fn thaw(cmd_vector: &[String]) -> Option<Manifest> {
         .split("\0")
         .collect::<Vec<&str>>()
         .into_iter()
-        .map(|element| String::from(element))
+        .map(String::from)
         .collect();
 
     let uni = match from_str(raw_parts[1].as_str()) {
@@ -571,7 +542,7 @@ pub fn freeze(uni: &Manifest, cmd_vector: &[String]) {
     if cmd_vector.len() == 2 {
         save_file_name = cmd_vector[1].as_str();
     }
-    let mut file = match File::create(&save_file_name) {
+    let mut file = match File::create(save_file_name) {
         Ok(f) => f,
         Err(e) => {
             if DEBUG {

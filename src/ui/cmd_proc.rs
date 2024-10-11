@@ -4,11 +4,12 @@
 //! User Command processing functions
 
 use crate::astro::AstroType;
-use crate::manifest::constants::MAX_GALAXY_SIZE_I8; //, MAX_SECTOR_SIZE_I8};
+use crate::constants::MAX_GALAXY_SIZE_I8; //, MAX_SECTOR_SIZE_I8};
 
 use colored::Colorize;
 
 use std::io::{stdin, stdout, Write};
+
 // ==========================================================================
 /// # determine_cmd_type
 ///
@@ -49,7 +50,7 @@ pub fn determine_cmd_type(cmd_string: String) -> CmdType {
 #[inline]
 pub fn abbrev(what: &String, least: &str, full: &str) -> bool {
     //! Check if `what` is an abbreviation of `full` and starts with `least`.
-    what.starts_with(&least) && full.contains(what)
+    what.starts_with(least) && full.contains(what)
 }
 // =========================================================
 /// # command_processor
@@ -72,8 +73,6 @@ pub fn command_processor() {
 
     // Actually construct the galaxy
     g_info.uni_map = crate::manifest::Manifest::construct_galaxy((0, 0));
-    //println!("len = {:?}", g_info.uni_map().len());
-    //println!("capacity = {:?}", g_info.uni_map().capacity());
 
     let g_tmp = g_info.clone();
     //
@@ -84,7 +83,7 @@ pub fn command_processor() {
     // find the enterprise in the galaxy.
     let tmp_loc_list = crate::manifest::isolate_type(&g_tmp, AstroType::PlayerShip);
     g_info.player_ship = crate::ship_info::PlayerShip::new();
-    g_info.player_ship.set_entity(tmp_loc_list[0].clone());
+    g_info.player_ship.set_entity(tmp_loc_list[0]);
 
     'process_loop: loop {
         let mut cmd_input: String = String::new();
@@ -180,14 +179,6 @@ pub fn command_processor() {
                         println!("killed {:?} with torpedoe UI", killed_si);
                         g_info.uni_map.remove(&killed_si.to_key_string());
                         g_info.uni_map.insert(killed_si.to_key_string(), killed_si);
-                        //let g_tmp = g_info.galaxy_vec.clone();
-                        //for (pos, e) in g_tmp.iter().enumerate() {
-                        //    if e.is_same(&killed_si) {
-                        //        g_info.galaxy_vec.remove(pos);
-                        //        g_info.galaxy_vec.push(killed_si);
-                        //        break;
-                        //    }
-                        //}
                         g_info.player_ship = updated_enterprise;
                         // auto perform a short range scan
                         if cmd_part2_vec.is_empty() {
@@ -228,7 +219,6 @@ pub fn command_processor() {
 
             CmdType::Move => {
                 let res = crate::ship_info::movement::move_enterprise(&g_info, &cmd_vector);
-                //println!("need to fix {:?}",res.unwrap());
 
                 match res {
                     Ok(_) => {

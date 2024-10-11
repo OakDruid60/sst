@@ -22,14 +22,8 @@ pub mod stat_screen;
 pub mod srs;
 */
 use crate::astro::{AstroObject, AstroType};
-use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
+use crate::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::Manifest;
-/*
-//use crate::enterprise::ShipInfo;
-use crate::manifest::constants::MAX_GALAXY_SIZE_I8;
-//use crate::manifest::enums::{CmdType, EntityType};
-use crate::manifest::{Manifest, Galaxy};
-*/
 
 pub const BORDER_COLOR_RED: &str = "\x1b[91m";
 pub const BORDER_COLOR_YELLOW: &str = "\x1b[93m";
@@ -164,6 +158,7 @@ pub fn alert_status_of_quadrant2(qi_vec: &[AstroObject]) -> &str {
     }
     stat_string
 }
+
 // ===============================
 /// # calc_alert_status
 ///
@@ -192,6 +187,7 @@ pub fn calc_alert_status(qi_vec: &[AstroObject]) -> AlertStatus {
     }
     cur_alert
 }
+
 // =====================================================================
 /// #AlertStatus
 ///  The alert status types

@@ -14,9 +14,8 @@ use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 ///
 /// **Note** needs more details.
 ///
+
 pub fn help_screen(g_info: &Manifest) {
-    //let loc_tmp = g_info.enterprise.get_entity().clone();
-    //let qi_vec = g_info.create_quadrant_vec(loc_tmp);
     let bc = "5"; //crate::helpers::alert_status_of_quadrant2(&qi_vec);
     crate::ui::disp_title("Command Help", g_info, bc);
     let bv: &str = &(bc.to_owned() + BORDER_VERT + COLOR_RESET);

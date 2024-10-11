@@ -1,9 +1,9 @@
 [package]
 name = "sst"
-version = "0.3.0-241002-1100"
+version = "0.3.0-241011-1100"
 edition = "2021"
 authors = ["OakDruid60"]
-description = "A Star Trek game in rust." 
+description = "A Star Trek game in rust."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

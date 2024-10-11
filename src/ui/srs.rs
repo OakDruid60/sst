@@ -4,7 +4,7 @@
 //! This is stuff related to displaying the short range sensor scan.
 
 use crate::astro::{AstroObject, AstroType};
-use crate::manifest::constants::MAX_SECTOR_SIZE_I8;
+use crate::constants::MAX_SECTOR_SIZE_I8;
 use crate::manifest::Manifest;
 use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 

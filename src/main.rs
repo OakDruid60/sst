@@ -8,6 +8,7 @@
 //!
 
 mod astro;
+mod constants;
 mod manifest;
 mod ship_info;
 mod ui;

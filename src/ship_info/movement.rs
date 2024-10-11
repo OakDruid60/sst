@@ -5,11 +5,9 @@
 //!
 
 use crate::astro::{AstroObject, AstroType};
-use crate::manifest::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
-use crate::ship_info::PlayerShip;
-//use crate::manifest::entity::Entity;
-//use crate::manifest::enums::AstroType;
+use crate::constants::{MAX_GALAXY_SIZE_I8, MAX_SECTOR_SIZE_I8};
 use crate::manifest::Manifest;
+use crate::ship_info::PlayerShip;
 
 // =================================================================
 /// # jump_enterprise
