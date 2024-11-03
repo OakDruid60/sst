@@ -403,12 +403,9 @@ pub fn create_bad_guy_qi_vec(
         let bad_guy_type: AstroType = n_info.get_astro_type();
         if bad_guy_type == AstroType::Klingon || bad_guy_type == AstroType::Romulan {
             if chk_path {
-                // fixme fix me sometime
                 let path_res = is_straight_line_path_clear(qi_vec, interest_loc, n_info);
                 if path_res.is_ok() && path_res.unwrap() {
-                    // if path_res.unwrap() {
                     n_vec.push(n_info);
-                    // }
                 }
             } else {
                 n_vec.push(n_info);
