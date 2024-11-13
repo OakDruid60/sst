@@ -5,7 +5,7 @@
 //!
 
 use crate::manifest::Manifest;
-use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
+use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET, BORDER_COLOR_GREEN};
 
 // ===========================================================
 /// # help_screen
@@ -16,7 +16,7 @@ use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET};
 ///
 
 pub fn help_screen(g_info: &Manifest) {
-    let bc = "5"; //crate::helpers::alert_status_of_quadrant2(&qi_vec);
+    let bc = BORDER_COLOR_GREEN; //crate::helpers::alert_status_of_quadrant2(&qi_vec);
     crate::ui::disp_title("Command Help", g_info, bc);
     let bv: &str = &(bc.to_owned() + BORDER_VERT + COLOR_RESET);
     println!("  {bv} {:<58} {bv}", "qui - quit");

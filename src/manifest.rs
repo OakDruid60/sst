@@ -18,6 +18,42 @@ use std::io::{Read, Write};
 
 use colored::*;
 
+// todo create and switch to a branch
+// todo  iss8 create macro for heart of contruct galaxy
+macro_rules! populate_sector {
+    ($gx:expr, $gy:expr,$qx:expr, $qy:expr,  $ast_type:expr, $ast_rng:expr, $g_map:expr) => {
+        //let trial_quad_x: i8 = xx;
+        //let trial_quad_y: i8 = yy;
+
+        // planets
+        for _counter in 0..rand::thread_rng().gen_range($ast_rng) {
+            let mut existing_collision: bool = false;
+            while !existing_collision {
+                let sx: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                let sy: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                let n_info: AstroObject =
+                    AstroObject::create(($gx, $gy, $qx, $qy, sx, sy), $ast_type);
+
+                //                        n_gal_x,
+                //                        n_gal_y,
+                //                        trial_quad_x,
+                //                        trial_quad_y,
+                //                        trial_sect_x,
+                //                        trial_sect_y,
+                //                    ),
+                //                    AstroType::Planet,
+                //               );
+                let n_key = n_info.to_key_string();
+                existing_collision = $g_map.contains_key(&n_key);
+                if !existing_collision {
+                    $g_map.insert(n_key, n_info);
+                    break;
+                }
+            }
+        }
+    };
+}
+
 // ======================================================================
 // ======================================================================
 /// Manifest
@@ -74,10 +110,14 @@ impl Manifest {
 
         //
         // set initial enterprise
-        let mut existing_collision = false;
+        // clang-format off
+        let trial_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+        let trial_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
+        populate_sector!(n_gal_x,n_gal_y, trial_quad_x,trial_quad_y, AstroType::PlayerShip, 1..=1, n_galaxy_map);
+        // clang-format on
+    /*    
+    let mut existing_collision = false;
         while !existing_collision {
-            let trial_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-            let trial_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
             let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
             let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
 
@@ -99,6 +139,7 @@ impl Manifest {
                 break;
             }
         }
+        */
         //for (key, value) in n_galaxy_map.iter() {
         //    println!("{} {:?}", key, value.get_astro_type());
         //}
@@ -107,11 +148,21 @@ impl Manifest {
         // now populate other things into each quadrant
         for xx in 0..MAX_GALAXY_SIZE_I8 {
             for yy in 0..MAX_GALAXY_SIZE_I8 {
-                let trial_quad_x: i8 = xx;
-                let trial_quad_y: i8 = yy;
+                //let trial_quad_x: i8 = xx;
+                //let trial_quad_y: i8 = yy;
 
+                // clang-format off
                 // planets
-                for _counter in 0..rand::thread_rng().gen_range(0..3) {
+                populate_sector!(n_gal_x,n_gal_y, xx,yy, AstroType::Planet, 0..3, n_galaxy_map);
+                // Stars
+                populate_sector!(n_gal_x,n_gal_y, xx,yy, AstroType::Star, 1..5, n_galaxy_map);
+                // Stars
+                populate_sector!(n_gal_x,n_gal_y, xx,yy, AstroType::Klingon, 0..2, n_galaxy_map);
+                // Stars
+                populate_sector!(n_gal_x,n_gal_y, xx,yy, AstroType::Romulan, 0..3, n_galaxy_map);
+                // clang-format on
+
+                /*               for _counter in 0..rand::thread_rng().gen_range(0..3) {
                     existing_collision = false;
                     while !existing_collision {
                         let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
@@ -135,8 +186,8 @@ impl Manifest {
                         }
                     }
                 }
+                
 
-                // Stars
                 for _counter in 0..rand::thread_rng().gen_range(1..5) {
                     existing_collision = false;
                     while !existing_collision {
@@ -213,6 +264,7 @@ impl Manifest {
                         }
                     }
                 }
+                */
             }
         }
         n_galaxy_map
