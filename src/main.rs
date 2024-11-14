@@ -13,11 +13,15 @@ mod manifest;
 mod ship_info;
 mod ui;
 
+mod test_complete_game;
+
 fn main() {
 
     ui::logo_screen::game_logo();
-
-    ui::cmd_proc::command_processor();
+    
+    let st_cmds_vec: Vec<String> = vec!();
+ 
+    ui::cmd_proc::command_processor(&st_cmds_vec);
 
     println!("Good Bye... Live long and Prosper");
 }

@@ -57,16 +57,21 @@ pub fn abbrev(what: &String, least: &str, full: &str) -> bool {
 ///
 /// Process the user input command_processor
 ///
-pub fn command_processor() {
+pub fn command_processor(startup_commands: &Vec<String>) {
     let mut recording_commands: bool = false;
     //
-    let mut startup_cmd_vec: Vec<String> = Vec::new();
-    //startup_cmd_vec.push("restore".to_string());
-    startup_cmd_vec.push("stat".to_string());
-    startup_cmd_vec.push("srs".to_string());
-
-    let mut test_cmds_vec: Vec<String> = Vec::new();
+    let mut startup_cmd_vec: Vec<String> = startup_commands.clone(); //Vec::new();
+                                                                     //println!("{:?}",startup_cmd_vec);
+                                                                     //let mut test_cmds_vec: Vec<String> = Vec::new();
     let mut cmd_part2_vec: Vec<String> = Vec::new();
+
+    //startup_cmd_vec.push("stat".to_string());
+    //startup_cmd_vec.push("srs".to_string());
+
+    //test_cmds_vec.push("save".to_string());
+    //test_cmds_vec.push("restore".to_string());
+    //test_cmds_vec.push("pha".to_string());
+    //test_cmds_vec.push("jum 1 1".to_string());
 
     let mut g_info: crate::manifest::Manifest = crate::manifest::Manifest::new();
     g_info.end_star_date = g_info.cur_star_date + 131;
@@ -88,7 +93,7 @@ pub fn command_processor() {
     'process_loop: loop {
         let mut cmd_input: String = String::new();
 
-        if startup_cmd_vec.is_empty() && test_cmds_vec.is_empty() && cmd_part2_vec.is_empty() {
+        if startup_cmd_vec.is_empty() && cmd_part2_vec.is_empty() {
             print!(" Command:");
             stdout().flush().unwrap();
             stdin()
@@ -96,9 +101,9 @@ pub fn command_processor() {
                 .expect("Failed to read line");
         } else if !startup_cmd_vec.is_empty() {
             cmd_input = startup_cmd_vec.remove(0);
-        } else if !test_cmds_vec.is_empty() {
-            cmd_input = test_cmds_vec.remove(0);
-            println!(" === auto test cmd ===  {}", cmd_input);
+        //        } else if !test_cmds_vec.is_empty() {
+        //            cmd_input = test_cmds_vec.remove(0);
+        //           println!(" === auto test cmd ===  {}", cmd_input);
         } else {
             cmd_input = cmd_part2_vec.remove(0);
         }
@@ -261,7 +266,7 @@ pub fn command_processor() {
             CmdType::Restore => {
                 g_info = crate::manifest::thaw(&cmd_vector).expect("REASON");
                 if !g_info.test_cmds_vec.is_empty() {
-                    test_cmds_vec = g_info.test_cmds_vec.clone();
+                    //test_cmds_vec = g_info.test_cmds_vec.clone();
                     //println!("{:?}", test_cmds_vec);
                     g_info.test_cmds_vec = Vec::new();
                 }
