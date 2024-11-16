@@ -18,8 +18,8 @@ use std::io::{Read, Write};
 
 use colored::*;
 
-// todo create and switch to a branch
-// todo  iss8 create macro for heart of contruct galaxy
+// stodo create and switch to a branch
+// stodo  iss8 create macro for heart of contruct galaxy
 macro_rules! populate_sector {
     ($gx:expr, $gy:expr,$qx:expr, $qy:expr,  $ast_type:expr, $ast_rng:expr, $g_map:expr) => {
         //let trial_quad_x: i8 = xx;
@@ -113,33 +113,41 @@ impl Manifest {
         // clang-format off
         let trial_quad_x: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
         let trial_quad_y: i8 = rand::thread_rng().gen_range(0..MAX_GALAXY_SIZE_I8);
-        populate_sector!(n_gal_x,n_gal_y, trial_quad_x,trial_quad_y, AstroType::PlayerShip, 1..=1, n_galaxy_map);
+        populate_sector!(
+            n_gal_x,
+            n_gal_y,
+            trial_quad_x,
+            trial_quad_y,
+            AstroType::PlayerShip,
+            1..=1,
+            n_galaxy_map
+        );
         // clang-format on
-    /*    
-    let mut existing_collision = false;
-        while !existing_collision {
-            let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-            let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+        /*
+        let mut existing_collision = false;
+            while !existing_collision {
+                let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+                let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
 
-            let enterprise_info: AstroObject = AstroObject::create(
-                (
-                    n_gal_x,
-                    n_gal_y,
-                    trial_quad_x,
-                    trial_quad_y,
-                    trial_sect_x,
-                    trial_sect_y,
-                ),
-                AstroType::PlayerShip,
-            );
-            let n_key = enterprise_info.to_key_string();
-            existing_collision = n_galaxy_map.contains_key(&n_key);
-            if !existing_collision {
-                n_galaxy_map.insert(n_key, enterprise_info);
-                break;
+                let enterprise_info: AstroObject = AstroObject::create(
+                    (
+                        n_gal_x,
+                        n_gal_y,
+                        trial_quad_x,
+                        trial_quad_y,
+                        trial_sect_x,
+                        trial_sect_y,
+                    ),
+                    AstroType::PlayerShip,
+                );
+                let n_key = enterprise_info.to_key_string();
+                existing_collision = n_galaxy_map.contains_key(&n_key);
+                if !existing_collision {
+                    n_galaxy_map.insert(n_key, enterprise_info);
+                    break;
+                }
             }
-        }
-        */
+            */
         //for (key, value) in n_galaxy_map.iter() {
         //    println!("{} {:?}", key, value.get_astro_type());
         //}
@@ -153,118 +161,47 @@ impl Manifest {
 
                 // clang-format off
                 // planets
-                populate_sector!(n_gal_x,n_gal_y, xx,yy, AstroType::Planet, 0..3, n_galaxy_map);
+                populate_sector!(
+                    n_gal_x,
+                    n_gal_y,
+                    xx,
+                    yy,
+                    AstroType::Planet,
+                    0..3,
+                    n_galaxy_map
+                );
                 // Stars
-                populate_sector!(n_gal_x,n_gal_y, xx,yy, AstroType::Star, 1..5, n_galaxy_map);
-                // Stars
-                populate_sector!(n_gal_x,n_gal_y, xx,yy, AstroType::Klingon, 0..2, n_galaxy_map);
-                // Stars
-                populate_sector!(n_gal_x,n_gal_y, xx,yy, AstroType::Romulan, 0..3, n_galaxy_map);
+                populate_sector!(
+                    n_gal_x,
+                    n_gal_y,
+                    xx,
+                    yy,
+                    AstroType::Star,
+                    1..5,
+                    n_galaxy_map
+                );
+                // Klingon
+                populate_sector!(
+                    n_gal_x,
+                    n_gal_y,
+                    xx,
+                    yy,
+                    AstroType::Klingon,
+                    0..2,
+                    n_galaxy_map
+                );
+                // Romulan
+                populate_sector!(
+                    n_gal_x,
+                    n_gal_y,
+                    xx,
+                    yy,
+                    AstroType::Romulan,
+                    0..3,
+                    n_galaxy_map
+                );
                 // clang-format on
 
-                /*               for _counter in 0..rand::thread_rng().gen_range(0..3) {
-                    existing_collision = false;
-                    while !existing_collision {
-                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let n_info: AstroObject = AstroObject::create(
-                            (
-                                n_gal_x,
-                                n_gal_y,
-                                trial_quad_x,
-                                trial_quad_y,
-                                trial_sect_x,
-                                trial_sect_y,
-                            ),
-                            AstroType::Planet,
-                        );
-                        let n_key = n_info.to_key_string();
-                        existing_collision = n_galaxy_map.contains_key(&n_key);
-                        if !existing_collision {
-                            n_galaxy_map.insert(n_key, n_info);
-                            break;
-                        }
-                    }
-                }
-                
-
-                for _counter in 0..rand::thread_rng().gen_range(1..5) {
-                    existing_collision = false;
-                    while !existing_collision {
-                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let n_info: AstroObject = AstroObject::create(
-                            (
-                                n_gal_x,
-                                n_gal_y,
-                                trial_quad_x,
-                                trial_quad_y,
-                                trial_sect_x,
-                                trial_sect_y,
-                            ),
-                            AstroType::Star,
-                        );
-                        let n_key = n_info.to_key_string();
-                        existing_collision = n_galaxy_map.contains_key(&n_key);
-                        if !existing_collision {
-                            n_galaxy_map.insert(n_key, n_info);
-                            break;
-                        }
-                    }
-                }
-
-                // Klingons
-                for _counter in 0..rand::thread_rng().gen_range(0..2) {
-                    existing_collision = false;
-                    while !existing_collision {
-                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let n_info: AstroObject = AstroObject::create(
-                            (
-                                n_gal_x,
-                                n_gal_y,
-                                trial_quad_x,
-                                trial_quad_y,
-                                trial_sect_x,
-                                trial_sect_y,
-                            ),
-                            AstroType::Klingon,
-                        );
-                        let n_key = n_info.to_key_string();
-                        existing_collision = n_galaxy_map.contains_key(&n_key);
-                        if !existing_collision {
-                            n_galaxy_map.insert(n_key, n_info);
-                            break;
-                        }
-                    }
-                }
-
-                // Romulans
-                for _counter in 0..rand::thread_rng().gen_range(0..3) {
-                    existing_collision = false;
-                    while !existing_collision {
-                        let trial_sect_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let trial_sect_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
-                        let n_info: AstroObject = AstroObject::create(
-                            (
-                                n_gal_x,
-                                n_gal_y,
-                                trial_quad_x,
-                                trial_quad_y,
-                                trial_sect_x,
-                                trial_sect_y,
-                            ),
-                            AstroType::Romulan,
-                        );
-                        let n_key = n_info.to_key_string();
-                        existing_collision = n_galaxy_map.contains_key(&n_key);
-                        if !existing_collision {
-                            n_galaxy_map.insert(n_key, n_info);
-                            break;
-                        }
-                    }
-                }
-                */
             }
         }
         n_galaxy_map
@@ -531,9 +468,11 @@ pub fn calc_distance_to_enemy(
 /// (password)0x1e(json data for Universe object)
 pub fn thaw(cmd_vector: &[String]) -> Option<Manifest> {
     let mut save_file_name: &str = DEBUG_FILE_NAME;
+    //println!("{:?}",save_file_name);
     if cmd_vector.len() == 2 {
-        save_file_name = cmd_vector[1].as_str();
+        save_file_name = &cmd_vector[1]; //.as_str();
     }
+    //println!("{:?}",save_file_name);
     let mut save_file: File = File::open(save_file_name).expect("Reason");
     //let uni: Manifest;
 
