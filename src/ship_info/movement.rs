@@ -39,27 +39,33 @@ pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &[String]) -> Result<Playe
         } else {
             Err("Command format should be  jum x y".to_string())
         }
-    } else if cmd_vector.len() == 3 {
+    } else if cmd_vector.len() == 3 || cmd_vector.len() == 4 {
         let res = crate::ui::validate_x_y_input(cmd_vector, MAX_GALAXY_SIZE_I8);
 
         match res {
             Ok(_) => {
                 let tgt_quad = res.unwrap();
+                let mut cmd_mode: String = "random".to_string();
+                if cmd_vector.len() == 4 {
+                    cmd_mode = cmd_vector[3].clone();
+                    //println!("{}", cmd_mode);
+                }
                 println!(
-                    "jumping player ship to random sector in quadrant {:?}",
-                    tgt_quad
+                    "jumping player ship to {:?} sector in quadrant {:?}",
+                    cmd_mode, tgt_quad
                 );
 
-                let new_enterprise_loc =
-                    AstroObject::create_new_random_enterprise_in_this_quad(tgt_quad);
+                let new_ship_loc = AstroObject::create_ship_astro_object(tgt_quad, cmd_mode);
                 let distance = g_info
                     .player_ship
                     .get_entity()
-                    .calc_quad_distance(new_enterprise_loc) as isize;
+                    .calc_quad_distance(new_ship_loc) as isize;
 
                 let mut updated_player_ship = g_info.player_ship;
-                updated_player_ship.set_entity(new_enterprise_loc);
-                updated_player_ship.use_energy(distance * 1000);
+                updated_player_ship.set_entity(new_ship_loc);
+                if cmd_vector.len() == 3 {
+                    updated_player_ship.use_energy(distance * 1000);
+                }
 
                 Ok(updated_player_ship)
             }

@@ -202,18 +202,27 @@ impl AstroObject {
     }
 
     // ====================================================================
-    /// # create_new_random_enterprise_in_this_quad
+    /// # create_
     ///
-    pub fn create_new_random_enterprise_in_this_quad(nq: (i8, i8)) -> Self {
+    pub fn create_ship_astro_object(nq: (i8, i8), cmd_mode: String) -> Self {
+        //println!("{}", cmd_mode);
+        let mut tmp_x: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+        let mut tmp_y: i8 = rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8);
+        if cmd_mode.ends_with("test") {
+            tmp_x = 5;
+            tmp_y = 5;
+        } else if cmd_mode.ends_with("test2") {
+            tmp_x = 2;
+            tmp_y = 6;
+        } else if cmd_mode.ends_with("test3") {
+            tmp_x = 7;
+            tmp_y = 4;
+        }
+
+        //println!(" {}   {},{}",cmd_mode,tmp_x, tmp_y);
+
         Self {
-            coord: (
-                0,
-                0,
-                nq.0,
-                nq.1,
-                rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8),
-                rand::thread_rng().gen_range(0..MAX_SECTOR_SIZE_I8),
-            ),
+            coord: (0, 0, nq.0, nq.1, tmp_x, tmp_y),
             t: AstroType::PlayerShip,
         }
     }

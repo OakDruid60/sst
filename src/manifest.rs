@@ -18,8 +18,6 @@ use std::io::{Read, Write};
 
 use colored::*;
 
-// stodo create and switch to a branch
-// stodo  iss8 create macro for heart of contruct galaxy
 macro_rules! populate_sector {
     ($gx:expr, $gy:expr,$qx:expr, $qy:expr,  $ast_type:expr, $ast_rng:expr, $g_map:expr) => {
         //let trial_quad_x: i8 = xx;
@@ -65,9 +63,9 @@ pub struct Manifest {
     pub end_star_date: i32,
     pub uni_map: HashMap<String, AstroObject>,
     pub charted: [[bool; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
-    pub test_cmds_vec: Vec<String>,
+    //pub test_cmds_vec: Vec<String>,
     pub player_ship: PlayerShip,
-    pub password: String,
+    //pub password: String,
 }
 
 impl Manifest {
@@ -77,9 +75,7 @@ impl Manifest {
             end_star_date: 0,
             charted: [[false; MAX_GALAXY_SIZE_I8 as usize]; MAX_GALAXY_SIZE_I8 as usize],
             uni_map: HashMap::new(),
-            test_cmds_vec: Vec::new(),
             player_ship: PlayerShip::new(),
-            password: "jap".to_string(),
         }
     }
 
@@ -501,7 +497,7 @@ pub fn thaw(cmd_vector: &[String]) -> Option<Manifest> {
         .map(String::from)
         .collect();
 
-    let uni = match from_str(raw_parts[1].as_str()) {
+    let uni = match from_str(raw_parts[0].as_str()) {
         Ok(data) => {
             //println!("Restored");
             println!("Game back-up restored from {}", save_file_name);
@@ -519,13 +515,7 @@ pub fn thaw(cmd_vector: &[String]) -> Option<Manifest> {
 /// # freeze
 ///
 ///
-//pub fn freeze (filename: Option<String>, uni: &GameWideData) {
 pub fn freeze(uni: &Manifest, cmd_vector: &[String]) {
-    /* let filename = match filename {
-        Some(v) => v,
-        None => input("Filename: ")
-    };
-    */
     let mut save_file_name = DEBUG_FILE_NAME;
     if cmd_vector.len() == 2 {
         save_file_name = cmd_vector[1].as_str();
@@ -543,7 +533,7 @@ pub fn freeze(uni: &Manifest, cmd_vector: &[String]) {
 
     // println!("{}",serde_json::to_string(uni).unwrap().as_str());
     match file.write_all(
-        (uni.password.clone() + "\0" + serde_json::to_string(uni).unwrap().as_str()).as_bytes(),
+        (serde_json::to_string(uni).unwrap().as_str()).as_bytes(),
     ) {
         Ok(_) => {}
         Err(_) => println!("I'm sorry, but that file cannot be written to."),

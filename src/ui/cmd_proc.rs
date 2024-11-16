@@ -8,6 +8,8 @@ use crate::constants::MAX_GALAXY_SIZE_I8; //, MAX_SECTOR_SIZE_I8};
 
 use colored::Colorize;
 
+use crate::ui::{BORDER_COLOR_GREEN, COLOR_RESET};
+
 use std::io::{stdin, stdout, Write};
 
 // ==========================================================================
@@ -38,10 +40,10 @@ pub fn determine_cmd_type(cmd_string: String) -> CmdType {
         CmdType::Quit
     } else if cmd_string.starts_with("?") || cmd_string.starts_with("hel") {
         CmdType::Help
-    } else if abbrev(&cmd_string, "recordon", "recordon") {
-        CmdType::RecordOn
-    } else if abbrev(&cmd_string, "recordoff", "recordoff") {
-        CmdType::RecordOff
+    } else if abbrev(&cmd_string, "comment", "comment") {
+        CmdType::Comment
+    //} else if abbrev(&cmd_string, "recordoff", "recordoff") {
+    //    CmdType::RecordOff
     } else {
         CmdType::Empty
     }
@@ -58,7 +60,7 @@ pub fn abbrev(what: &String, least: &str, full: &str) -> bool {
 /// Process the user input command_processor
 ///
 pub fn command_processor(startup_commands: &Vec<String>) {
-    let mut recording_commands: bool = false;
+    //let mut recording_commands: bool = false;
     //
     let mut startup_cmd_vec: Vec<String> = startup_commands.clone(); //Vec::new();
                                                                      //println!("{:?}",startup_cmd_vec);
@@ -117,9 +119,6 @@ pub fn command_processor(startup_commands: &Vec<String>) {
             .collect();
 
         //println!("{:?}",cmd_vector);    
-        if recording_commands && cmd_input.ends_with("\n") {
-            g_info.test_cmds_vec.push(cmd_input.clone());
-        }
 
         let cmd_type: CmdType = determine_cmd_type(cmd_vector[0].to_string());
 
@@ -266,11 +265,6 @@ pub fn command_processor(startup_commands: &Vec<String>) {
             }
             CmdType::Restore => {
                 g_info = crate::manifest::thaw(&cmd_vector).expect("REASON");
-                if !g_info.test_cmds_vec.is_empty() {
-                    //test_cmds_vec = g_info.test_cmds_vec.clone();
-                    //println!("{:?}", test_cmds_vec);
-                    g_info.test_cmds_vec = Vec::new();
-                }
                 if cmd_part2_vec.is_empty() {
                     cmd_part2_vec.push("stat".to_string());
                 }
@@ -284,14 +278,14 @@ pub fn command_processor(startup_commands: &Vec<String>) {
             CmdType::Quit => {
                 break 'process_loop;
             }
-            CmdType::RecordOn => {
-                println!("Command recording ON");
-                recording_commands = true;
+            CmdType::Comment => {
+                println!("==> {BORDER_COLOR_GREEN}{}{COLOR_RESET} <==", cmd_vector.join(" "));
+                //recording_commands = true;
             }
-            CmdType::RecordOff => {
-                println!("Command recording OFF");
-                recording_commands = false;
-            }
+            //CmdType::RecordOff => {
+            //    println!("Command recording OFF");
+            //    recording_commands = false;
+            //}
             _ => {
                 println!(
                     "{}  command \"{}\" -- not understood",
@@ -336,7 +330,7 @@ pub enum CmdType {
     Status,
     Restore,
     Save,
-    RecordOn,
-    RecordOff,
+    Comment,
+//    RecordOff,
     Empty,
 }
