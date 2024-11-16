@@ -67,7 +67,7 @@ pub fn jump_enterprise(g_info: &Manifest, cmd_vector: &[String]) -> Result<Playe
             Err(e) => Err(e),
         }
     } else {
-        Err("Command format should be  jum x y".to_string())
+        Err("Command has the wrong number of arguments. Format should be  jum x y".to_string())
     }
 }
 

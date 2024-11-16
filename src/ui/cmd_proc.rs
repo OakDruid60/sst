@@ -116,6 +116,7 @@ pub fn command_processor(startup_commands: &Vec<String>) {
             .map(str::to_string)
             .collect();
 
+        //println!("{:?}",cmd_vector);    
         if recording_commands && cmd_input.ends_with("\n") {
             g_info.test_cmds_vec.push(cmd_input.clone());
         }
