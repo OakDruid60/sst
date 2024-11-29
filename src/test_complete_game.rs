@@ -375,10 +375,17 @@ fn complete_game() {
     test_cmds_vec.push("stat".to_string());
     test_cmds_vec.push("lrs".to_string());
     test_cmds_vec.push("qui".to_string());
-
+    
     //test_cmds_vec.push("stat".to_string());
 
-    super::ui::cmd_proc::command_processor(&test_cmds_vec);
+
+
+
+
+    crate::write_toml(test_cmds_vec.clone());
+   println!("{}", crate::read_toml());
+    //crate::read_toml();
+    //super::ui::cmd_proc::command_processor(&test_cmds_vec);
     //let result = add(2, 2);
     //assert_eq!(result, 4);
 }
