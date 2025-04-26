@@ -197,7 +197,6 @@ impl Manifest {
                     n_galaxy_map
                 );
                 // clang-format on
-
             }
         }
         n_galaxy_map
@@ -232,7 +231,7 @@ impl Manifest {
 
         let mut human_out: Vec<String> = Vec::new();
         human_out.push(format!(
-            "  Enterprise ┃ energy:{:<6} torp:{:<3}",
+            "  PlayerShip ┃ energy:{:<6} torp:{:<3}",
             self.player_ship.get_energy(),
             self.player_ship.get_torpedoes()
         ));
@@ -375,8 +374,8 @@ pub fn is_straight_line_path_clear(
 // ==========================================================================
 /// # create_bad_guy_qi_vec
 ///
-/// create a quadrant informationm vector from the supplied quadrant vector
-/// and location of interest (probably the enterprise).
+/// create a quadrant information vector from the supplied quadrant vector
+/// and location of interest (probably the PlayerShip).
 pub fn create_bad_guy_qi_vec(
     qi_vec: &[AstroObject],
     interest_loc: AstroObject,
@@ -417,7 +416,7 @@ pub fn create_qi_enemy_vec(
     let potential_bad_guys =
         crate::manifest::create_bad_guy_qi_vec(&qi_vec, g_info.player_ship.get_entity(), true);
     if potential_bad_guys.is_empty() {
-        return Err("No enemy targets found in current quadrant along a straight line path from the player ship to the target that is not blocked by some other object.".to_string());
+        return Err(format!("No enemy targets found in current quadrant along a straight line path from /n{:?} to any potential target /n that is not blocked by some other object.",g_info.player_ship.get_entity() ));
     }
     Ok((qi_vec.clone(), potential_bad_guys.clone()))
 }
@@ -438,6 +437,7 @@ pub fn calc_distance_to_enemy(
     let mut current_distance: f64 = 1000.0;
     for si in potential_enemies.iter_mut() {
         n_info = *si;
+        println!("calc_distance_to_enemy        {:?}   {:?}",n_info.calc_sector_distance(g_info.player_ship.get_entity()),n_info);
         if n_info.get_astro_type() == enemy_type {
             if !found_it {
                 found_it = true;
@@ -454,6 +454,7 @@ pub fn calc_distance_to_enemy(
             }
         }
     }
+    println!("selected_enemy     {:?}  {:?} ", current_distance, tgt_sector);
     (found_it, current_distance, tgt_sector)
 }
 
@@ -532,9 +533,7 @@ pub fn freeze(uni: &Manifest, cmd_vector: &[String]) {
     };
 
     // println!("{}",serde_json::to_string(uni).unwrap().as_str());
-    match file.write_all(
-        (serde_json::to_string(uni).unwrap().as_str()).as_bytes(),
-    ) {
+    match file.write_all((serde_json::to_string(uni).unwrap()).as_bytes()) {
         Ok(_) => {}
         Err(_) => println!("I'm sorry, but that file cannot be written to."),
     }

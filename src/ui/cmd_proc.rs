@@ -59,10 +59,10 @@ pub fn abbrev(what: &String, least: &str, full: &str) -> bool {
 ///
 /// Process the user input command_processor
 ///
-pub fn command_processor(startup_commands: &Vec<String>) {
+pub fn command_processor(startup_commands: &[String]) {
     //let mut recording_commands: bool = false;
     //
-    let mut startup_cmd_vec: Vec<String> = startup_commands.clone(); //Vec::new();
+    let mut startup_cmd_vec: Vec<String> = startup_commands.to_vec(); //Vec::new();
                                                                      //println!("{:?}",startup_cmd_vec);
                                                                      //let mut test_cmds_vec: Vec<String> = Vec::new();
     let mut cmd_part2_vec: Vec<String> = Vec::new();
@@ -300,8 +300,7 @@ pub fn command_processor(startup_commands: &Vec<String>) {
 // ==========================================================
 /// # red_error
 /// put the
-
-pub fn red_error() -> String {
+pub fn red_error() -> String {    
     "Error:".underline().bright_red().to_string()
 }
 

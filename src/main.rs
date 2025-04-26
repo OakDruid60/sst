@@ -6,18 +6,19 @@
 //! Also looked at C+, Java, Python, and even good old Basic (line numbers
 //! were the best).
 //!
+/*
 use std::fs::File;
 use std::io::{Read, Write};
 use serde::Serialize;
 use toml::to_string;
-
+*/
 mod astro;
 mod constants;
 mod manifest;
 mod ship_info;
 mod ui;
 
-mod test_complete_game;
+//mod test_complete_game;
 
 fn main() {
 
@@ -29,7 +30,7 @@ fn main() {
 
     println!("Good Bye... Live long and Prosper");
 }
-    
+/*    
 #[derive(Serialize)]
 struct TestCmds {
     test_cmds_vec: Vec<String>,
@@ -41,7 +42,7 @@ fn write_cmds_to_file(config: &TestCmds, file_path: &str) -> Result<(), Box<dyn 
     file.write_all(toml_string.as_bytes())?;
     Ok(())
 }
-
+ 
 fn write_toml(cmds_vec:Vec<String>) {
     let config = TestCmds {
         test_cmds_vec: cmds_vec,
@@ -53,13 +54,15 @@ fn write_toml(cmds_vec:Vec<String>) {
         println!("Config file created successfully.");
     }
 }
+
 fn read_toml() -> String {
     let mut file = File::open("test_data/test_01_cmds.toml").expect("Failed to open file");
     let mut contents = String::new();
     file.read_to_string(&mut contents)
         .expect("Failed to read file");
 
-    return contents;
+    contents
     // At this point, `contents` contains the content of the TOML file
     //println!("{}", contents);
 }
+    */

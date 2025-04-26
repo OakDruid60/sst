@@ -14,7 +14,6 @@ use crate::ui::{BORDER_HORZ_60, BORDER_LL, BORDER_LR, BORDER_VERT, COLOR_RESET, 
 ///
 /// **Note** needs more details.
 ///
-
 pub fn help_screen(g_info: &Manifest) {
     let bc = BORDER_COLOR_GREEN; //crate::helpers::alert_status_of_quadrant2(&qi_vec);
     crate::ui::disp_title("Command Help", g_info, bc);
